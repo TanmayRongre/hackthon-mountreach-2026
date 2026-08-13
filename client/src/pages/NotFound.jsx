@@ -4,7 +4,7 @@ function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center p-8 bg-background">
       <div className="text-center animate-fade-in-up">
-        <h1 className="text-7xl md:text-9xl font-black bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent leading-none mb-4">
+        <h1 className="text-7xl md:text-9xl font-black bg-linear-to-br from-primary to-secondary bg-clip-text text-transparent leading-none mb-4">
           404
         </h1>
         <h2 className="text-2xl text-white mb-2">Page Not Found</h2>
