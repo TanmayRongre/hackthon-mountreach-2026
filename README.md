@@ -109,7 +109,7 @@ Pull Request → Review → Merge
 | Member | Role |
 |--------|------|
 | Tanmay (Team Leader) | GitHub, Integration, Frontend, Auth, Testing |
-| Gauri Bonde | UI Components |
-| Shubh Chincholkar | Node.js, Express, APIs |
-| Supesh Ugale | MongoDB, Models, Database |
-| Vaishnavi Pund | Whole Website Testing, Documentation |
+| Gauri  | UI Components |
+| Shubh  | Node.js, Express, APIs |
+| Supesh  | MongoDB, Models, Database |
+| Vaishnavi  | Whole Website Testing, Documentation |
