@@ -41,7 +41,7 @@ import FeeReceiptModal from './FeeReceiptModal';
 import ScanAttendanceModal from './ScanAttendanceModal';
 import RequestVisitorModal from './RequestVisitorModal';
 
-export default function StudentDashboardView({ student, user, onRefresh }) {
+export default function StudentDashboardView({ student, user, onRefresh, refreshKey }) {
   // Navigation Tabs: overview | attendance | complaints | leaves | visitors | fees | mess | notices
   const [activeTab, setActiveTab] = useState('overview');
   const [loadingData, setLoadingData] = useState(false);
@@ -135,7 +135,7 @@ export default function StudentDashboardView({ student, user, onRefresh }) {
 
   useEffect(() => {
     loadModuleData();
-  }, [user?._id]);
+  }, [user?._id, refreshKey]);
 
   // Handle File Complaint Submit
   const handleComplaintSubmit = async (e) => {
@@ -418,15 +418,9 @@ export default function StudentDashboardView({ student, user, onRefresh }) {
             </h1>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={loadModuleData}
-              title="Refresh Data"
-              className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-all cursor-pointer flex items-center gap-1.5 text-xs"
-            >
-              <RefreshCw className={`w-4 h-4 ${loadingData ? 'animate-spin text-indigo-400' : ''}`} />
-              <span className="hidden sm:inline font-medium">Refresh</span>
-            </button>
+          <div className="flex items-center gap-2 text-xs text-slate-400">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Live Portal Sync</span>
           </div>
         </div>
 

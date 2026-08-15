@@ -23,6 +23,9 @@ export default function StudentDashboard() {
   const [loadingStudent, setLoadingStudent] = useState(true);
   const [admissionModalOpen, setAdmissionModalOpen] = useState(false);
 
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+
   // Toast
   const [toast, setToast] = useState(null);
   const showToast = (message, type = 'success') => {
@@ -51,6 +54,16 @@ export default function StudentDashboard() {
       setStudentProfile(null);
     } finally {
       setLoadingStudent(false);
+    }
+  };
+
+  const handleGlobalRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await loadStudentProfile();
+      setRefreshKey((prev) => prev + 1);
+    } finally {
+      setTimeout(() => setRefreshing(false), 500);
     }
   };
 
@@ -103,11 +116,12 @@ export default function StudentDashboard() {
           </div>
 
           <button
-            onClick={loadStudentProfile}
-            title="Refresh Status"
-            className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-all cursor-pointer"
+            onClick={handleGlobalRefresh}
+            title="Refresh All Portal Data"
+            className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className={`w-4 h-4 ${refreshing || loadingStudent ? 'animate-spin text-indigo-400' : ''}`} />
+            <span className="hidden sm:inline">Refresh</span>
           </button>
         </div>
 
@@ -147,7 +161,8 @@ export default function StudentDashboard() {
             <StudentDashboardView
               student={studentProfile}
               user={user}
-              onRefresh={loadStudentProfile}
+              onRefresh={handleGlobalRefresh}
+              refreshKey={refreshKey}
             />
           ) : (
             /* UNADMITTED VIEW: ADMIT NOW BUTTON & FORM */
