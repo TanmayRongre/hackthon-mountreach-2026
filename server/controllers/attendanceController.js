@@ -1,15 +1,157 @@
 const Attendance = require('../models/Attendance');
 const Student = require('../models/Student');
 const Hostel = require('../models/Hostel');
+const AttendanceSession = require('../models/AttendanceSession');
 
 /**
- * @desc    Scan and mark daily student attendance via QR code
- * @route   POST /api/attendance/scan
+ * @desc    Generate a dynamic daily attendance session QR by Warden/Admin
+ * @route   POST /api/attendance/generate-qr
+ * @access  Private (Warden / Admin)
+ */
+const generateAttendanceQR = async (req, res, next) => {
+  try {
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Determine Hostel
+    let hostel = null;
+    if (req.body.hostelId) {
+      hostel = await Hostel.findById(req.body.hostelId);
+    }
+    if (!hostel && req.user.role === 'warden') {
+      hostel = await Hostel.findOne({ warden: req.user._id });
+    }
+    if (!hostel) {
+      hostel = await Hostel.findOne();
+    }
+
+    if (!hostel) {
+      res.status(404);
+      throw new Error('Hostel not found to generate QR');
+    }
+
+    const sessionToken = `ATT-${hostel.code || 'SAY'}-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const expiresAt = new Date(Date.now() + 4 * 60 * 60 * 1000); // 4 hours
+
+    const qrPayloadObject = {
+      type: 'HOSTEL_ATTENDANCE_QR',
+      hostelId: hostel._id.toString(),
+      hostelName: hostel.name,
+      hostelCode: hostel.code,
+      date: todayStr,
+      sessionToken,
+      generatedAt: new Date().toISOString(),
+    };
+
+    const qrPayload = JSON.stringify(qrPayloadObject);
+
+    // Deactivate old active sessions for this hostel today
+    await AttendanceSession.updateMany(
+      { hostel: hostel._id, status: 'active' },
+      { status: 'closed' }
+    );
+
+    const session = await AttendanceSession.create({
+      sessionToken,
+      hostel: hostel._id,
+      warden: req.user._id,
+      date: todayStr,
+      qrPayload,
+      status: 'active',
+      expiresAt,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Daily Attendance QR Code generated successfully!',
+      data: {
+        sessionToken: session.sessionToken,
+        hostel: hostel,
+        date: todayStr,
+        qrPayload,
+        expiresAt: session.expiresAt,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    Get active attendance session
+ * @route   GET /api/attendance/active-session
  * @access  Private
+ */
+const getActiveAttendanceSession = async (req, res, next) => {
+  try {
+    let filter = { status: 'active', expiresAt: { $gt: new Date() } };
+
+    if (req.user.role === 'warden') {
+      const assignedHostels = await Hostel.find({ warden: req.user._id }).select('_id');
+      const hostelIds = assignedHostels.map((h) => h._id);
+      if (hostelIds.length > 0) {
+        filter.hostel = { $in: hostelIds };
+      }
+    }
+
+    const activeSession = await AttendanceSession.findOne(filter)
+      .populate('hostel', 'name code')
+      .populate('warden', 'name email')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: activeSession || null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    Scan and mark daily student attendance via real Warden QR code
+ * @route   POST /api/attendance/scan
+ * @access  Private (Student)
  */
 const scanAttendance = async (req, res, next) => {
   try {
     const studentId = req.user._id;
+    const { qrData, sessionToken } = req.body;
+
+    let parsedQR = null;
+    if (typeof qrData === 'object' && qrData !== null) {
+      parsedQR = qrData;
+    } else if (typeof qrData === 'string') {
+      try {
+        parsedQR = JSON.parse(qrData);
+      } catch {
+        parsedQR = { raw: qrData };
+      }
+    }
+
+    // Check student profile
+    const studentDoc = await Student.findOne({ user: studentId }).populate('hostel room');
+    if (!studentDoc || !studentDoc.hostel) {
+      res.status(400);
+      throw new Error('You must be an admitted hostel resident to mark attendance.');
+    }
+
+    // Verify QR Code Payload
+    let activeSession = null;
+    const tokenToLookup = parsedQR?.sessionToken || sessionToken || parsedQR?.raw;
+
+    if (tokenToLookup) {
+      activeSession = await AttendanceSession.findOne({
+        sessionToken: tokenToLookup,
+        status: 'active',
+      }).populate('hostel');
+    }
+
+    if (!activeSession && parsedQR?.type === 'HOSTEL_ATTENDANCE_QR' && parsedQR?.hostelId) {
+      activeSession = await AttendanceSession.findOne({
+        hostel: parsedQR.hostelId,
+        status: 'active',
+      }).populate('hostel');
+    }
 
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
@@ -31,19 +173,22 @@ const scanAttendance = async (req, res, next) => {
       });
     }
 
-    const studentDoc = await Student.findOne({ user: studentId });
-
     record = await Attendance.create({
       student: studentId,
-      hostel: studentDoc?.hostel || null,
-      room: studentDoc?.room || null,
+      hostel: studentDoc.hostel?._id || studentDoc.hostel,
+      room: studentDoc.room?._id || studentDoc.room || null,
       date: new Date(),
       status: 'present',
-      markedBy: studentId,
-      remarks: 'Verified via Smart Hostel QR Scan Terminal',
+      markedBy: activeSession?.warden || studentId,
+      remarks: activeSession
+        ? `Verified via Warden QR Code: ${activeSession.sessionToken}`
+        : 'Verified via Smart Hostel QR Scan Terminal',
     });
 
-    const populated = await Attendance.findById(record._id).populate('student', 'name email');
+    const populated = await Attendance.findById(record._id)
+      .populate('student', 'name email')
+      .populate('hostel', 'name code')
+      .populate('room', 'roomNumber');
 
     res.status(201).json({
       success: true,
@@ -232,6 +377,8 @@ const deleteAttendance = async (req, res, next) => {
 
 module.exports = {
   scanAttendance,
+  generateAttendanceQR,
+  getActiveAttendanceSession,
   getAttendances,
   getAttendanceById,
   createAttendance,

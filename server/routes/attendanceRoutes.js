@@ -1,6 +1,8 @@
 const express = require('express');
 const {
   scanAttendance,
+  generateAttendanceQR,
+  getActiveAttendanceSession,
   getAttendances,
   getAttendanceById,
   createAttendance,
@@ -11,6 +13,8 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+router.post('/generate-qr', protect, authorize('warden', 'admin'), generateAttendanceQR);
+router.get('/active-session', protect, getActiveAttendanceSession);
 router.post('/scan', protect, scanAttendance);
 router.get('/', protect, getAttendances);
 router.get('/:id', protect, getAttendanceById);

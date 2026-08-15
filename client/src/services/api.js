@@ -147,6 +147,12 @@ export const api = {
 
   // Attendance & QR Scanner
   getAttendance: (query = '') => request(`/attendance${query ? `?${query}` : ''}`, { method: 'GET' }),
+  generateAttendanceQR: (data = {}) =>
+    request('/attendance/generate-qr', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  getActiveAttendanceSession: () => request('/attendance/active-session', { method: 'GET' }),
   scanAttendance: (data = {}) =>
     request('/attendance/scan', {
       method: 'POST',
