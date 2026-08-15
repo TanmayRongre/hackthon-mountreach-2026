@@ -111,7 +111,7 @@ export default function StudentDashboard() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-white tracking-tight">Student Hostel Portal</h1>
-              <p className="text-xs text-slate-400">Campus residency, room allotments, daily QR attendance, outpasses, and fees.</p>
+              <p className="text-xs text-slate-400">Campus residency, room allotments, daily QR attendance, leave applications, and fees.</p>
             </div>
           </div>
 

@@ -483,19 +483,19 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                 <div className="text-[11px] text-indigo-400 font-medium mt-1">View & Pay Invoices →</div>
               </div>
 
-              {/* Outpass & Leaves */}
+              {/* Leave Applications */}
               <div
                 onClick={() => setActiveTab('leaves')}
                 className="p-5 rounded-2xl bg-slate-900/60 hover:bg-slate-900/90 border border-slate-800 hover:border-indigo-500/40 transition-all cursor-pointer flex flex-col justify-between"
               >
                 <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Active Outpasses</span>
+                  <span>Active Leaves</span>
                   <Key className="w-4 h-4 text-sky-400" />
                 </div>
                 <div className="text-xl font-bold text-white mt-2">
                   {activeLeaves.length} Active
                 </div>
-                <div className="text-[11px] text-sky-400 font-medium mt-1">Digital Gatepasses →</div>
+                <div className="text-[11px] text-sky-400 font-medium mt-1">Leave Applications →</div>
               </div>
             </div>
 
@@ -531,7 +531,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   <Key className="w-5 h-5" />
                 </div>
                 <h4 className="text-xs font-bold text-white">Leave Application</h4>
-                <p className="text-[11px] text-slate-400 mt-1">Apply for digital outpass</p>
+                <p className="text-[11px] text-slate-400 mt-1">Apply for leave permission</p>
               </button>
 
               <button
@@ -715,7 +715,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
           </div>
         )}
 
-        {/* ── TAB 4: LEAVE & OUTPASS ── */}
+        {/* ── TAB 4: LEAVE APPLICATIONS ── */}
         {activeTab === 'leaves' && (
           <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -724,7 +724,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   <Key className="w-5 h-5 text-sky-400" />
                   Submit & Track Leave Applications
                 </h2>
-                <p className="text-xs text-slate-400">Request digital outpasses for weekend visits, emergencies, or vacations.</p>
+                <p className="text-xs text-slate-400">Request permissions for weekend visits, emergencies, or vacations.</p>
               </div>
               <button
                 onClick={() => setLeaveModal(true)}
@@ -775,7 +775,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                 ))
               ) : (
                 <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-slate-800 text-slate-400 text-xs">
-                  No leave records. Click "Submit Leave Application" to apply for an outpass.
+                  No leave records. Click "Submit Leave Application" to apply for leave.
                 </div>
               )}
             </div>
@@ -1354,14 +1354,14 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
         </div>
       )}
 
-      {/* ── MODAL: APPLY LEAVE / OUTPASS ── */}
+      {/* ── MODAL: APPLY LEAVE ── */}
       {leaveModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
           <div className="w-full max-w-lg bg-[#0f1b2d] border border-slate-700 rounded-3xl p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <Key className="w-4 h-4 text-sky-400" />
-                Submit Leave / Outpass Application
+                Submit Leave Application
               </h3>
               <button onClick={() => setLeaveModal(false)} className="text-slate-400 hover:text-white cursor-pointer">✕</button>
             </div>
@@ -1374,7 +1374,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                     onChange={(e) => setLeaveForm({ ...leaveForm, leaveType: e.target.value })}
                     className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
                   >
-                    <option value="outpass">Day Outpass</option>
+                    <option value="outpass">Day Leave</option>
                     <option value="weekend">Weekend Home Stay</option>
                     <option value="vacation">Semester Vacation</option>
                     <option value="emergency">Emergency Leave</option>

@@ -114,7 +114,7 @@ export const api = {
     }),
   deleteComplaint: (id) => request(`/complaints/${id}`, { method: 'DELETE' }),
 
-  // Leaves & Digital Outpass
+  // Leaves & Leave Applications
   getLeaves: (query = '') => request(`/leaves${query ? `?${query}` : ''}`, { method: 'GET' }),
   createLeave: (leaveData) =>
     request('/leaves', {

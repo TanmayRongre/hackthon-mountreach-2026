@@ -115,7 +115,8 @@ export default function AdminDashboard() {
       group: 'OPERATIONS',
       items: [
         { id: 'complaints', label: 'Complaints', icon: <FileText className="w-4 h-4" />, badge: overviewStats?.kpis?.openComplaints, badgeColor: 'bg-amber-500/20 text-amber-300' },
-        { id: 'leaves', label: 'Outpasses & Leaves', icon: <Key className="w-4 h-4" />, badge: overviewStats?.kpis?.pendingLeaves, badgeColor: 'bg-sky-500/20 text-sky-300' },
+        { id: 'leaves', label: 'Leave Applications', icon: <Key className="w-4 h-4" />, badge: overviewStats?.kpis?.pendingLeaves, badgeColor: 'bg-sky-500/20 text-sky-300' },
+        { id: 'visitors', label: 'Visitor Permits', icon: <Users className="w-4 h-4" /> },
         { id: 'attendance', label: 'Global Attendance', icon: <QrCode className="w-4 h-4" /> },
       ],
     },
@@ -270,7 +271,7 @@ export default function AdminDashboard() {
         <main className="flex-1 space-y-6 min-w-0">
           {/* Active Tab View */}
           {activeTab === 'overview' && (
-            <AdminOverviewSection stats={overviewStats} onNavigate={(tab) => setActiveTab(tab)} />
+            <AdminOverviewSection stats={overviewStats} />
           )}
 
           {activeTab === 'users' && (
@@ -281,8 +282,12 @@ export default function AdminDashboard() {
             <AdminHostelManagement onHostelsUpdated={loadAdminData} />
           )}
 
-          {(activeTab === 'complaints' || activeTab === 'leaves' || activeTab === 'attendance') && (
-            <AdminOperationsSection initialSubTab={activeTab} />
+          {(activeTab === 'complaints' || activeTab === 'leaves' || activeTab === 'visitors' || activeTab === 'attendance') && (
+            <AdminOperationsSection
+              key={activeTab}
+              initialSubTab={activeTab}
+              onSubTabChange={(tab) => setActiveTab(tab)}
+            />
           )}
 
           {activeTab === 'finance' && (

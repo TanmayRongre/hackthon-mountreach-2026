@@ -14,7 +14,7 @@ const STEPS = [
   {
     n: '03',
     title: 'Manage Everything Digitally',
-    desc: 'No paper. Raise complaints, approve outpass, view mess menu, pay fees, and download reports — all from one platform.',
+    desc: 'No paper. Raise complaints, approve leave applications, view mess menu, pay fees, and download reports — all from one platform.',
   },
 ];
 
