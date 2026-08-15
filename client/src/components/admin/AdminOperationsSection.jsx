@@ -267,7 +267,7 @@ export default function AdminOperationsSection({ initialSubTab = 'complaints' })
                 </div>
                 <div className="text-slate-300">Purpose: {v.purpose} · Phone: {v.phone}</div>
                 <div className="text-slate-500 text-[11px]">
-                  Visit Date: {new Date(v.visitDate).toLocaleDateString()} · Slot: {v.timeSlot} · Host: {v.student?.name || 'Resident'}
+                  Visit Date: {new Date(v.visitDate).toLocaleDateString()} · Host: {v.student?.name || 'Resident'}
                 </div>
               </div>
             ))

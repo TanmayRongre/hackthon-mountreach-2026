@@ -4,17 +4,25 @@ import api from '../../services/api';
 
 export default function RequestVisitorModal({ isOpen, onClose, student, user, onVisitorCreated }) {
   const [formData, setFormData] = useState({
-    visitorName: '',
+    visitorName: 'Rajesh Sharma',
     relationship: 'Parent',
-    phone: '',
+    phone: '+91 98765 43210',
     visitDate: new Date().toISOString().split('T')[0],
-    timeSlot: '10:00 AM - 1:00 PM',
-    purpose: '',
-    idProof: 'Aadhar Card / Govt ID',
+    purpose: 'Delivering semester essential items & academic textbooks',
   });
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  const handleDemoFill = () => {
+    setFormData({
+      visitorName: 'Rajesh Sharma',
+      relationship: 'Parent',
+      phone: '+91 98765 43210',
+      visitDate: new Date().toISOString().split('T')[0],
+      purpose: 'Delivering semester essential items & academic textbooks',
+    });
+  };
 
   if (!isOpen) return null;
 
@@ -46,7 +54,7 @@ export default function RequestVisitorModal({ isOpen, onClose, student, user, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-sans">
       <div className="relative w-full max-w-lg bg-[#0f1b2d] border border-slate-700 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
         <div className="px-6 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
@@ -59,12 +67,21 @@ export default function RequestVisitorModal({ isOpen, onClose, student, user, on
               <p className="text-[11px] text-slate-400">Guest & parent campus entry permission</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleDemoFill}
+              className="px-2.5 py-1 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[11px] font-bold hover:bg-purple-500/30 transition-colors cursor-pointer"
+            >
+              ✨ Demo Fill
+            </button>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Form */}
@@ -131,32 +148,6 @@ export default function RequestVisitorModal({ isOpen, onClose, student, user, on
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block font-semibold text-slate-300 mb-1">Visiting Time Slot</label>
-              <select
-                value={formData.timeSlot}
-                onChange={(e) => setFormData({ ...formData, timeSlot: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
-              >
-                <option value="10:00 AM - 1:00 PM">Morning (10:00 AM - 1:00 PM)</option>
-                <option value="2:00 PM - 5:00 PM">Afternoon (2:00 PM - 5:00 PM)</option>
-                <option value="5:00 PM - 7:30 PM">Evening (5:00 PM - 7:30 PM)</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block font-semibold text-slate-300 mb-1">Govt ID Proof Type</label>
-              <input
-                type="text"
-                placeholder="e.g. Aadhar / Driving License"
-                value={formData.idProof}
-                onChange={(e) => setFormData({ ...formData, idProof: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
-              />
-            </div>
-          </div>
-
           <div>
             <label className="block font-semibold text-slate-300 mb-1">Purpose of Visit *</label>
             <textarea
@@ -171,7 +162,7 @@ export default function RequestVisitorModal({ isOpen, onClose, student, user, on
 
           <div className="p-3 rounded-xl bg-purple-950/20 border border-purple-500/20 text-[11px] text-purple-300 flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-purple-400 shrink-0" />
-            <span>Digital Gatepass with QR code will be generated instantly for gate security verification.</span>
+            <span>Visitor request will be routed directly to your Hostel Warden for review & gate clearance.</span>
           </div>
 
           <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
@@ -187,7 +178,7 @@ export default function RequestVisitorModal({ isOpen, onClose, student, user, on
               disabled={submitting}
               className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-lg shadow-purple-600/30 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
-              {submitting ? 'Issuing Pass...' : 'Issue Visitor Pass →'}
+              {submitting ? 'Submitting Request...' : 'Send to Warden for Approval →'}
             </button>
           </div>
         </form>

@@ -804,8 +804,14 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                           <div className="text-[11px] text-slate-400">Phone: {v.phone}</div>
                         </div>
                       </div>
-                      <span className="text-xs px-3 py-1 rounded-full font-bold uppercase bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                        ✓ Pass Approved
+                      <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase border ${
+                        v.status === 'approved'
+                          ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                          : v.status === 'rejected'
+                          ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                          : 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+                      }`}>
+                        {v.status === 'approved' ? '✓ Pass Approved' : v.status === 'rejected' ? '✕ Request Rejected' : '⏳ Pending Warden Approval'}
                       </span>
                     </div>
 
@@ -813,10 +819,6 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
                     <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 pt-1 border-t border-slate-800">
                       <span>Visit Date: <strong className="text-white">{new Date(v.visitDate).toLocaleDateString()}</strong></span>
-                      <span>•</span>
-                      <span>Slot: <strong className="text-white">{v.timeSlot}</strong></span>
-                      <span>•</span>
-                      <span>ID Proof: {v.idProof || 'Verified Govt ID'}</span>
                     </div>
                   </div>
                 ))
@@ -1224,7 +1226,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
         student={student}
         user={user}
         onVisitorCreated={(newVis) => {
-          showToast(`Visitor pass ${newVis.passNumber} issued successfully!`);
+          showToast('Visitor request submitted to Warden for gate clearance approval!');
           loadModuleData();
         }}
       />

@@ -126,6 +126,19 @@ export default function WardenDashboard() {
     }
   };
 
+  const handleUpdateVisitor = async (id, status) => {
+    setActionLoading(true);
+    try {
+      await api.updateVisitor(id, { status });
+      showToast(`Visitor gatepass request marked as ${status}`);
+      loadWardenData();
+    } catch (err) {
+      showToast(err.message || 'Failed to update visitor pass', 'error');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handlePostNotice = async (e) => {
     e.preventDefault();
     try {
@@ -141,12 +154,14 @@ export default function WardenDashboard() {
 
   const pendingComplaints = complaints.filter((c) => c.status !== 'resolved');
   const pendingLeaves = leaves.filter((l) => l.status === 'pending');
+  const pendingVisitors = visitors.filter((v) => v.status === 'pending');
 
   const navItems = [
     { id: 'overview', label: 'Warden Overview', icon: <Building2 className="w-4 h-4" /> },
     { id: 'attendance', label: 'Attendance Roster', icon: <QrCode className="w-4 h-4" />, badge: attendance.length > 0 ? `${attendance.length}` : null },
     { id: 'complaints', label: 'Hostel Complaints', icon: <FileText className="w-4 h-4" />, badge: pendingComplaints.length > 0 ? `${pendingComplaints.length}` : null, badgeColor: 'bg-amber-500/20 text-amber-300' },
     { id: 'leaves', label: 'Outpass Clearance', icon: <Key className="w-4 h-4" />, badge: pendingLeaves.length > 0 ? `${pendingLeaves.length}` : null, badgeColor: 'bg-sky-500/20 text-sky-300' },
+    { id: 'visitors', label: 'Visitor Pass Clearances', icon: <Users className="w-4 h-4" />, badge: pendingVisitors.length > 0 ? `${pendingVisitors.length}` : null, badgeColor: 'bg-purple-500/20 text-purple-300' },
     { id: 'students', label: 'Resident Directory', icon: <Users className="w-4 h-4" />, badge: students.length > 0 ? `${students.length}` : null },
     { id: 'rooms', label: 'Room Inspection', icon: <DoorOpen className="w-4 h-4" /> },
     { id: 'notices', label: 'Hostel Circulars', icon: <Bell className="w-4 h-4" /> },
@@ -336,6 +351,83 @@ export default function WardenDashboard() {
                 ) : (
                   <div className="p-8 text-center text-xs text-slate-500">
                     All outpass requests have been cleared.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: VISITOR CLEARANCES */}
+          {activeTab === 'visitors' && (
+            <div className="space-y-4">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Users className="w-4 h-4 text-purple-400" />
+                      Guest & Visitor Gatepass Clearances
+                    </h3>
+                    <p className="text-xs text-slate-400">Review parent and guest entrance requests submitted by hostel residents</p>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-500/15 text-purple-300 border border-purple-500/30 self-start sm:self-auto">
+                    {pendingVisitors.length} Pending Approval
+                  </span>
+                </div>
+
+                {visitors.length > 0 ? (
+                  <div className="space-y-3">
+                    {visitors.map((v) => (
+                      <div key={v._id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 text-xs">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 rounded-lg bg-purple-500/20 text-purple-300 font-mono font-bold text-[10px]">
+                              {v.passNumber}
+                            </span>
+                            <span className="font-bold text-white text-sm">{v.visitorName} ({v.relationship})</span>
+                          </div>
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                            v.status === 'approved'
+                              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                              : v.status === 'rejected'
+                              ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                              : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                          }`}>
+                            {v.status === 'approved' ? '✓ Approved' : v.status === 'rejected' ? '✕ Rejected' : '⏳ Pending Review'}
+                          </span>
+                        </div>
+
+                        <p className="text-slate-300">Purpose: {v.purpose}</p>
+
+                        <div className="flex flex-wrap items-center justify-between pt-2 border-t border-slate-800 text-[11px] text-slate-400 gap-2">
+                          <div>
+                            Resident Host: <strong className="text-white">{v.student?.name || 'Student'}</strong> · Phone: <strong className="text-slate-300">{v.phone}</strong> · Visit Date: <strong className="text-white">{new Date(v.visitDate).toLocaleDateString()}</strong>
+                          </div>
+
+                          {v.status === 'pending' && (
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleUpdateVisitor(v._id, 'approved')}
+                                disabled={actionLoading}
+                                className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 cursor-pointer"
+                              >
+                                ✓ Approve Pass
+                              </button>
+                              <button
+                                onClick={() => handleUpdateVisitor(v._id, 'rejected')}
+                                disabled={actionLoading}
+                                className="px-3.5 py-1.5 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-bold text-xs border border-rose-500/30 cursor-pointer"
+                              >
+                                ✕ Reject
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-xs text-slate-500">
+                    No visitor gatepass requests submitted yet.
                   </div>
                 )}
               </div>
