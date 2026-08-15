@@ -5,7 +5,6 @@ import '../styles/AuthForm.css';
 
 export default function AuthForm({ initialActive = false }) {
   const [isActive, setIsActive] = useState(initialActive);
-  const [selectedRole, setSelectedRole] = useState('student'); // 'student' | 'warden' | 'admin'
   const [showPassword, setShowPassword] = useState(false);
   const [showRegPassword, setShowRegPassword] = useState(false);
 
@@ -28,11 +27,10 @@ export default function AuthForm({ initialActive = false }) {
   const [registerSuccess, setRegisterSuccess] = useState('');
   const [registerLoading, setRegisterLoading] = useState(false);
 
-  // Forgot Password & SSO Modal States
+  // Forgot Password Modal States
   const [forgotModal, setForgotModal] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotSent, setForgotSent] = useState(false);
-  const [ssoModal, setSsoModal] = useState(null); // 'google' | 'microsoft' | 'github'
 
   // Sync state with URL if user navigates between /login and /register
   useEffect(() => {
@@ -62,7 +60,7 @@ export default function AuthForm({ initialActive = false }) {
 
     try {
       const res = await login(loginEmail, loginPassword);
-      const role = res?.user?.role || selectedRole;
+      const role = res?.user?.role;
       if (role === 'admin') {
         navigate('/admin');
       } else if (role === 'warden') {
@@ -110,7 +108,6 @@ export default function AuthForm({ initialActive = false }) {
   };
 
   const autofillDemo = (role) => {
-    setSelectedRole(role);
     if (role === 'admin') {
       setLoginEmail('admin@mountreach.com');
       setLoginPassword('admin123');
@@ -166,31 +163,6 @@ export default function AuthForm({ initialActive = false }) {
               Sign in to your College Hostel portal
             </p>
 
-            {/* Portal Role Tabs */}
-            <div className="role-tabs">
-              <button
-                type="button"
-                className={`role-tab-btn ${selectedRole === 'student' ? 'active student' : ''}`}
-                onClick={() => autofillDemo('student')}
-              >
-                🎓 Student
-              </button>
-              <button
-                type="button"
-                className={`role-tab-btn ${selectedRole === 'warden' ? 'active warden' : ''}`}
-                onClick={() => autofillDemo('warden')}
-              >
-                🏫 Warden
-              </button>
-              <button
-                type="button"
-                className={`role-tab-btn ${selectedRole === 'admin' ? 'active admin' : ''}`}
-                onClick={() => autofillDemo('admin')}
-              >
-                🛡️ Admin
-              </button>
-            </div>
-
             {loginError && (
               <div className="auth-alert error">
                 <i className="bx bx-error-circle" style={{ fontSize: 16 }}></i>
@@ -242,7 +214,7 @@ export default function AuthForm({ initialActive = false }) {
 
             <button type="submit" className="btn-primary-auth" disabled={loginLoading}>
               <i className="bx bx-log-in-circle" style={{ fontSize: 18 }}></i>
-              {loginLoading ? 'Signing In...' : `Sign In as ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}`}
+              {loginLoading ? 'Signing In...' : 'Sign In to Portal'}
             </button>
 
             {/* Quick Demo Credentials */}
@@ -271,20 +243,6 @@ export default function AuthForm({ initialActive = false }) {
               >
                 🛡️ Demo Admin
               </button>
-            </div>
-
-            <div className="divider-text">Institutional Single Sign-On</div>
-
-            <div className="social-icons">
-              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Google Workspace SSO'); }} title="College Google Workspace SSO">
-                <i className="bx bxl-google"></i>
-              </a>
-              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Microsoft Azure AD SSO'); }} title="Institutional Microsoft SSO">
-                <i className="bx bxl-microsoft"></i>
-              </a>
-              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Campus GitHub Organization'); }} title="GitHub SSO">
-                <i className="bx bxl-github"></i>
-              </a>
             </div>
           </form>
         </div>
@@ -368,20 +326,6 @@ export default function AuthForm({ initialActive = false }) {
               <i className="bx bx-user-plus" style={{ fontSize: 18 }}></i>
               {registerLoading ? 'Creating Account...' : 'Register Account'}
             </button>
-
-            <div className="divider-text">Institutional Portal Verification</div>
-
-            <div className="social-icons">
-              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Google Workspace SSO'); }} title="Verify with Google">
-                <i className="bx bxl-google"></i>
-              </a>
-              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Microsoft Azure AD SSO'); }} title="Verify with Microsoft">
-                <i className="bx bxl-microsoft"></i>
-              </a>
-              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Campus GitHub Organization'); }} title="Verify with GitHub">
-                <i className="bx bxl-github"></i>
-              </a>
-            </div>
           </form>
         </div>
 
@@ -474,32 +418,6 @@ export default function AuthForm({ initialActive = false }) {
                 </button>
               </form>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* ── SSO INFO MODAL ── */}
-      {ssoModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-sans">
-          <div className="w-full max-w-sm p-6 rounded-3xl bg-[#0f1b2d] border border-slate-800 shadow-2xl space-y-4 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center mx-auto text-2xl">
-              🏢
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-white">{ssoModal}</h3>
-              <p className="text-xs text-slate-400 mt-1.5">
-                Campus Single Sign-On requires institutional SAML 2.0 / OAuth2 credentials issued by MountReach IT Services.
-              </p>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300">
-              For demo access, please use the quick <strong>Demo Student</strong>, <strong>Demo Warden</strong>, or <strong>Demo Admin</strong> one-click login buttons.
-            </div>
-            <button
-              onClick={() => setSsoModal(null)}
-              className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs"
-            >
-              Got it
-            </button>
           </div>
         </div>
       )}
