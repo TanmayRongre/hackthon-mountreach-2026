@@ -12,7 +12,9 @@ import {
   Clock,
   ShieldCheck,
   RefreshCw,
-  Zap
+  Zap,
+  UploadCloud,
+  ImageIcon,
 } from 'lucide-react';
 import api from '../../services/api';
 
@@ -24,14 +26,16 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
   const [cameraError, setCameraError] = useState('');
   const [manualCode, setManualCode] = useState('');
   const [showManualInput, setShowManualInput] = useState(false);
+  const [verifying, setVerifying] = useState(false);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const fileInputRef = useRef(null);
   const animationFrameId = useRef(null);
   const streamRef = useRef(null);
   const hasScannedRef = useRef(false);
 
-  // Play pleasant chime on successful scan
+  // Play audio chime on successful scan
   const playBeep = () => {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -40,8 +44,8 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
-      osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.15); // E6 note
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.15);
       gain.gain.setValueAtTime(0.2, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
       osc.connect(gain);
@@ -49,11 +53,11 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
       osc.start();
       osc.stop(ctx.currentTime + 0.25);
     } catch {
-      // AudioContext not supported or allowed
+      // AudioContext not permitted or supported
     }
   };
 
-  // Start Camera Stream
+  // Start Camera Stream with hardware fallback
   const startCamera = async () => {
     setError('');
     setCameraError('');
@@ -61,30 +65,46 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
 
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error('Camera access API is not supported in this browser.');
+        throw new Error('Camera access is not supported in this browser. Please use code verification.');
       }
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } },
-        audio: false,
-      });
+      let stream = null;
+      try {
+        // Try environment/back camera first
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false,
+        });
+      } catch {
+        // Fallback to front/webcam camera
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+      }
 
       streamRef.current = stream;
 
+      // Attach stream to video element
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.setAttribute('playsinline', 'true');
-        videoRef.current.play();
+        videoRef.current.muted = true;
+        try {
+          await videoRef.current.play();
+        } catch (playErr) {
+          console.warn('Video play error:', playErr);
+        }
       }
 
       setCameraActive(true);
       setScanning(true);
     } catch (err) {
-      console.warn('Camera start issue:', err.message);
+      console.warn('Camera start error:', err);
       setCameraError(
         err.name === 'NotAllowedError'
-          ? 'Camera permission was denied. Please allow camera permissions or enter the session code.'
-          : 'Could not access camera device. You can verify using the active terminal code below.'
+          ? 'Camera permission denied. Please allow camera permissions, upload a QR screenshot, or enter the session code.'
+          : 'Could not connect to camera device. You can verify using image upload or the instant verification button below.'
       );
       setCameraActive(false);
       setScanning(false);
@@ -101,9 +121,22 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
     setCameraActive(false);
     setScanning(false);
   };
+
+  // Ensure video element receives stream when active
+  useEffect(() => {
+    if (cameraActive && streamRef.current && videoRef.current) {
+      if (videoRef.current.srcObject !== streamRef.current) {
+        videoRef.current.srcObject = streamRef.current;
+        videoRef.current.play().catch(console.warn);
+      }
+    }
+  }, [cameraActive]);
 
   // Continuous frame analysis with jsQR
   const scanVideoFrame = () => {
@@ -112,7 +145,7 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
     const video = videoRef.current;
     const canvas = canvasRef.current;
 
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -121,7 +154,7 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const code = jsQR(imageData.data, imageData.width, imageData.height, {
-          inversionAttempts: 'dontInvert',
+          inversionAttempts: 'attemptBoth',
         });
 
         if (code && code.data && !hasScannedRef.current) {
@@ -167,6 +200,7 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
   const handleProcessScannedData = async (rawData) => {
     stopCamera();
     setError('');
+    setVerifying(true);
 
     try {
       const res = await api.scanAttendance({
@@ -184,7 +218,43 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
       }
     } catch (err) {
       setError(err.message || 'Failed to verify attendance scan');
+    } finally {
+      setVerifying(false);
     }
+  };
+
+  // Handle image file upload for QR scanning
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setError('');
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = canvasRef.current || document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: 'attemptBoth',
+          });
+
+          if (code && code.data) {
+            playBeep();
+            handleProcessScannedData(code.data);
+          } else {
+            setError('Could not detect a valid QR code in this image. Please ensure the QR code is clearly visible or use Instant Verify.');
+          }
+        }
+      };
+      img.src = event.target?.result;
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleManualSubmit = (e) => {
@@ -198,7 +268,10 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
     setError('');
     try {
       const sessionRes = await api.getActiveAttendanceSession();
-      const token = sessionRes?.data?.sessionToken || `ATT-${student?.hostel?.code || 'SAY'}-ACTIVE`;
+      const token =
+        sessionRes?.data?.sessionToken ||
+        sessionRes?.data?.qrPayload ||
+        `ATT-${student?.hostel?.code || 'SAY'}-ACTIVE`;
       playBeep();
       await handleProcessScannedData(token);
     } catch (err) {
@@ -231,13 +304,20 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
           </button>
         </div>
 
-        {/* Hidden Canvas for QR video frame processing */}
+        {/* Hidden Canvas and File Input */}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
+        <input
+          type="file"
+          ref={fileInputRef}
+          accept="image/*"
+          onChange={handleFileUpload}
+          style={{ display: 'none' }}
+        />
 
         {/* Scanner Viewfinder Box */}
         <div className="p-6 space-y-4 text-center">
           {error && (
-            <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300 flex items-center gap-2 text-left">
+            <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300 flex items-center gap-2 text-left animate-slide-up">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{error}</span>
             </div>
@@ -260,29 +340,30 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
             </div>
           ) : (
             <div className="relative mx-auto w-full max-w-[280px] h-[280px] rounded-3xl bg-slate-950 border-2 border-indigo-500/40 flex flex-col items-center justify-center overflow-hidden shadow-inner">
-              {/* Real Video Stream */}
+              {/* Video Element is ALWAYS rendered to prevent null ref binding */}
+              <video
+                ref={videoRef}
+                className={`absolute inset-0 w-full h-full object-cover ${cameraActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                autoPlay
+                playsInline
+                muted
+              />
+
               {cameraActive ? (
                 <>
-                  <video
-                    ref={videoRef}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    autoPlay
-                    playsInline
-                    muted
-                  />
                   {/* Animated Optical Laser Line */}
                   <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_15px_#34d399] animate-bounce z-20 pointer-events-none" />
                 </>
               ) : (
-                <div className="p-6 text-center space-y-3">
+                <div className="p-6 text-center space-y-3 z-10">
                   <div className="w-12 h-12 rounded-2xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center mx-auto">
                     <QrCode className="w-6 h-6" />
                   </div>
                   <div className="text-xs font-semibold text-slate-300">
-                    {cameraError ? 'Camera Mode Inactive' : 'Initializing camera...'}
+                    {cameraError ? 'Camera Mode Inactive' : 'Initializing camera stream...'}
                   </div>
                   {cameraError && (
-                    <div className="text-[11px] text-slate-400 max-w-[220px] mx-auto">
+                    <div className="text-[11px] text-slate-400 max-w-[220px] mx-auto leading-relaxed">
                       {cameraError}
                     </div>
                   )}
@@ -320,7 +401,7 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
                 <Clock className="w-3.5 h-3.5 text-indigo-400" />
                 Resident Roll:
               </span>
-              <strong className="text-white uppercase">{student?.enrollmentNumber || 'CS2026'}</strong>
+              <strong className="text-white uppercase">{student?.enrollmentNumber || user?.enrollmentNumber || 'CS2026'}</strong>
             </div>
           </div>
 
@@ -341,9 +422,10 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
                 />
                 <button
                   type="submit"
+                  disabled={verifying}
                   className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs cursor-pointer"
                 >
-                  Verify
+                  {verifying ? 'Verifying...' : 'Verify'}
                 </button>
               </div>
             </form>
@@ -356,11 +438,22 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
+                    disabled={verifying}
                     onClick={handleInstantDemoScan}
                     className="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer transition-all"
                   >
-                    <Zap className="w-4 h-4 text-amber-300" />
-                    <span>Instant Verify Active QR</span>
+                    <Zap className={`w-4 h-4 text-amber-300 ${verifying ? 'animate-spin' : ''}`} />
+                    <span>{verifying ? 'Verifying Scan...' : 'Instant Verify Active QR'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-3.5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold cursor-pointer border border-slate-700 flex items-center gap-1"
+                    title="Upload QR Image file"
+                  >
+                    <UploadCloud className="w-4 h-4" />
+                    <span className="hidden sm:inline">Upload</span>
                   </button>
 
                   <button
