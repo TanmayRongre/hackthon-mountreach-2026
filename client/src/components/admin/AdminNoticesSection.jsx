@@ -15,6 +15,7 @@ export default function AdminNoticesSection({ onNoticesUpdated }) {
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -27,6 +28,16 @@ export default function AdminNoticesSection({ onNoticesUpdated }) {
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 4000);
+  };
+
+  const handleDemoFill = () => {
+    setFormData({
+      title: '📢 Semester Hostel Fee Clearance & Maintenance Update',
+      content: 'All hostel residents are requested to ensure all semester dues are settled by the upcoming weekend. The maintenance team will also be performing network router optimizations.',
+      category: 'General',
+      priority: 'high',
+      targetAudience: 'all',
+    });
   };
 
   const loadNotices = async () => {
@@ -47,15 +58,22 @@ export default function AdminNoticesSection({ onNoticesUpdated }) {
 
   const handleCreateNotice = async (e) => {
     e.preventDefault();
+    if (!formData.title.trim() || !formData.content.trim()) {
+      showToast('Please enter both notice title and content', 'error');
+      return;
+    }
+    setSubmitting(true);
     try {
       await api.createNotice(formData);
       showToast('Notice broadcasted to campus portal successfully!');
       setModalOpen(false);
       setFormData({ title: '', content: '', category: 'General', priority: 'normal', targetAudience: 'all' });
-      loadNotices();
+      await loadNotices();
       if (onNoticesUpdated) onNoticesUpdated();
     } catch (err) {
       showToast(err.message || 'Failed to publish notice', 'error');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -108,14 +126,14 @@ export default function AdminNoticesSection({ onNoticesUpdated }) {
                 <div className="flex items-center justify-between">
                   <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase ${
                     n.priority === 'urgent' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' :
-                    n.priority === 'important' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
+                    n.priority === 'high' || n.priority === 'important' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
                     'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
                   }`}>
                     {n.priority} · {n.category || 'General'}
                   </span>
                   <button
                     onClick={() => handleDeleteNotice(n._id)}
-                    className="text-slate-500 hover:text-rose-400 p-1 transition-colors"
+                    className="text-slate-500 hover:text-rose-400 p-1 transition-colors cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -143,11 +161,20 @@ export default function AdminNoticesSection({ onNoticesUpdated }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
           <div className="w-full max-w-md bg-[#0f1b2d] border border-indigo-500/30 rounded-3xl p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Send className="w-4 h-4 text-indigo-400" />
-                Publish Campus Notice
-              </h3>
-              <button onClick={() => setModalOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <Send className="w-4 h-4 text-indigo-400" />
+                  Publish Campus Notice
+                </h3>
+                <button
+                  type="button"
+                  onClick={handleDemoFill}
+                  className="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 text-[11px] font-bold transition-all cursor-pointer"
+                >
+                  ✨ Demo Fill
+                </button>
+              </div>
+              <button onClick={() => setModalOpen(false)} className="text-slate-400 hover:text-white cursor-pointer">✕</button>
             </div>
 
             <form onSubmit={handleCreateNotice} className="space-y-4 text-xs">
@@ -163,7 +190,23 @@ export default function AdminNoticesSection({ onNoticesUpdated }) {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-2.5">
+                <div>
+                  <label className="block font-semibold text-slate-300 mb-1">Category</label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="General">General</option>
+                    <option value="Rules & Discipline">Rules</option>
+                    <option value="Mess">Mess</option>
+                    <option value="Maintenance">Repair</option>
+                    <option value="Fee Reminder">Fees</option>
+                    <option value="Emergency">Emergency</option>
+                  </select>
+                </div>
+
                 <div>
                   <label className="block font-semibold text-slate-300 mb-1">Priority</label>
                   <select
@@ -172,21 +215,21 @@ export default function AdminNoticesSection({ onNoticesUpdated }) {
                     className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-indigo-500"
                   >
                     <option value="normal">Normal</option>
-                    <option value="important">Important</option>
+                    <option value="high">High</option>
                     <option value="urgent">Urgent</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Target Audience</label>
+                  <label className="block font-semibold text-slate-300 mb-1">Audience</label>
                   <select
                     value={formData.targetAudience}
                     onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value })}
                     className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-indigo-500"
                   >
-                    <option value="all">All Students & Wardens</option>
-                    <option value="students">Students Only</option>
-                    <option value="wardens">Wardens Only</option>
+                    <option value="all">All</option>
+                    <option value="students">Students</option>
+                    <option value="wardens">Wardens</option>
                   </select>
                 </div>
               </div>
@@ -207,15 +250,17 @@ export default function AdminNoticesSection({ onNoticesUpdated }) {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium"
+                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-600/30"
+                  disabled={submitting}
+                  className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold shadow-lg shadow-indigo-600/30 cursor-pointer flex items-center gap-2"
                 >
-                  Broadcast Notice
+                  {submitting && <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+                  <span>{submitting ? 'Publishing...' : 'Broadcast Notice'}</span>
                 </button>
               </div>
             </form>

@@ -108,7 +108,13 @@ const createNotice = async (req, res, next) => {
       throw new Error('Please provide notice title and content');
     }
 
-    const postedBy = req.user ? req.user._id : req.body.postedBy;
+    let postedBy = req.user ? req.user._id : req.body.postedBy;
+    if (!postedBy) {
+      const User = require('../models/User');
+      const author = await User.findOne({ role: { $in: ['admin', 'warden'] } }) || await User.findOne();
+      if (author) postedBy = author._id;
+    }
+
     if (!postedBy) {
       res.status(400);
       throw new Error('Please specify author');
