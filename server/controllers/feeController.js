@@ -1,39 +1,140 @@
-// feeController.js
+const Fee = require('../models/Fee');
+
+/**
+ * @desc    Get all fee records
+ * @route   GET /api/fees
+ * @access  Public / Private
+ */
 const getFees = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, data: [], message: 'Get all fees' });
+    const { student, status, feeType } = req.query;
+    const filter = {};
+
+    if (student) filter.student = student;
+    if (status) filter.status = status;
+    if (feeType) filter.feeType = feeType;
+
+    const fees = await Fee.find(filter)
+      .populate('student', 'name email')
+      .sort({ dueDate: 1 });
+
+    res.status(200).json({
+      success: true,
+      count: fees.length,
+      data: fees,
+    });
   } catch (error) {
     next(error);
   }
 };
 
+/**
+ * @desc    Get fee record by ID
+ * @route   GET /api/fees/:id
+ * @access  Public / Private
+ */
 const getFeeById = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, data: { id: req.params.id }, message: 'Get fee by id' });
+    const fee = await Fee.findById(req.params.id).populate('student', 'name email role');
+
+    if (!fee) {
+      res.status(404);
+      throw new Error('Fee record not found');
+    }
+
+    res.status(200).json({
+      success: true,
+      data: fee,
+    });
   } catch (error) {
     next(error);
   }
 };
 
+/**
+ * @desc    Create fee invoice
+ * @route   POST /api/fees
+ * @access  Private/Admin
+ */
 const createFee = async (req, res, next) => {
   try {
-    res.status(201).json({ success: true, data: req.body, message: 'Fee created' });
+    const { student, title, amount, feeType, dueDate, status, paymentMode } = req.body;
+
+    if (!student || !title || amount === undefined || !dueDate) {
+      res.status(400);
+      throw new Error('Please provide student, title, amount, and due date');
+    }
+
+    const fee = await Fee.create({
+      student,
+      title,
+      amount,
+      feeType: feeType || 'Hostel Fee',
+      dueDate,
+      status: status || 'pending',
+      paymentMode: paymentMode || 'Pending',
+      receiptNumber: `REC-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    });
+
+    const populatedFee = await Fee.findById(fee._id).populate('student', 'name email');
+
+    res.status(201).json({
+      success: true,
+      message: 'Fee invoice created successfully',
+      data: populatedFee,
+    });
   } catch (error) {
     next(error);
   }
 };
 
+/**
+ * @desc    Update fee record
+ * @route   PUT /api/fees/:id
+ * @access  Private
+ */
 const updateFee = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, data: req.body, message: 'Fee updated' });
+    const fee = await Fee.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    }).populate('student', 'name email');
+
+    if (!fee) {
+      res.status(404);
+      throw new Error('Fee record not found');
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Fee record updated successfully',
+      data: fee,
+    });
   } catch (error) {
     next(error);
   }
 };
 
+/**
+ * @desc    Delete fee record
+ * @route   DELETE /api/fees/:id
+ * @access  Private/Admin
+ */
 const deleteFee = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: 'Fee deleted' });
+    const fee = await Fee.findById(req.params.id);
+
+    if (!fee) {
+      res.status(404);
+      throw new Error('Fee record not found');
+    }
+
+    await fee.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: 'Fee record deleted successfully',
+    });
   } catch (error) {
     next(error);
   }
