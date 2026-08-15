@@ -71,23 +71,143 @@ export const api = {
 
   logout: () => request('/auth/logout', { method: 'POST' }),
 
+  // Users & Staff Management
+  getUsers: (query = '') => request(`/users${query ? `?${query}` : ''}`, { method: 'GET' }),
+  getUserById: (id) => request(`/users/${id}`, { method: 'GET' }),
+  createUser: (data) => request('/users', { method: 'POST', body: JSON.stringify(data) }),
+  updateUser: (id, data) => request(`/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteUser: (id) => request(`/users/${id}`, { method: 'DELETE' }),
+
+  // Student Profile & Admission
+  getMyStudentProfile: () => request('/students/me', { method: 'GET' }),
+
+  admitStudent: (admissionData) =>
+    request('/students/admit', {
+      method: 'POST',
+      body: JSON.stringify(admissionData),
+    }),
+
+  getStudents: (query = '') => request(`/students${query ? `?${query}` : ''}`, { method: 'GET' }),
+
+  // Hostels & Rooms
+  getHostels: () => request('/hostels', { method: 'GET' }),
+  createHostel: (data) => request('/hostels', { method: 'POST', body: JSON.stringify(data) }),
+  updateHostel: (id, data) => request(`/hostels/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteHostel: (id) => request(`/hostels/${id}`, { method: 'DELETE' }),
+
+  getRooms: (hostelId = '') => request(`/rooms${hostelId ? `?hostel=${hostelId}` : ''}`, { method: 'GET' }),
+  createRoom: (data) => request('/rooms', { method: 'POST', body: JSON.stringify(data) }),
+  updateRoom: (id, data) => request(`/rooms/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteRoom: (id) => request(`/rooms/${id}`, { method: 'DELETE' }),
+
+  // Complaints / Grievance Portal
+  getComplaints: (query = '') => request(`/complaints${query ? `?${query}` : ''}`, { method: 'GET' }),
+  createComplaint: (complaintData) =>
+    request('/complaints', {
+      method: 'POST',
+      body: JSON.stringify(complaintData),
+    }),
+  updateComplaint: (id, data) =>
+    request(`/complaints/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+  deleteComplaint: (id) => request(`/complaints/${id}`, { method: 'DELETE' }),
+
+  // Leaves & Digital Outpass
+  getLeaves: (query = '') => request(`/leaves${query ? `?${query}` : ''}`, { method: 'GET' }),
+  createLeave: (leaveData) =>
+    request('/leaves', {
+      method: 'POST',
+      body: JSON.stringify(leaveData),
+    }),
+  updateLeave: (id, data) =>
+    request(`/leaves/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  // Fees & Payment Portal
+  getFees: (query = '') => request(`/fees${query ? `?${query}` : ''}`, { method: 'GET' }),
+  createFee: (feeData) =>
+    request('/fees', {
+      method: 'POST',
+      body: JSON.stringify(feeData),
+    }),
+  updateFee: (id, feeData) =>
+    request(`/fees/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(feeData),
+    }),
+  payFee: (feeId, paymentData = {}) =>
+    request(`/fees/${feeId}/pay`, {
+      method: 'POST',
+      body: JSON.stringify(paymentData),
+    }),
+
+  // Attendance & QR Scanner
+  getAttendance: (query = '') => request(`/attendance${query ? `?${query}` : ''}`, { method: 'GET' }),
+  scanAttendance: (data = {}) =>
+    request('/attendance/scan', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  // Visitors Pass
+  getVisitors: (query = '') => request(`/visitors${query ? `?${query}` : ''}`, { method: 'GET' }),
+  createVisitor: (visitorData) =>
+    request('/visitors', {
+      method: 'POST',
+      body: JSON.stringify(visitorData),
+    }),
+  updateVisitor: (id, data) =>
+    request(`/visitors/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  // Mess & Daily Food Schedule
+  getMess: () => request('/mess', { method: 'GET' }),
+
+  // Notice Board
+  getNotices: () => request('/notices', { method: 'GET' }),
+  createNotice: (noticeData) =>
+    request('/notices', {
+      method: 'POST',
+      body: JSON.stringify(noticeData),
+    }),
+  updateNotice: (id, noticeData) =>
+    request(`/notices/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(noticeData),
+    }),
+  deleteNotice: (id) => request(`/notices/${id}`, { method: 'DELETE' }),
+
+  // Admin Control Center Endpoints
+  getAdminOverview: () => request('/admin/overview', { method: 'GET' }),
+  getAuditLogs: (query = '') => request(`/admin/audit-logs${query ? `?${query}` : ''}`, { method: 'GET' }),
+  getSystemHealth: () => request('/admin/system-health', { method: 'GET' }),
+  updateUserRole: (id, role) =>
+    request(`/admin/users/${id}/role`, {
+      method: 'PUT',
+      body: JSON.stringify({ role }),
+    }),
+  getAdminReports: (reportType = '') =>
+    request(`/admin/reports${reportType ? `?reportType=${reportType}` : ''}`, { method: 'GET' }),
+
   // Items / Products CRUD
   getItems: () => request('/items', { method: 'GET' }),
-
   getItemById: (id) => request(`/items/${id}`, { method: 'GET' }),
-
   createItem: (itemData) =>
     request('/items', {
       method: 'POST',
       body: JSON.stringify(itemData),
     }),
-
   updateItem: (id, itemData) =>
     request(`/items/${id}`, {
       method: 'PUT',
       body: JSON.stringify(itemData),
     }),
-
   deleteItem: (id) =>
     request(`/items/${id}`, {
       method: 'DELETE',

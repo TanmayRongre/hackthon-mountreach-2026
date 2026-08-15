@@ -55,8 +55,15 @@ export default function AuthForm({ initialActive = false }) {
     setLoginLoading(true);
 
     try {
-      await login(loginEmail, loginPassword);
-      navigate('/dashboard');
+      const res = await login(loginEmail, loginPassword);
+      const role = res?.user?.role || selectedRole;
+      if (role === 'admin') {
+        navigate('/admin');
+      } else if (role === 'warden') {
+        navigate('/warden');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       setLoginError(err.message || 'Invalid username/email or password');
     } finally {
@@ -77,11 +84,18 @@ export default function AuthForm({ initialActive = false }) {
     setRegisterLoading(true);
 
     try {
-      await register(registerName, registerEmail, registerPassword, registerRole);
+      const res = await register(registerName, registerEmail, registerPassword, registerRole);
       setRegisterSuccess('Account registered successfully! Redirecting...');
+      const role = res?.user?.role || registerRole;
       setTimeout(() => {
-        navigate('/dashboard');
-      }, 900);
+        if (role === 'admin') {
+          navigate('/admin');
+        } else if (role === 'warden') {
+          navigate('/warden');
+        } else {
+          navigate('/dashboard');
+        }
+      }, 800);
     } catch (err) {
       setRegisterError(err.message || 'Failed to create account');
     } finally {
@@ -260,9 +274,9 @@ export default function AuthForm({ initialActive = false }) {
             ════════════════════════════════════════ */}
         <div className="form-box register">
           <form onSubmit={handleRegisterSubmit}>
-            <h1>Student Registration</h1>
+            <h1>Create Portal Account</h1>
             <p className="auth-subtitle">
-              Create your HostelHub portal account
+              Register as Student, Warden, or Administrator
             </p>
 
             {registerError && (
@@ -307,6 +321,7 @@ export default function AuthForm({ initialActive = false }) {
               >
                 <option value="student">🎓 Role: Student / Resident</option>
                 <option value="warden">🏫 Role: Warden Staff</option>
+                <option value="admin">🛡️ Role: Administrator (Admin)</option>
               </select>
               <i className="bx bx-chevron-down input-icon"></i>
             </div>

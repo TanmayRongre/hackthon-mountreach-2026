@@ -23,6 +23,8 @@ const leaveRoutes = require('./routes/leaveRoutes');
 const noticeRoutes = require('./routes/noticeRoutes');
 const messRoutes = require('./routes/messRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const visitorRoutes = require('./routes/visitorRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // ─── Load Environment Variables ──────────────────────────────────────────────
 dotenv.config();
@@ -84,6 +86,8 @@ app.use('/api/leaves', leaveRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/mess', messRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/visitors', visitorRoutes);
+app.use('/api/admin', adminRoutes);
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFound);

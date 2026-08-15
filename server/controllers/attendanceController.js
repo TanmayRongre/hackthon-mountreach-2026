@@ -1,4 +1,63 @@
 const Attendance = require('../models/Attendance');
+const Student = require('../models/Student');
+
+/**
+ * @desc    Scan and mark daily student attendance via QR code
+ * @route   POST /api/attendance/scan
+ * @access  Private
+ */
+const scanAttendance = async (req, res, next) => {
+  try {
+    const studentId = req.user ? req.user._id : req.body.student;
+    if (!studentId) {
+      res.status(400);
+      throw new Error('Please login to mark attendance');
+    }
+
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    // Check if already scanned today
+    let record = await Attendance.findOne({
+      student: studentId,
+      date: { $gte: todayStart, $lte: todayEnd },
+    });
+
+    if (record) {
+      return res.status(200).json({
+        success: true,
+        alreadyMarked: true,
+        message: 'Attendance already scanned and verified for today!',
+        data: record,
+      });
+    }
+
+    const studentDoc = await Student.findOne({ user: studentId });
+
+    record = await Attendance.create({
+      student: studentId,
+      hostel: studentDoc?.hostel || null,
+      room: studentDoc?.room || null,
+      date: new Date(),
+      status: 'present',
+      markedBy: studentId,
+      remarks: 'Verified via Smart Hostel QR Scan Terminal',
+    });
+
+    const populated = await Attendance.findById(record._id).populate('student', 'name email');
+
+    res.status(201).json({
+      success: true,
+      alreadyMarked: false,
+      message: '✅ Attendance verified & marked Present successfully!',
+      data: populated,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 /**
  * @desc    Get attendance records
@@ -10,7 +69,12 @@ const getAttendances = async (req, res, next) => {
     const { student, hostel, room, date, status } = req.query;
     const filter = {};
 
-    if (student) filter.student = student;
+    if (student) {
+      filter.student = student;
+    } else if (req.user && req.user.role === 'student') {
+      filter.student = req.user._id;
+    }
+
     if (hostel) filter.hostel = hostel;
     if (room) filter.room = room;
     if (status) filter.status = status;
@@ -74,13 +138,14 @@ const createAttendance = async (req, res, next) => {
   try {
     const { student, hostel, room, date, status, remarks } = req.body;
 
-    if (!student) {
+    const studentId = student || (req.user ? req.user._id : null);
+    if (!studentId) {
       res.status(400);
       throw new Error('Please specify student');
     }
 
     const record = await Attendance.create({
-      student,
+      student: studentId,
       hostel: hostel || null,
       room: room || null,
       date: date || Date.now(),
@@ -158,6 +223,7 @@ const deleteAttendance = async (req, res, next) => {
 };
 
 module.exports = {
+  scanAttendance,
   getAttendances,
   getAttendanceById,
   createAttendance,
