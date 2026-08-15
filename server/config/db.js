@@ -3,7 +3,7 @@ const dns = require('dns');
 
 // Fix SRV DNS resolution issues on Windows with Node.js
 try {
-  dns.setServers(['8.8.8.8', '8.8.4.4']);
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
 } catch (e) {
   // Ignore if custom dns is not allowed in environment
 }
@@ -24,10 +24,17 @@ const connectDB = async () => {
     try {
       console.log('🔄 Connecting to primary MongoDB...');
       const conn = await mongoose.connect(primaryUri, {
-        serverSelectionTimeoutMS: 3000,
+        serverSelectionTimeoutMS: 5000,
       });
       isConnected = true;
       console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+
+      try {
+        const { seedInitialData } = require('./seeder');
+        await seedInitialData();
+      } catch (seedErr) {
+        console.warn('⚠️ Seeder notice:', seedErr.message);
+      }
       return;
     } catch (error) {
       console.warn(`⚠️ Primary MongoDB Connection Failed: ${error.message}`);
@@ -35,17 +42,26 @@ const connectDB = async () => {
   }
 
   // Attempt 2: Fallback to Local MongoDB
-  try {
-    console.log(`🔄 Attempting fallback to local MongoDB (${fallbackUri})...`);
-    const conn = await mongoose.connect(fallbackUri, {
-      serverSelectionTimeoutMS: 3000,
-    });
-    isConnected = true;
-    console.log(`✅ Local MongoDB Connected: ${conn.connection.host}`);
-  } catch (localError) {
-    isConnected = false;
-    console.error(`❌ MongoDB Connection Error: ${localError.message}`);
-    console.warn('💡 Tip: For Atlas, whitelist your IP (0.0.0.0/0) or ensure local MongoDB is running.');
+  if (fallbackUri && fallbackUri !== primaryUri) {
+    try {
+      console.log(`🔄 Attempting fallback to local MongoDB (${fallbackUri})...`);
+      const conn = await mongoose.connect(fallbackUri, {
+        serverSelectionTimeoutMS: 3000,
+      });
+      isConnected = true;
+      console.log(`✅ Local MongoDB Connected: ${conn.connection.host}`);
+
+      try {
+        const { seedInitialData } = require('./seeder');
+        await seedInitialData();
+      } catch (seedErr) {
+        console.warn('⚠️ Seeder notice:', seedErr.message);
+      }
+    } catch (localError) {
+      isConnected = false;
+      console.error(`❌ MongoDB Connection Error: ${localError.message}`);
+      console.warn('💡 Tip: For Atlas, whitelist your IP (0.0.0.0/0) or ensure local MongoDB is running.');
+    }
   }
 };
 
