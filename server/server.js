@@ -148,6 +148,14 @@ if (fs.existsSync(clientDistPath)) {
     }
     res.sendFile(path.join(clientDistPath, 'index.html'));
   });
+} else {
+  app.get('/', (req, res) => {
+    res.json({
+      message: '🚀 MountReach 2026 API Server is Running',
+      status: 'active',
+      health: '/api/health',
+    });
+  });
 }
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
@@ -162,9 +170,15 @@ if (process.env.NODE_ENV !== 'test') {
     );
 
     // Initialize Render / Cloud Keep-Alive self-pinger
-    initKeepAlive({
-      intervalMs: 10 * 60 * 1000, // Ping every 10 minutes
-    });
+    try {
+      if (typeof initKeepAlive === 'function') {
+        initKeepAlive({
+          intervalMs: 10 * 60 * 1000, // Ping every 10 minutes
+        });
+      }
+    } catch (e) {
+      console.warn('Keep-alive notice:', e.message);
+    }
   });
 }
 
