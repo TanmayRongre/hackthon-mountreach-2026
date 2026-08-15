@@ -6,7 +6,7 @@ const {
   createLeave,
   updateLeave,
   deleteLeave
-} = require("../Controllers/leaveController");
+} = require("../controllers/leaveController");
 
 const router = express.Router();
 

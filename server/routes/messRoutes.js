@@ -6,7 +6,7 @@ const {
   createMess,
   updateMess,
   deleteMess
-} = require("../Controllers/messController");
+} = require("../controllers/messController");
 
 const router = express.Router();
 

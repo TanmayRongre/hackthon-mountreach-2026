@@ -6,7 +6,7 @@ const {
   createRoom,
   updateRoom,
   deleteRoom
-} = require("../Controllers/roomController");
+} = require("../controllers/roomController");
 
 const router = express.Router();
 

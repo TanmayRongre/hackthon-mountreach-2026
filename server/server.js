@@ -7,8 +7,10 @@ const path = require('path');
 const { connectDB, getDBStatus } = require('./config/db');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
-// routes 
+// Route Imports
 const authRoutes = require('./routes/authRoutes');
+const healthRoutes = require('./routes/healthRoutes');
+const itemRoutes = require('./routes/itemRoutes');
 const userRoutes = require('./routes/userRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const hostelRoutes = require('./routes/hostelRoutes');
@@ -50,7 +52,26 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
+// Middleware to check DB connection on database-dependent routes
+app.use('/api', (req, res, next) => {
+  if (req.path === '/health') {
+    return next();
+  }
+  const dbStatus = getDBStatus();
+  if (!dbStatus.connected) {
+    if (dbStatus.readyState === 2) {
+      return next();
+    }
+    connectDB();
+  }
+  next();
+});
+
+// ─── Mount API Routes ────────────────────────────────────────────────────────
+app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/user', authRoutes);
+app.use('/api/items', itemRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/hostels', hostelRoutes);
@@ -63,45 +84,18 @@ app.use('/api/leaves', leaveRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/mess', messRoutes);
 app.use('/api/notifications', notificationRoutes);
-// ─── 404 Handler (must be after all routes) ───────────────────────────────────
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Route not found: ${req.method} ${req.originalUrl}`,
-  });
-});
 
-// Middleware to check DB connection on database-dependent routes
-app.use('/api', (req, res, next) => {
-  if (req.path === '/health') {
-    return next();
-  }
-  const dbStatus = getDBStatus();
-  if (!dbStatus.connected) {
-    // Check if connecting
-    if (dbStatus.readyState === 2) {
-      return next();
-    }
-    // Attempt background reconnect
-    connectDB();
-  }
-  next();
-});
-
-// Mount Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/user', require('./routes/authRoutes'));
-app.use('/api/items', require('./routes/itemRoutes'));
-
-// 404 & Error Handlers
+// ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(
-    `🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`
-  );
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(
+      `🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`
+    );
+  });
+}
 
 module.exports = app;

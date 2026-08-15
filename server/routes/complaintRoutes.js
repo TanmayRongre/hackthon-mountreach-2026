@@ -6,7 +6,7 @@ const {
   createComplaint,
   updateComplaint,
   deleteComplaint
-} = require("../Controllers/complaintController");
+} = require("../controllers/complaintController");
 
 const router = express.Router();
 
