@@ -48,7 +48,7 @@ const visitorSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ['pending', 'approved', 'checked_in', 'completed', 'rejected'],
-      default: 'approved',
+      default: 'pending',
     },
     approvedBy: {
       type: mongoose.Schema.Types.ObjectId,
