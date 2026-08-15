@@ -34,7 +34,13 @@ import {
   Menu,
   X,
   LayoutDashboard,
-  Home
+  Home,
+  Sun,
+  Moon,
+  Coffee,
+  Flame,
+  Table,
+  LayoutGrid
 } from 'lucide-react';
 import api from '../../services/api';
 import FeeReceiptModal from './FeeReceiptModal';
@@ -80,6 +86,12 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
   const [viewingReceipt, setViewingReceipt] = useState(null); // fee object
   const [payModal, setPayModal] = useState(null);
   const [paying, setPaying] = useState(false);
+
+  // Mess Menu Day States
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const todayDayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
+  const [selectedMessDay, setSelectedMessDay] = useState(todayDayName);
+  const [messViewMode, setMessViewMode] = useState('daily'); // 'daily' | 'table'
 
   // Filters
   const [complaintFilter, setComplaintFilter] = useState('all');
@@ -896,44 +908,332 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
           </div>
         )}
 
-        {/* ── TAB 7: MESS TIMETABLE ── */}
-        {activeTab === 'mess' && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="border-b border-slate-800 pb-4">
-              <h2 className="text-lg font-bold text-white">Central Mess Daily Menu</h2>
-              <p className="text-xs text-slate-400">Nutritious meal schedule prepared daily in certified clean kitchens.</p>
-            </div>
+        {/* ── TAB 7: MESS TIMETABLE (7-DAY WEEKLY SCHEDULE) ── */}
+        {activeTab === 'mess' && (() => {
+          const fallbackWeeklyMenu = [
+            { dayOfWeek: 'Monday', mealType: 'Breakfast', timing: '7:30 AM - 9:30 AM', menuItems: ['Poha with Chutney', 'Boiled Eggs / Sprouts', 'Tea / Coffee / Milk', 'Banana'], specialDiet: 'Gluten-free oats available' },
+            { dayOfWeek: 'Monday', mealType: 'Lunch', timing: '12:30 PM - 2:30 PM', menuItems: ['Dal Tadka', 'Jeera Rice', 'Paneer Butter Masala', 'Chapati', 'Green Salad', 'Gulab Jamun'], specialDiet: 'Jain Dal available' },
+            { dayOfWeek: 'Monday', mealType: 'Snacks', timing: '5:00 PM - 6:00 PM', menuItems: ['Veg Sandwich', 'Masala Chai', 'Biscuits'] },
+            { dayOfWeek: 'Monday', mealType: 'Dinner', timing: '7:30 PM - 9:30 PM', menuItems: ['Mix Veg Curry', 'Roti', 'Steamed Rice', 'Moong Dal', 'Raita'] },
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { type: 'Breakfast', time: '7:30 AM - 9:30 AM', items: ['Idli Sambar', 'Coconut Chutney', 'Poha / Eggs', 'Tea, Coffee & Fresh Milk'] },
-                { type: 'Lunch', time: '12:30 PM - 2:30 PM', items: ['Dal Makhani / Tadka', 'Jeera Rice', 'Tandoori Roti', 'Aloo Gobi Dry', 'Curd & Salad'] },
-                { type: 'Evening Snacks', time: '5:00 PM - 6:00 PM', items: ['Samosa / Veg Cutlet', 'Mint Chutney', 'Hot Masala Tea'] },
-                { type: 'Dinner', time: '7:30 PM - 9:30 PM', items: ['Paneer Butter Masala', 'Butter Naan', 'Veg Pulao', 'Gulab Jamun Sweet'] },
-              ].map((meal, idx) => (
-                <div key={idx} className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">{meal.type}</span>
-                      <span className="text-[10px] text-slate-400 font-medium">{meal.time}</span>
-                    </div>
-                    <ul className="mt-3 space-y-2 text-xs text-slate-300">
-                      {meal.items.map((item, i) => (
-                        <li key={i} className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
+            { dayOfWeek: 'Tuesday', mealType: 'Breakfast', timing: '7:30 AM - 9:30 AM', menuItems: ['Idli & Sambar', 'Coconut Chutney', 'Tea / Coffee / Milk', 'Apple'] },
+            { dayOfWeek: 'Tuesday', mealType: 'Lunch', timing: '12:30 PM - 2:30 PM', menuItems: ['Rajma Masala', 'Basmati Rice', 'Aloo Gobi', 'Phulka', 'Curd', 'Papad'] },
+            { dayOfWeek: 'Tuesday', mealType: 'Snacks', timing: '5:00 PM - 6:00 PM', menuItems: ['Samosa with Imli Chutney', 'Adrak Chai'] },
+            { dayOfWeek: 'Tuesday', mealType: 'Dinner', timing: '7:30 PM - 9:30 PM', menuItems: ['Palak Paneer', 'Chapati', 'Fried Rice', 'Dal Makhani', 'Kheer'] },
+
+            { dayOfWeek: 'Wednesday', mealType: 'Breakfast', timing: '7:30 AM - 9:30 AM', menuItems: ['Aloo Paratha with Curd & Pickle', 'Tea / Coffee / Milk'] },
+            { dayOfWeek: 'Wednesday', mealType: 'Lunch', timing: '12:30 PM - 2:30 PM', menuItems: ['Chole Bhature', 'Veg Biryani', 'Boondi Raita', 'Onion Salad'] },
+            { dayOfWeek: 'Wednesday', mealType: 'Snacks', timing: '5:00 PM - 6:00 PM', menuItems: ['Bhel Puri', 'Cold Coffee / Lemon Tea'] },
+            { dayOfWeek: 'Wednesday', mealType: 'Dinner', timing: '7:30 PM - 9:30 PM', menuItems: ['Egg Curry / Kadai Paneer', 'Roti', 'Jeera Rice', 'Yellow Dal'] },
+
+            { dayOfWeek: 'Thursday', mealType: 'Breakfast', timing: '7:30 AM - 9:30 AM', menuItems: ['Upma with Sambar & Coconut Chutney', 'Boiled Eggs', 'Tea / Coffee'] },
+            { dayOfWeek: 'Thursday', mealType: 'Lunch', timing: '12:30 PM - 2:30 PM', menuItems: ['Kadhi Pakora', 'Steamed Rice', 'Bhindi Masala', 'Chapati', 'Salad'] },
+            { dayOfWeek: 'Thursday', mealType: 'Snacks', timing: '5:00 PM - 6:00 PM', menuItems: ['Pav Bhaji (2 pcs)', 'Filter Coffee'] },
+            { dayOfWeek: 'Thursday', mealType: 'Dinner', timing: '7:30 PM - 9:30 PM', menuItems: ['Dum Aloo', 'Roti', 'Veg Pulao', 'Dal Fry', 'Custard'] },
+
+            { dayOfWeek: 'Friday', mealType: 'Breakfast', timing: '7:30 AM - 9:30 AM', menuItems: ['Uttapam with Sambar', 'Tomato Chutney', 'Tea / Milk'] },
+            { dayOfWeek: 'Friday', mealType: 'Lunch', timing: '12:30 PM - 2:30 PM', menuItems: ['Paneer Tikka Masala', 'Butter Naan / Roti', 'Peas Pulao', 'Dal Tadka'] },
+            { dayOfWeek: 'Friday', mealType: 'Snacks', timing: '5:00 PM - 6:00 PM', menuItems: ['Dhokla with Green Chutney', 'Chai'] },
+            { dayOfWeek: 'Friday', mealType: 'Dinner', timing: '7:30 PM - 9:30 PM', menuItems: ['Chicken Curry / Shahi Paneer', 'Rumali Roti', 'Biryani Rice', 'Ice Cream'] },
+
+            { dayOfWeek: 'Saturday', mealType: 'Breakfast', timing: '7:30 AM - 9:30 AM', menuItems: ['Puri Bhaji (Aloo Curry)', 'Halwa', 'Tea / Coffee / Milk'] },
+            { dayOfWeek: 'Saturday', mealType: 'Lunch', timing: '12:30 PM - 2:30 PM', menuItems: ['Sambhar Rice', 'Avial / Mix Veg', 'Curd Rice', 'Papad & Pickle'] },
+            { dayOfWeek: 'Saturday', mealType: 'Snacks', timing: '5:00 PM - 6:00 PM', menuItems: ['Pasta / Macaroni', 'Hot Chocolate / Tea'] },
+            { dayOfWeek: 'Saturday', mealType: 'Dinner', timing: '7:30 PM - 9:30 PM', menuItems: ['Malai Kofta', 'Chapati', 'Fried Rice', 'Dal Makhani', 'Rasgulla'] },
+
+            { dayOfWeek: 'Sunday', mealType: 'Breakfast', timing: '8:00 AM - 10:00 AM', menuItems: ['Masala Dosa', 'Sambar & Chutney Trio', 'Filter Coffee / Milk'] },
+            { dayOfWeek: 'Sunday', mealType: 'Lunch', timing: '12:30 PM - 2:30 PM', menuItems: ['Special Sunday Feast (Paneer Lababdar / Chicken Biryani)', 'Butter Roti', 'Raita', 'Sweet Lassi'] },
+            { dayOfWeek: 'Sunday', mealType: 'Snacks', timing: '5:00 PM - 6:00 PM', menuItems: ['Kachori with Sweet Chutney', 'Masala Tea'] },
+            { dayOfWeek: 'Sunday', mealType: 'Dinner', timing: '7:30 PM - 9:30 PM', menuItems: ['Light Khichdi / Veg Pulao', 'Kadhi', 'Papad', 'Fruit Salad'] },
+          ];
+
+          const allWeeklyData = messMenu.length > 0 ? messMenu : fallbackWeeklyMenu;
+          const currentDayMeals = allWeeklyData.filter((m) => m.dayOfWeek === selectedMessDay);
+
+          const getMealMeta = (type) => {
+            switch (type) {
+              case 'Breakfast':
+                return {
+                  icon: <Sun className="w-5 h-5 text-amber-400" />,
+                  bg: 'from-amber-950/40 via-slate-900 to-slate-950',
+                  badge: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+                  tag: 'Morning Nutrition',
+                };
+              case 'Lunch':
+                return {
+                  icon: <Flame className="w-5 h-5 text-orange-400" />,
+                  bg: 'from-orange-950/40 via-slate-900 to-slate-950',
+                  badge: 'bg-orange-500/15 text-orange-300 border-orange-500/30',
+                  tag: 'Hearty Full Meal',
+                };
+              case 'Snacks':
+                return {
+                  icon: <Coffee className="w-5 h-5 text-emerald-400" />,
+                  bg: 'from-emerald-950/40 via-slate-900 to-slate-950',
+                  badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+                  tag: 'Evening Refreshment',
+                };
+              case 'Dinner':
+              default:
+                return {
+                  icon: <Moon className="w-5 h-5 text-indigo-400" />,
+                  bg: 'from-indigo-950/40 via-slate-900 to-slate-950',
+                  badge: 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30',
+                  tag: 'Night Dining',
+                };
+            }
+          };
+
+          return (
+            <div className="space-y-6 animate-fade-in">
+              {/* Header with View Toggle */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <UtensilsCrossed className="w-5 h-5 text-amber-400" />
+                    Central Mess Weekly Dining Schedule
+                  </h2>
+                  <p className="text-xs text-slate-400">Nutritious meal schedule prepared daily in certified clean kitchens.</p>
+                </div>
+
+                <div className="flex items-center gap-1.5 p-1 bg-slate-900 border border-slate-800 rounded-2xl self-start sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => setMessViewMode('daily')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      messViewMode === 'daily'
+                        ? 'bg-indigo-600 text-white shadow-md'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    <span>Daily Cards</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMessViewMode('table')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      messViewMode === 'table'
+                        ? 'bg-indigo-600 text-white shadow-md'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Table className="w-3.5 h-3.5" />
+                    <span>7-Day Table</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* ── 7-DAY WEEKLY SELECTOR TABS ── */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                {daysOfWeek.map((day) => {
+                  const isToday = day === todayDayName;
+                  const isSelected = day === selectedMessDay;
+                  return (
+                    <button
+                      key={day}
+                      type="button"
+                      onClick={() => {
+                        setSelectedMessDay(day);
+                        if (messViewMode === 'table') setMessViewMode('daily');
+                      }}
+                      className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer border ${
+                        isSelected
+                          ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-indigo-400/50 shadow-lg shadow-indigo-600/30'
+                          : 'bg-slate-900/80 text-slate-400 hover:text-white hover:bg-slate-800 border-slate-800'
+                      }`}
+                    >
+                      <span>{day}</span>
+                      {isToday && (
+                        <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                          isSelected ? 'bg-amber-400 text-slate-950' : 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                        }`}>
+                          Today
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* ── VIEW 1: DAILY 4-MEALS CARDS ── */}
+              {messViewMode === 'daily' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-xs text-slate-400 px-1">
+                    <span className="font-semibold text-slate-300">
+                      Showing Menu for: <strong className="text-indigo-400">{selectedMessDay}</strong>
+                      {selectedMessDay === todayDayName && ' (Today\'s Active Menu)'}
+                    </span>
+                    <span>4 Fresh Meal Services</span>
                   </div>
-                  <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-500">
-                    Kitchen: Central Mess Dining Hall #1
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {['Breakfast', 'Lunch', 'Snacks', 'Dinner'].map((type) => {
+                      const meal = currentDayMeals.find((m) => m.mealType === type) || {
+                        dayOfWeek: selectedMessDay,
+                        mealType: type,
+                        timing: type === 'Breakfast' ? '7:30 AM - 9:30 AM' : type === 'Lunch' ? '12:30 PM - 2:30 PM' : type === 'Snacks' ? '5:00 PM - 6:00 PM' : '7:30 PM - 9:30 PM',
+                        menuItems: ['Chef Special Nutritious Platter', 'Accompaniments', 'Beverage'],
+                      };
+                      const meta = getMealMeta(type);
+
+                      return (
+                        <div
+                          key={type}
+                          className={`p-5 rounded-3xl bg-gradient-to-br ${meta.bg} border border-slate-800 shadow-xl space-y-4 flex flex-col justify-between hover:border-indigo-500/40 transition-all`}
+                        >
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <div className="p-2 rounded-xl bg-slate-900/80 border border-slate-800 shadow-sm">
+                                  {meta.icon}
+                                </div>
+                                <div>
+                                  <h4 className="text-sm font-bold text-white">{meal.mealType}</h4>
+                                  <span className="text-[10px] text-slate-400">{meta.tag}</span>
+                                </div>
+                              </div>
+
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${meta.badge}`}>
+                                {meal.timing || 'Standard Timings'}
+                              </span>
+                            </div>
+
+                            <div className="pt-2 space-y-2">
+                              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                                Menu Items:
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {meal.menuItems && meal.menuItems.length > 0 ? (
+                                  meal.menuItems.map((item, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="px-2.5 py-1 rounded-xl bg-slate-950/80 border border-slate-800/80 text-xs text-slate-200 font-medium flex items-center gap-1.5"
+                                    >
+                                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                                      {item}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className="text-xs text-slate-500 italic">Chef's daily special assortment</span>
+                                )}
+                              </div>
+                            </div>
+
+                            {meal.specialDiet && (
+                              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-[11px] text-amber-200 flex items-center gap-2">
+                                <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                                <span>{meal.specialDiet}</span>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+                            <span>Central Dining Hall</span>
+                            <span className="text-emerald-400 font-semibold">✓ Pure Veg / Balanced</span>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-              ))}
+              )}
+
+              {/* ── VIEW 2: COMPLETE 7-DAY WEEKLY TABLE MATRIX ── */}
+              {messViewMode === 'table' && (
+                <div className="overflow-x-auto rounded-3xl border border-slate-800 bg-[#0f1b2d]/80 shadow-2xl">
+                  <table className="w-full text-left text-xs border-collapse min-w-[760px]">
+                    <thead>
+                      <tr className="bg-slate-900 border-b border-slate-800 text-slate-300 font-bold uppercase text-[11px] tracking-wider">
+                        <th className="py-4 px-4">Day</th>
+                        <th className="py-4 px-4">🌅 Breakfast (7:30-9:30 AM)</th>
+                        <th className="py-4 px-4">☀️ Lunch (12:30-2:30 PM)</th>
+                        <th className="py-4 px-4">☕ Evening Snacks (5-6 PM)</th>
+                        <th className="py-4 px-4">🌙 Dinner (7:30-9:30 PM)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/70">
+                      {daysOfWeek.map((day) => {
+                        const dayMeals = allWeeklyData.filter((m) => m.dayOfWeek === day);
+                        const isToday = day === todayDayName;
+
+                        const bFast = dayMeals.find((m) => m.mealType === 'Breakfast');
+                        const lunch = dayMeals.find((m) => m.mealType === 'Lunch');
+                        const snacks = dayMeals.find((m) => m.mealType === 'Snacks');
+                        const dinner = dayMeals.find((m) => m.mealType === 'Dinner');
+
+                        return (
+                          <tr
+                            key={day}
+                            className={`transition-colors ${
+                              isToday ? 'bg-indigo-950/20' : 'hover:bg-slate-900/40'
+                            }`}
+                          >
+                            <td className="py-3.5 px-4 font-bold text-white whitespace-nowrap">
+                              <div className="flex items-center gap-2">
+                                <span>{day}</span>
+                                {isToday && (
+                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-400 text-slate-950 uppercase">
+                                    Today
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="py-3.5 px-4 text-slate-300">
+                              {bFast?.menuItems?.join(', ') || 'Idli, Poha, Tea/Coffee'}
+                            </td>
+                            <td className="py-3.5 px-4 text-slate-300">
+                              {lunch?.menuItems?.join(', ') || 'Dal, Rice, Roti, Sabzi, Curd'}
+                            </td>
+                            <td className="py-3.5 px-4 text-slate-300">
+                              {snacks?.menuItems?.join(', ') || 'Snacks & Masala Chai'}
+                            </td>
+                            <td className="py-3.5 px-4 text-slate-300">
+                              {dinner?.menuItems?.join(', ') || 'Paneer/Curry, Roti, Rice, Sweet'}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Mess Rules & Meal Timing Guidance */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-1.5 text-xs">
+                  <div className="font-bold text-white flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-amber-400" />
+                    Meal Timing Discipline
+                  </div>
+                  <p className="text-slate-400 text-[11px] leading-relaxed">
+                    Breakfast closes strictly at 9:30 AM. Dinner is served until 9:30 PM for all hostel residents.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-1.5 text-xs">
+                  <div className="font-bold text-white flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                    Special Diets & Medical Needs
+                  </div>
+                  <p className="text-slate-400 text-[11px] leading-relaxed">
+                    Jain, vegan, and convalescent diet trays are prepared on prior request through the warden portal.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-1.5 text-xs">
+                  <div className="font-bold text-white flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-sky-400" />
+                    FSSAI Certified Kitchen
+                  </div>
+                  <p className="text-slate-400 text-[11px] leading-relaxed">
+                    Water quality tests and kitchen sanitization are inspected weekly by campus health officers.
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* ── TAB 8: NOTICES ── */}
         {activeTab === 'notices' && (
