@@ -28,6 +28,7 @@ import {
   Plus,
   Menu
 } from 'lucide-react';
+import WardenAttendanceQRModal from '../components/warden/WardenAttendanceQRModal';
 
 export default function WardenDashboard() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -37,6 +38,7 @@ export default function WardenDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
 
   // Warden Module States
   const [hostels, setHostels] = useState([]);
@@ -189,7 +191,7 @@ export default function WardenDashboard() {
         </div>
 
         {/* Right Action Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={loadWardenData}
             title="Refresh Records"
@@ -197,6 +199,14 @@ export default function WardenDashboard() {
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-sky-400' : ''}`} />
             <span className="hidden sm:inline">Refresh</span>
+          </button>
+
+          <button
+            onClick={() => setQrModalOpen(true)}
+            className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 transition-all cursor-pointer"
+          >
+            <QrCode className="w-3.5 h-3.5" />
+            <span>Generate Daily QR</span>
           </button>
 
           <button
@@ -386,23 +396,44 @@ export default function WardenDashboard() {
           {activeTab === 'attendance' && (
             <div className="space-y-4">
               <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <QrCode className="w-4 h-4 text-emerald-400" />
-                  Daily Floor Attendance Stream
-                </h3>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                  <div>
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <QrCode className="w-4 h-4 text-emerald-400" />
+                      Daily Floor Attendance Stream
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      Generate and project the active hostel terminal QR code for residents to scan
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => setQrModalOpen(true)}
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer self-start sm:self-auto"
+                  >
+                    <QrCode className="w-4 h-4" />
+                    <span>Display Terminal QR</span>
+                  </button>
+                </div>
 
                 <div className="space-y-2">
-                  {attendance.map((att) => (
-                    <div key={att._id} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
-                      <div>
-                        <div className="font-bold text-white">{att.student?.name || 'Resident Student'}</div>
-                        <div className="text-[11px] text-slate-500">{new Date(att.date).toLocaleString()} · {att.remarks || 'QR Code Verified'}</div>
-                      </div>
-                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold uppercase text-[10px]">
-                        ✓ {att.status}
-                      </span>
+                  {attendance.length === 0 ? (
+                    <div className="p-8 text-center text-xs text-slate-500">
+                      No attendance scans recorded today yet. Click "Display Terminal QR" to project the QR code.
                     </div>
-                  ))}
+                  ) : (
+                    attendance.map((att) => (
+                      <div key={att._id} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
+                        <div>
+                          <div className="font-bold text-white">{att.student?.name || 'Resident Student'}</div>
+                          <div className="text-[11px] text-slate-500">{new Date(att.date).toLocaleString()} · {att.remarks || 'QR Code Verified'}</div>
+                        </div>
+                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold uppercase text-[10px]">
+                          ✓ {att.status}
+                        </span>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -547,6 +578,14 @@ export default function WardenDashboard() {
           </div>
         </div>
       )}
+
+      {/* ── WARDEN ATTENDANCE QR TERMINAL MODAL ── */}
+      <WardenAttendanceQRModal
+        isOpen={qrModalOpen}
+        onClose={() => setQrModalOpen(false)}
+        hostel={hostels[0]}
+        attendanceList={attendance}
+      />
     </div>
   );
 }
