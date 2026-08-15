@@ -72,7 +72,6 @@ app.use('/api', (req, res, next) => {
 // ─── Mount API Routes ────────────────────────────────────────────────────────
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/user', authRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/students', studentRoutes);

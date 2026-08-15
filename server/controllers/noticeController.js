@@ -1,5 +1,32 @@
 const Notice = require('../models/Notice');
 
+const defaultNotices = [
+  {
+    title: '📢 Hostel Night Entry & Curfew Timings for 2026 Academic Session',
+    content: 'All resident students are hereby notified that the main hostel gates will close strictly at 10:00 PM on weekdays and 10:30 PM on weekends. Late entries without a valid approved digital outpass will require warden clearance.',
+    category: 'Rules & Discipline',
+    priority: 'high',
+    targetAudience: 'students',
+    isActive: true,
+  },
+  {
+    title: '🍱 Central Mess Special Sunday Feast & Feedback Drive',
+    content: 'Special lunch feast will be served this Sunday. Resident students are encouraged to submit mess committee suggestions through the student portal feedback form.',
+    category: 'Mess',
+    priority: 'normal',
+    targetAudience: 'all',
+    isActive: true,
+  },
+  {
+    title: '⚡ Bi-weekly Room Electrical & Wi-Fi Router Maintenance',
+    content: 'The campus IT and maintenance team will conduct routine Wi-Fi router speed upgrades and electrical safety inspections across Sahyadri Block A and Nilgiri Block B this Saturday between 11:00 AM and 3:00 PM.',
+    category: 'Maintenance',
+    priority: 'normal',
+    targetAudience: 'students',
+    isActive: true,
+  },
+];
+
 /**
  * @desc    Get all notices
  * @route   GET /api/notices
@@ -14,10 +41,23 @@ const getNotices = async (req, res, next) => {
     if (targetAudience) filter.targetAudience = targetAudience;
     if (hostel) filter.hostel = hostel;
 
-    const notices = await Notice.find(filter)
+    let notices = await Notice.find(filter)
       .populate('postedBy', 'name email role')
       .populate('hostel', 'name code')
       .sort({ createdAt: -1 });
+
+    // Auto-seed default notices if empty
+    if (notices.length === 0 && Object.keys(filter).length <= 1) {
+      const adminUser = await require('../models/User').findOne({ role: 'admin' }) || await require('../models/User').findOne();
+      if (adminUser) {
+        const seeded = defaultNotices.map((n) => ({ ...n, postedBy: adminUser._id }));
+        await Notice.insertMany(seeded);
+        notices = await Notice.find(filter)
+          .populate('postedBy', 'name email role')
+          .populate('hostel', 'name code')
+          .sort({ createdAt: -1 });
+      }
+    }
 
     res.status(200).json({
       success: true,
@@ -57,7 +97,7 @@ const getNoticeById = async (req, res, next) => {
 /**
  * @desc    Create new notice
  * @route   POST /api/notices
- * @access  Private
+ * @access  Private (Admin / Warden)
  */
 const createNotice = async (req, res, next) => {
   try {
@@ -75,8 +115,8 @@ const createNotice = async (req, res, next) => {
     }
 
     const notice = await Notice.create({
-      title,
-      content,
+      title: title.trim(),
+      content: content.trim(),
       category: category || 'General',
       priority: priority || 'normal',
       targetAudience: targetAudience || 'all',
@@ -101,7 +141,7 @@ const createNotice = async (req, res, next) => {
 /**
  * @desc    Update notice
  * @route   PUT /api/notices/:id
- * @access  Private
+ * @access  Private (Admin / Warden)
  */
 const updateNotice = async (req, res, next) => {
   try {
@@ -128,7 +168,7 @@ const updateNotice = async (req, res, next) => {
 /**
  * @desc    Delete notice
  * @route   DELETE /api/notices/:id
- * @access  Private
+ * @access  Private (Admin / Warden)
  */
 const deleteNotice = async (req, res, next) => {
   try {

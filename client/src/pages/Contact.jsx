@@ -76,16 +76,16 @@ export default function Contact() {
             </div>
 
             <div className="contact-social-row">
-              <a href="#" className="contact-social-btn" aria-label="Facebook" onClick={(e) => e.preventDefault()}>
+              <a href="https://www.facebook.com/profile.php?id=61590433170519" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Facebook">
                 <i className="bx bxl-facebook"></i>
               </a>
-              <a href="#" className="contact-social-btn" aria-label="Instagram" onClick={(e) => e.preventDefault()}>
+              <a href="https://www.instagram.com/zxy_tanmay/" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Instagram">
                 <i className="bx bxl-instagram"></i>
               </a>
-              <a href="#" className="contact-social-btn" aria-label="Twitter" onClick={(e) => e.preventDefault()}>
+              <a href="https://x.com/Zxy_Tanmay" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Twitter (X)">
                 <i className="bx bxl-twitter"></i>
               </a>
-              <a href="#" className="contact-social-btn" aria-label="LinkedIn" onClick={(e) => e.preventDefault()}>
+              <a href="https://www.linkedin.com/in/tanmayrongre/" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="LinkedIn">
                 <i className="bx bxl-linkedin"></i>
               </a>
             </div>

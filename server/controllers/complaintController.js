@@ -1,20 +1,32 @@
 const Complaint = require('../models/Complaint');
+const Student = require('../models/Student');
+const Hostel = require('../models/Hostel');
 
 /**
- * @desc    Get all complaints
+ * @desc    Get all complaints (scoped by role)
  * @route   GET /api/complaints
- * @access  Public / Private
+ * @access  Private
  */
 const getComplaints = async (req, res, next) => {
   try {
-    const { student, category, status, priority, hostel } = req.query;
+    const { category, status, priority, hostel } = req.query;
     const filter = {};
 
-    if (student) filter.student = student;
+    // Role scoping
+    if (req.user.role === 'student') {
+      filter.student = req.user._id;
+    } else if (req.user.role === 'warden') {
+      const assignedHostels = await Hostel.find({ warden: req.user._id }).select('_id');
+      const hostelIds = assignedHostels.map((h) => h._id);
+      if (hostelIds.length > 0) {
+        filter.hostel = { $in: hostelIds };
+      }
+    }
+
     if (category) filter.category = category;
     if (status) filter.status = status;
     if (priority) filter.priority = priority;
-    if (hostel) filter.hostel = hostel;
+    if (hostel && req.user.role !== 'student') filter.hostel = hostel;
 
     const complaints = await Complaint.find(filter)
       .populate('student', 'name email role')
@@ -36,7 +48,7 @@ const getComplaints = async (req, res, next) => {
 /**
  * @desc    Get single complaint by ID
  * @route   GET /api/complaints/:id
- * @access  Public / Private
+ * @access  Private
  */
 const getComplaintById = async (req, res, next) => {
   try {
@@ -49,6 +61,12 @@ const getComplaintById = async (req, res, next) => {
     if (!complaint) {
       res.status(404);
       throw new Error('Complaint not found');
+    }
+
+    // Role check: student can only view self
+    if (req.user.role === 'student' && !complaint.student._id.equals(req.user._id)) {
+      res.status(403);
+      throw new Error('Not authorized to access another resident complaint');
     }
 
     res.status(200).json({
@@ -67,35 +85,35 @@ const getComplaintById = async (req, res, next) => {
  */
 const createComplaint = async (req, res, next) => {
   try {
-    const { title, description, category, priority, hostel, room } = req.body;
+    const { title, description, category, priority } = req.body;
 
     if (!title || !description) {
       res.status(400);
       throw new Error('Please provide complaint title and description');
     }
 
-    const studentId = req.user ? req.user._id : req.body.student;
-    if (!studentId) {
-      res.status(400);
-      throw new Error('Please specify student raising the complaint');
-    }
+    // Derive student details from database
+    const studentDoc = await Student.findOne({ user: req.user._id });
 
     const complaint = await Complaint.create({
-      title,
-      description,
+      title: title.trim(),
+      description: description.trim(),
       category: category || 'Other',
       priority: priority || 'medium',
-      student: studentId,
-      hostel: hostel || null,
-      room: room || null,
+      student: req.user._id,
+      hostel: studentDoc?.hostel || req.body.hostel || null,
+      room: studentDoc?.room || req.body.room || null,
       status: 'pending',
     });
 
-    const populated = await Complaint.findById(complaint._id).populate('student', 'name email');
+    const populated = await Complaint.findById(complaint._id)
+      .populate('student', 'name email')
+      .populate('hostel', 'name code')
+      .populate('room', 'roomNumber floor');
 
     res.status(201).json({
       success: true,
-      message: 'Complaint submitted successfully',
+      message: 'Grievance ticket created and assigned to Warden successfully',
       data: populated,
     });
   } catch (error) {
@@ -104,13 +122,13 @@ const createComplaint = async (req, res, next) => {
 };
 
 /**
- * @desc    Update complaint
+ * @desc    Update complaint status & resolution
  * @route   PUT /api/complaints/:id
  * @access  Private
  */
 const updateComplaint = async (req, res, next) => {
   try {
-    const { status, resolutionNotes } = req.body;
+    const { status, resolutionNotes, priority } = req.body;
     const complaint = await Complaint.findById(req.params.id);
 
     if (!complaint) {
@@ -118,23 +136,37 @@ const updateComplaint = async (req, res, next) => {
       throw new Error('Complaint not found');
     }
 
-    if (status) complaint.status = status;
-    if (resolutionNotes) complaint.resolutionNotes = resolutionNotes;
-    if (status === 'resolved') {
-      complaint.resolvedAt = new Date();
-      if (req.user) complaint.resolvedBy = req.user._id;
-    }
-
-    Object.keys(req.body).forEach((key) => {
-      if (!['status', 'resolutionNotes', '_id'].includes(key)) {
-        complaint[key] = req.body[key];
+    // Student role can only cancel their own pending complaint
+    if (req.user.role === 'student') {
+      if (!complaint.student.equals(req.user._id)) {
+        res.status(403);
+        throw new Error('Not authorized to update another student complaint');
       }
-    });
+      if (status && !['rejected', 'pending'].includes(status)) {
+        res.status(403);
+        throw new Error('Students are not authorized to mark complaints as resolved');
+      }
+      if (status === 'rejected') {
+        complaint.status = 'rejected';
+      }
+    } else {
+      // Warden / Admin can resolve, assign, update priority
+      if (status) complaint.status = status;
+      if (resolutionNotes) complaint.resolutionNotes = resolutionNotes;
+      if (priority) complaint.priority = priority;
+
+      if (status === 'resolved') {
+        complaint.resolvedAt = new Date();
+        complaint.resolvedBy = req.user._id;
+      }
+    }
 
     await complaint.save();
 
     const populated = await Complaint.findById(complaint._id)
       .populate('student', 'name email')
+      .populate('hostel', 'name code')
+      .populate('room', 'roomNumber floor')
       .populate('resolvedBy', 'name role');
 
     res.status(200).json({
@@ -150,7 +182,7 @@ const updateComplaint = async (req, res, next) => {
 /**
  * @desc    Delete complaint
  * @route   DELETE /api/complaints/:id
- * @access  Private
+ * @access  Private (Warden / Admin)
  */
 const deleteComplaint = async (req, res, next) => {
   try {

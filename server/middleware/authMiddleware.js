@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Hostel = require('../models/Hostel');
 
 /**
  * Middleware to protect routes and authenticate JWT tokens
@@ -47,21 +48,35 @@ const protect = async (req, res, next) => {
 };
 
 /**
- * Middleware to restrict access based on user role (e.g., admin)
+ * Middleware to restrict access based on user role
  */
 const authorize = (...roles) => {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
       res.status(403);
       return next(
-        new Error(`User role '${req.user ? req.user.role : 'guest'}' is not authorized to access this route`)
+        new Error(`Access denied: User role '${req.user ? req.user.role : 'guest'}' is not authorized to perform this action`)
       );
     }
     next();
   };
 };
 
+/**
+ * Middleware to attach Warden's assigned hostel IDs
+ */
+const scopeWardenHostel = async (req, res, next) => {
+  if (!req.user) return next();
+
+  if (req.user.role === 'warden') {
+    const assignedHostels = await Hostel.find({ warden: req.user._id }).select('_id');
+    req.wardenHostelIds = assignedHostels.map((h) => h._id);
+  }
+  next();
+};
+
 module.exports = {
   protect,
   authorize,
+  scopeWardenHostel,
 };

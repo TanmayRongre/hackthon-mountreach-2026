@@ -1,20 +1,19 @@
-const express = require("express");
-
+const express = require('express');
 const {
   getRooms,
   getRoomById,
   createRoom,
   updateRoom,
-  deleteRoom
-} = require("../controllers/roomController");
+  deleteRoom,
+} = require('../controllers/roomController');
+const { protect, authorize } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Routes for room operations
-router.get("/", getRooms);
-router.get("/:id", getRoomById);
-router.post("/", createRoom);
-router.put("/:id", updateRoom);
-router.delete("/:id", deleteRoom);
+router.get('/', getRooms);
+router.get('/:id', getRoomById);
+router.post('/', protect, authorize('admin'), createRoom);
+router.put('/:id', protect, authorize('admin', 'warden'), updateRoom);
+router.delete('/:id', protect, authorize('admin'), deleteRoom);
 
 module.exports = router;

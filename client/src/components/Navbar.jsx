@@ -20,7 +20,7 @@ export default function Navbar() {
 
   useEffect(() => {
     checkHealth();
-    const interval = setInterval(checkHealth, 10000);
+    const interval = setInterval(checkHealth, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -39,296 +39,182 @@ export default function Navbar() {
   const getDashboardLabel = () => {
     if (user?.role === 'admin') return 'Admin Hub';
     if (user?.role === 'warden') return 'Warden Desk';
-    return 'Dashboard';
+    return 'Student Portal';
   };
 
   const navLinks = [
     { to: '/', label: 'Home', icon: 'bx bx-home-alt-2' },
     ...(isAuthenticated ? [
-      { to: getDashboardPath(), label: getDashboardLabel(), icon: user?.role === 'admin' ? 'bx bx-shield-quarter' : user?.role === 'warden' ? 'bx bx-building' : 'bx bx-layout' },
-      ...(user?.role === 'admin' ? [{ to: '/student-dashboard', label: 'Student Portal', icon: 'bx bx-user' }] : [])
+      {
+        to: getDashboardPath(),
+        label: getDashboardLabel(),
+        icon: user?.role === 'admin' ? 'bx bx-shield-quarter' : user?.role === 'warden' ? 'bx bx-building' : 'bx bx-layout'
+      },
     ] : []),
     { to: '/contact', label: 'Contact', icon: 'bx bx-envelope' },
   ];
 
   return (
     <>
-      <header style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        background: 'rgba(15, 27, 45, 0.88)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
-        fontFamily: "'Poppins', sans-serif",
-      }}>
-        <div style={{
-          maxWidth: 1200,
-          margin: '0 auto',
-          padding: '0 20px',
-          height: 64,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 16,
-        }}>
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0f1b2d]/90 border-b border-slate-800/80 font-sans shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
 
           {/* ── BRAND ── */}
-          <Link to="/" style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            textDecoration: 'none',
-          }}>
-            <div style={{
-              width: 38,
-              height: 38,
-              borderRadius: 11,
-              background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 14px rgba(99,102,241,0.4)',
-              flexShrink: 0,
-            }}>
-              <i className="bx bx-building-house" style={{ fontSize: 20, color: '#fff' }}></i>
+          <Link to="/" className="flex items-center gap-2.5 text-decoration-none group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-500 flex items-center justify-center shadow-lg shadow-indigo-600/30 group-hover:scale-105 transition-transform flex-shrink-0">
+              <i className="bx bx-building-house text-white text-xl"></i>
             </div>
             <div>
-              <div style={{
-                fontWeight: 800,
-                fontSize: 16,
-                background: 'linear-gradient(135deg, #fff 40%, #a5b4fc)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                lineHeight: 1.2,
-              }}>
+              <div className="font-extrabold text-base bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent leading-none">
                 HostelHub
               </div>
-              <div style={{
-                fontSize: 9.5,
-                color: 'rgba(165,180,252,0.7)',
-                fontWeight: 500,
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-              }}>
+              <div className="text-[9px] text-indigo-300/80 font-bold tracking-widest uppercase mt-0.5">
                 Management System
               </div>
             </div>
           </Link>
 
-          {/* ── NAV LINKS (desktop) ── */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          {/* ── DESKTOP NAV LINKS ── */}
+          <nav className="hidden md:flex items-center gap-1.5">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '7px 14px',
-                  borderRadius: 10,
-                  fontSize: 13.5,
-                  fontWeight: 500,
-                  textDecoration: 'none',
-                  transition: 'all 0.18s',
-                  color: isActive(link.to) ? '#fff' : 'rgba(255,255,255,0.52)',
-                  background: isActive(link.to) ? 'rgba(255,255,255,0.1)' : 'transparent',
-                  border: isActive(link.to) ? '1px solid rgba(255,255,255,0.14)' : '1px solid transparent',
-                }}
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  isActive(link.to)
+                    ? 'bg-white/10 text-white border border-white/15 shadow-sm'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
               >
-                <i className={link.icon} style={{ fontSize: 16 }}></i>
-                {link.label}
+                <i className={`${link.icon} text-base`}></i>
+                <span>{link.label}</span>
               </Link>
             ))}
           </nav>
 
-          {/* ── RIGHT: API Pulse + Auth ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* ── RIGHT: Pulse + Auth + Hamburger ── */}
+          <div className="flex items-center gap-3">
 
             {/* API Health Pill */}
-            <div
+            <button
               onClick={checkHealth}
-              title={`Backend: ${serverStatus.online === null ? 'Checking...' : serverStatus.online ? `Online ${serverStatus.latency}ms` : 'Offline'}`}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                padding: '5px 12px',
-                borderRadius: 20,
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                cursor: 'pointer',
-                fontSize: 11,
-              }}
+              title={`Server: ${serverStatus.online === null ? 'Checking...' : serverStatus.online ? `Online (${serverStatus.latency}ms)` : 'Offline'}`}
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-[11px] font-mono hover:bg-slate-800/80 transition-all cursor-pointer"
             >
-              <span style={{ position: 'relative', display: 'flex', width: 8, height: 8 }}>
+              <span className="relative flex h-2 w-2">
                 {serverStatus.online && (
-                  <span style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: '50%',
-                    background: '#34d399',
-                    animation: 'ping 1.2s ease-in-out infinite',
-                    opacity: 0.7,
-                  }} />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 )}
-                <span style={{
-                  position: 'relative',
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
-                  background: serverStatus.online === null ? '#fbbf24' : serverStatus.online ? '#10b981' : '#ef4444',
-                  display: 'inline-block',
-                }} />
+                <span className={`relative inline-flex rounded-full h-2 w-2 ${serverStatus.online === null ? 'bg-amber-400' : serverStatus.online ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
               </span>
-              <span style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace' }}>
+              <span className="text-slate-400 text-[10px]">
                 {serverStatus.online === null ? 'API…' : serverStatus.online ? `${serverStatus.latency}ms` : 'Down'}
               </span>
-            </div>
+            </button>
 
             {/* Auth Controls */}
             {isAuthenticated ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                {/* Clickable User Name to Open Dashboard */}
+              <div className="flex items-center gap-2">
                 <Link
                   to={getDashboardPath()}
                   title={`Open ${getDashboardLabel()}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    padding: '5px 12px',
-                    borderRadius: 10,
-                    background: (isActive('/dashboard') || isActive('/admin') || isActive('/warden')) ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.06)',
-                    border: (isActive('/dashboard') || isActive('/admin') || isActive('/warden')) ? '1px solid rgba(99,102,241,0.45)' : '1px solid rgba(255,255,255,0.12)',
-                    textDecoration: 'none',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(99,102,241,0.25)';
-                    e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = isActive('/dashboard') ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.06)';
-                    e.currentTarget.style.borderColor = isActive('/dashboard') ? '1px solid rgba(99,102,241,0.45)' : '1px solid rgba(255,255,255,0.12)';
-                  }}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${
+                    (isActive('/dashboard') || isActive('/admin') || isActive('/warden'))
+                      ? 'bg-indigo-600/20 border-indigo-500/40 text-white'
+                      : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:bg-slate-800'
+                  }`}
                 >
-                  <div style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 11,
-                    fontWeight: 700,
-                    color: '#fff',
-                    boxShadow: '0 2px 8px rgba(99,102,241,0.4)',
-                  }}>
-                    {user?.name?.[0]?.toUpperCase() || 'U'}
+                  <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-indigo-600 to-sky-500 flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
+                    {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                   </div>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>
+                  <span className="text-xs font-semibold hidden sm:inline truncate max-w-[100px]">
                     {user?.name}
                   </span>
-                  <span style={{
-                    fontSize: 9,
-                    fontWeight: 700,
-                    padding: '2px 7px',
-                    borderRadius: 6,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.06em',
-                    background: user?.role === 'admin' ? 'rgba(245,158,11,0.2)' : 'rgba(99,102,241,0.2)',
-                    color: user?.role === 'admin' ? '#fbbf24' : '#a5b4fc',
-                    border: user?.role === 'admin' ? '1px solid rgba(245,158,11,0.35)' : '1px solid rgba(99,102,241,0.35)',
-                  }}>
+                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                    user?.role === 'admin'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                      : user?.role === 'warden'
+                      ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
+                      : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                  }`}>
                     {user?.role}
                   </span>
                 </Link>
 
                 <button
                   onClick={logout}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    padding: '7px 14px',
-                    borderRadius: 10,
-                    background: 'rgba(239,68,68,0.1)',
-                    border: '1px solid rgba(239,68,68,0.25)',
-                    color: '#fca5a5',
-                    fontSize: 13,
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    fontFamily: "'Poppins',sans-serif",
-                    transition: 'all 0.18s',
-                  }}
+                  title="Sign Out"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-950/30 hover:bg-rose-900/50 border border-rose-800/40 text-rose-300 text-xs font-semibold transition-all cursor-pointer"
                 >
-                  <i className="bx bx-log-out" style={{ fontSize: 16 }}></i>
-                  Logout
+                  <i className="bx bx-log-out text-sm"></i>
+                  <span className="hidden sm:inline">Logout</span>
                 </button>
               </div>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    padding: '7px 16px',
-                    borderRadius: 10,
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    color: 'rgba(255,255,255,0.78)',
-                    fontSize: 13,
-                    fontWeight: 500,
-                    textDecoration: 'none',
-                    transition: 'all 0.18s',
-                  }}
+                  className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold transition-all"
                 >
-                  <i className="bx bx-log-in" style={{ fontSize: 16 }}></i>
                   Login
                 </Link>
-
                 <Link
                   to="/register"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    padding: '7px 16px',
-                    borderRadius: 10,
-                    background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
-                    border: 'none',
-                    color: '#fff',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                    boxShadow: '0 4px 14px rgba(99,102,241,0.35)',
-                    transition: 'all 0.18s',
-                  }}
+                  className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 transition-all"
                 >
-                  <i className="bx bx-user-plus" style={{ fontSize: 16 }}></i>
                   Register
                 </Link>
               </div>
             )}
+
+            {/* Mobile Hamburger Toggle Button */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white"
+              aria-label="Toggle navigation menu"
+            >
+              <i className={`bx ${mobileOpen ? 'bx-x' : 'bx-menu'} text-xl`}></i>
+            </button>
           </div>
 
         </div>
-      </header>
 
-      <style>{`
-        @keyframes ping {
-          0%, 100% { transform: scale(1); opacity: 0.7; }
-          50% { transform: scale(1.8); opacity: 0; }
-        }
-      `}</style>
+        {/* ── MOBILE MENU DRAWER ── */}
+        {mobileOpen && (
+          <div className="md:hidden bg-[#0a1424] border-b border-slate-800 px-4 py-3 space-y-2 animate-fade-in shadow-2xl">
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
+                  isActive(link.to)
+                    ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
+                    : 'text-slate-300 hover:bg-slate-800/60'
+                }`}
+              >
+                <i className={`${link.icon} text-base`}></i>
+                <span>{link.label}</span>
+              </Link>
+            ))}
+
+            {isAuthenticated && (
+              <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span>{user?.name} ({user?.role})</span>
+                </div>
+                <button
+                  onClick={logout}
+                  className="text-rose-400 font-semibold hover:underline"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </header>
     </>
   );
 }

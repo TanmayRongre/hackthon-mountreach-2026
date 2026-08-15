@@ -38,7 +38,7 @@ const getMyStudentProfile = async (req, res, next) => {
 };
 
 /**
- * @desc    Admit / Register current student to hostel
+ * @desc    Admit / Register current student to hostel with atomic bed assignment
  * @route   POST /api/students/admit
  * @access  Private (Authenticated)
  */
@@ -49,6 +49,7 @@ const admitStudent = async (req, res, next) => {
       department,
       year,
       hostelId,
+      roomType = 'AC',
       phone,
       parentName,
       parentPhone,
@@ -86,29 +87,74 @@ const admitStudent = async (req, res, next) => {
       });
     }
 
-    // Determine / Assign Room
-    let room = await Room.findOne({ hostel: hostel._id, status: 'available' });
-    if (!room) {
-      room = await Room.findOne({ hostel: hostel._id }) || await Room.create({
-        roomNumber: '101',
-        hostel: hostel._id,
-        floor: 1,
-        capacity: 2,
-        type: 'AC',
-        rentPerMonth: 6500,
-        amenities: ['AC', 'Attached Bath', 'Study Desk'],
-      });
+    // Get all rooms belonging to this hostel
+    const hostelRooms = await Room.find({ hostel: hostel._id });
+    const roomIds = hostelRooms.map((r) => r._id);
+
+    let availableBed = await Bed.findOne({
+      room: { $in: roomIds },
+      status: 'available',
+    }).populate('room');
+
+    let room = availableBed?.room;
+
+    // If no available bed in existing rooms, find or create an available room with beds
+    if (!availableBed || !room) {
+      let candidateRoom = hostelRooms.find((r) => (r.occupiedCount || 0) < (r.capacity || 2));
+
+      if (!candidateRoom) {
+        // Generate unique room number
+        const existingRoomNums = new Set(hostelRooms.map((r) => r.roomNumber));
+        let roomNumCandidate = 101;
+        while (existingRoomNums.has(String(roomNumCandidate))) {
+          roomNumCandidate++;
+        }
+        const nextRoomNum = String(roomNumCandidate);
+
+        candidateRoom = await Room.create({
+          roomNumber: nextRoomNum,
+          hostel: hostel._id,
+          floor: Math.floor((roomNumCandidate - 100) / 10) + 1,
+          capacity: 2,
+          type: roomType || 'AC',
+          rentPerMonth: roomType === 'Non-AC' ? 4500 : roomType === 'Deluxe' ? 7500 : 6500,
+          amenities: ['AC', 'Attached Bath', 'Study Desk', 'Cupboard'],
+          occupiedCount: 0,
+          status: 'available',
+        });
+      }
+
+      // Check if bed exists in candidateRoom, else create beds
+      availableBed = await Bed.findOne({ room: candidateRoom._id, status: 'available' });
+      if (!availableBed) {
+        const existingBedsInRoom = await Bed.find({ room: candidateRoom._id });
+        const nextBedIndex = existingBedsInRoom.length + 1;
+        availableBed = await Bed.create({
+          bedNumber: `Bed-${nextBedIndex}`,
+          room: candidateRoom._id,
+          hostel: hostel._id,
+          status: 'available',
+        });
+      }
+      room = candidateRoom;
     }
 
-    // Determine Bed
-    let bed = await Bed.findOne({ room: room._id, status: 'available' });
-    if (!bed) {
-      bed = await Bed.findOne({ room: room._id }) || await Bed.create({
-        bedNumber: 'B-1',
-        room: room._id,
-        status: 'occupied',
-      });
+    if (!availableBed) {
+      res.status(400);
+      throw new Error('Hostel is currently at full capacity. No vacant beds available.');
     }
+
+    // Mark bed as occupied
+    availableBed.status = 'occupied';
+    availableBed.student = req.user._id;
+    await availableBed.save();
+
+    // Update room occupancy
+    const roomBeds = await Bed.find({ room: room._id });
+    const occupiedCount = roomBeds.filter((b) => b.status === 'occupied').length;
+    room.occupiedCount = occupiedCount;
+    room.status = occupiedCount >= room.capacity ? 'full' : 'available';
+    await room.save();
 
     // Create or Update Student document
     let student = await Student.findOne({ user: req.user._id });
@@ -119,7 +165,7 @@ const admitStudent = async (req, res, next) => {
       student.year = year || student.year || '1st Year';
       student.hostel = hostel._id;
       student.room = room._id;
-      student.bed = bed._id;
+      student.bed = availableBed._id;
       student.phone = phone || student.phone || '';
       student.parentName = parentName || student.parentName || '';
       student.parentPhone = parentPhone || student.parentPhone || '';
@@ -134,7 +180,7 @@ const admitStudent = async (req, res, next) => {
         year: year || '1st Year',
         hostel: hostel._id,
         room: room._id,
-        bed: bed._id,
+        bed: availableBed._id,
         phone: phone || '',
         parentName: parentName || '',
         parentPhone: parentPhone || '',
@@ -144,17 +190,23 @@ const admitStudent = async (req, res, next) => {
     }
 
     // Seed initial fee record if none exists for this student
-    const feeExists = await Fee.findOne({ student: req.user._id });
+    const feeExists = await Fee.findOne({ student: req.user._id, feeType: 'Hostel Fee' });
     if (!feeExists) {
       const dueDate = new Date();
       dueDate.setDate(dueDate.getDate() + 30);
+      const semRent = (room.rentPerMonth || 6500) * 6;
+      const messFee = 24000;
+      const caution = 5000;
+      const totalAmount = semRent + messFee + caution;
+
       await Fee.create({
         student: req.user._id,
-        title: 'Semester 1 Hostel Fee (Room 101)',
-        amount: room.rentPerMonth ? room.rentPerMonth * 6 : 36000,
+        title: `Semester 1 Hostel & Mess Fee (Room ${room.roomNumber})`,
+        amount: totalAmount,
         feeType: 'Hostel Fee',
         dueDate,
         status: 'pending',
+        receiptNumber: `REC-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`,
       });
     }
 
@@ -167,7 +219,7 @@ const admitStudent = async (req, res, next) => {
     res.status(201).json({
       success: true,
       isAdmitted: true,
-      message: '🎉 Congratulations! Hostel admission completed successfully.',
+      message: `🎉 Admission confirmed! Allotted Room ${room.roomNumber}, ${availableBed.bedNumber} in ${hostel.name}.`,
       student: populated,
     });
   } catch (error) {
@@ -176,24 +228,35 @@ const admitStudent = async (req, res, next) => {
 };
 
 /**
- * @desc    Get all students
+ * @desc    Get all students (scoped by role)
  * @route   GET /api/students
- * @access  Public / Private
+ * @access  Private
  */
 const getStudents = async (req, res, next) => {
   try {
     const { department, hostel, year, status, search } = req.query;
     const filter = {};
 
+    // Role-based data scoping
+    if (req.user.role === 'student') {
+      filter.user = req.user._id;
+    } else if (req.user.role === 'warden') {
+      const assignedHostels = await Hostel.find({ warden: req.user._id }).select('_id');
+      const hostelIds = assignedHostels.map((h) => h._id);
+      if (hostelIds.length > 0) {
+        filter.hostel = { $in: hostelIds };
+      }
+    }
+
     if (department) filter.department = department;
-    if (hostel) filter.hostel = hostel;
+    if (hostel && req.user.role !== 'student') filter.hostel = hostel;
     if (year) filter.year = year;
     if (status) filter.status = status;
 
     let students = await Student.find(filter)
       .populate('user', 'name email role')
       .populate('hostel', 'name code gender')
-      .populate('room', 'roomNumber floor type')
+      .populate('room', 'roomNumber floor type rentPerMonth')
       .populate('bed', 'bedNumber status')
       .sort({ createdAt: -1 });
 
@@ -203,7 +266,8 @@ const getStudents = async (req, res, next) => {
         (s) =>
           s.enrollmentNumber?.toLowerCase().includes(q) ||
           s.user?.name?.toLowerCase().includes(q) ||
-          s.user?.email?.toLowerCase().includes(q)
+          s.user?.email?.toLowerCase().includes(q) ||
+          s.room?.roomNumber?.toLowerCase().includes(q)
       );
     }
 
@@ -218,9 +282,9 @@ const getStudents = async (req, res, next) => {
 };
 
 /**
- * @desc    Get student by ID
+ * @desc    Get student by ID (scoped by role)
  * @route   GET /api/students/:id
- * @access  Public / Private
+ * @access  Private
  */
 const getStudentById = async (req, res, next) => {
   try {
@@ -235,6 +299,12 @@ const getStudentById = async (req, res, next) => {
       throw new Error('Student record not found');
     }
 
+    // Role check: student can only view self
+    if (req.user.role === 'student' && !student.user._id.equals(req.user._id)) {
+      res.status(403);
+      throw new Error('Not authorized to access another student profile');
+    }
+
     res.status(200).json({
       success: true,
       data: student,
@@ -247,7 +317,7 @@ const getStudentById = async (req, res, next) => {
 /**
  * @desc    Create new student record
  * @route   POST /api/students
- * @access  Private
+ * @access  Private (Admin / Warden)
  */
 const createStudent = async (req, res, next) => {
   try {
@@ -308,7 +378,7 @@ const createStudent = async (req, res, next) => {
 /**
  * @desc    Update student record
  * @route   PUT /api/students/:id
- * @access  Private
+ * @access  Private (Admin / Warden)
  */
 const updateStudent = async (req, res, next) => {
   try {
@@ -318,8 +388,8 @@ const updateStudent = async (req, res, next) => {
     })
       .populate('user', 'name email role')
       .populate('hostel', 'name code')
-      .populate('room', 'roomNumber floor')
-      .populate('bed', 'bedNumber');
+      .populate('room', 'roomNumber floor type')
+      .populate('bed', 'bedNumber status');
 
     if (!student) {
       res.status(404);
@@ -339,7 +409,7 @@ const updateStudent = async (req, res, next) => {
 /**
  * @desc    Delete student record
  * @route   DELETE /api/students/:id
- * @access  Private
+ * @access  Private (Admin)
  */
 const deleteStudent = async (req, res, next) => {
   try {
@@ -350,11 +420,26 @@ const deleteStudent = async (req, res, next) => {
       throw new Error('Student record not found');
     }
 
+    // Release assigned bed if occupied
+    if (student.bed) {
+      await Bed.findByIdAndUpdate(student.bed, { status: 'available', student: null });
+    }
+
+    // Decrement room occupancy
+    if (student.room) {
+      const room = await Room.findById(student.room);
+      if (room) {
+        room.occupiedCount = Math.max(0, (room.occupiedCount || 1) - 1);
+        room.status = 'available';
+        await room.save();
+      }
+    }
+
     await student.deleteOne();
 
     res.status(200).json({
       success: true,
-      message: 'Student record deleted successfully',
+      message: 'Student record and bed allocation removed successfully',
     });
   } catch (error) {
     next(error);
