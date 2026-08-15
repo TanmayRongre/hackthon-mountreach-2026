@@ -9,7 +9,7 @@ function Home() {
           Hackathon project is ready. Waiting for the problem statement...
         </p>
         <div className="inline-block px-5 py-2 bg-background-card border border-slate-800 rounded-full text-sm text-slate-400 tracking-wide">
-          🚀 MERN Stack · React + Vite · Express · MongoDB
+          🚀 MERN Stack · React + Vite · Express . Mongodb
         </div>
       </div>
     </div>
