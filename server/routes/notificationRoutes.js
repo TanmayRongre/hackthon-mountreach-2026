@@ -6,7 +6,7 @@ const {
   createNotification,
   updateNotification,
   deleteNotification
-} = require("../Controllers/notificationController");
+} = require("../controllers/notificationController");
 
 const router = express.Router();
 

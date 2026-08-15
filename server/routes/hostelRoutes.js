@@ -6,7 +6,7 @@ const {
   createHostel,
   updateHostel,
   deleteHostel
-} = require("../Controllers/hostelController");
+} = require("../controllers/hostelController");
 
 const router = express.Router();
 

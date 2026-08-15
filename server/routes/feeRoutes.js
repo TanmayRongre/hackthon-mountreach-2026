@@ -6,7 +6,7 @@ const {
   createFee,
   updateFee,
   deleteFee
-} = require("../Controllers/feeController");
+} = require("../controllers/feeController");
 
 const router = express.Router();
 

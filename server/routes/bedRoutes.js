@@ -6,7 +6,7 @@ const {
   createBed,
   updateBed,
   deleteBed
-} = require("../Controllers/bedController");
+} = require("../controllers/bedController");
 
 const router = express.Router();
 

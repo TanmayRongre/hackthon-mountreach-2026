@@ -6,7 +6,7 @@ const {
   createNotice,
   updateNotice,
   deleteNotice
-} = require("../Controllers/noticeController");
+} = require("../controllers/noticeController");
 
 const router = express.Router();
 
