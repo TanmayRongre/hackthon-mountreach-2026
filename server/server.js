@@ -1,8 +1,11 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const connectDB = require('./config/db');
-const errorHandler = require('./middleware/errorHandler');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+const path = require('path');
+const { connectDB, getDBStatus } = require('./config/db');
+const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 // routes 
 const authRoutes = require('./routes/authRoutes');
@@ -22,28 +25,30 @@ const notificationRoutes = require('./routes/notificationRoutes');
 // ─── Load Environment Variables ──────────────────────────────────────────────
 dotenv.config();
 
-// ─── Connect to MongoDB ───────────────────────────────────────────────────────
+// Connect to Database asynchronously
 connectDB();
 
-// ─── Initialize Express App ───────────────────────────────────────────────────
 const app = express();
 
-// ─── Middleware ───────────────────────────────────────────────────────────────
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173', // Vite default port
-  credentials: true,
-}));
+// Enable CORS
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    credentials: true,
+  })
+);
 
-app.use(express.json());           // Parse JSON request bodies
-app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies
+// Body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
-app.use('/api', require('./routes/healthRoutes'));
+// Cookie parser
+app.use(cookieParser());
 
-// TODO: Add feature routes here as the project grows
-// Example:
-// app.use('/api/auth', require('./routes/authRoutes'));
-// app.use('/api/users', require('./routes/userRoutes'));
+// Dev logging
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'));
+}
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -66,11 +71,37 @@ app.use((req, res) => {
   });
 });
 
-// ─── Global Error Handler (must be last) ─────────────────────────────────────
+// Middleware to check DB connection on database-dependent routes
+app.use('/api', (req, res, next) => {
+  if (req.path === '/health') {
+    return next();
+  }
+  const dbStatus = getDBStatus();
+  if (!dbStatus.connected) {
+    // Check if connecting
+    if (dbStatus.readyState === 2) {
+      return next();
+    }
+    // Attempt background reconnect
+    connectDB();
+  }
+  next();
+});
+
+// Mount Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/user', require('./routes/authRoutes'));
+app.use('/api/items', require('./routes/itemRoutes'));
+
+// 404 & Error Handlers
+app.use(notFound);
 app.use(errorHandler);
 
-// ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(
+    `🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`
+  );
 });
+
+module.exports = app;

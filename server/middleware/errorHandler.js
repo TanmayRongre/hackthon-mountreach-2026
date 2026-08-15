@@ -1,7 +1,13 @@
+// 404 Handler for undefined routes
+const notFound = (req, res, next) => {
+  const error = new Error(`Not Found - ${req.originalUrl}`);
+  res.status(404);
+  next(error);
+};
+
 // Custom error response middleware
 // Usage: call next(error) from any controller/route
 // It catches the error here and sends a clean JSON response
-
 const errorHandler = (err, req, res, next) => {
   // Use the status code set on the error, or default to 500
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
@@ -14,4 +20,7 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-module.exports = errorHandler;
+module.exports = {
+  notFound,
+  errorHandler,
+};
