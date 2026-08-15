@@ -1,10 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import heroVideo from '../../assests/Video.mp4';
 
 export default function HeroSection() {
   return (
     <div className="home-page">
-      <div className="home-hero-bg" />
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="home-hero-video"
+      >
+        <source src={heroVideo} type="video/mp4" />
+      </video>
       <div className="home-hero-overlay" />
 
       <div className="home-layout">
