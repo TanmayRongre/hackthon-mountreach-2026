@@ -4,6 +4,21 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 
+// routes 
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const studentRoutes = require('./routes/studentRoutes');
+const hostelRoutes = require('./routes/hostelRoutes');
+const roomRoutes = require('./routes/roomRoutes');
+const bedRoutes = require('./routes/bedRoutes');
+const feeRoutes = require('./routes/feeRoutes');
+const attendanceRoutes = require('./routes/attendanceRoutes');
+const complaintRoutes = require('./routes/complaintRoutes');
+const leaveRoutes = require('./routes/leaveRoutes');
+const noticeRoutes = require('./routes/noticeRoutes');
+const messRoutes = require('./routes/messRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+
 // ─── Load Environment Variables ──────────────────────────────────────────────
 dotenv.config();
 
@@ -30,6 +45,19 @@ app.use('/api', require('./routes/healthRoutes'));
 // app.use('/api/auth', require('./routes/authRoutes'));
 // app.use('/api/users', require('./routes/userRoutes'));
 
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/students', studentRoutes);
+app.use('/api/hostels', hostelRoutes);
+app.use('/api/rooms', roomRoutes);
+app.use('/api/beds', bedRoutes);
+app.use('/api/fees', feeRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/complaints', complaintRoutes);
+app.use('/api/leaves', leaveRoutes);
+app.use('/api/notices', noticeRoutes);
+app.use('/api/mess', messRoutes);
+app.use('/api/notifications', notificationRoutes);
 // ─── 404 Handler (must be after all routes) ───────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({
