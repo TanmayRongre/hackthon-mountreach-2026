@@ -34,7 +34,7 @@ export default function HeroSection() {
             <p className="home-hero-desc">
               A unified digital platform for Students, Wardens, and Admins.
               Streamline room allotments, complaints, mess management,
-              outpass requests, and more — completely paperless.
+              leave applications, and more — completely paperless.
             </p>
 
             <div className="home-cta-row">
@@ -107,7 +107,7 @@ export default function HeroSection() {
                 System Active
               </div>
               <p className="home-card-desc">
-                Rooms, complaints, mess, outpass &amp; fees — one secure platform.
+                Rooms, complaints, mess, leave applications &amp; fees — one secure platform.
               </p>
               <div className="home-card-specs">
                 <div className="home-card-spec">

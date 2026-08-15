@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const POLICY_CONTENT = {
   'Hostel Rules & Regulations': [
     'Gate timings: Main entry gates close strictly at 10:00 PM on weekdays and 10:30 PM on weekends.',
-    'Outpass clearance: Overnight or multi-day leaves must be applied online and approved by the Warden.',
+    'Leave permissions: Overnight or multi-day leaves must be applied online and approved by the Warden.',
     'Room discipline: Electrical cooking appliances, heaters, and unauthorized guests are strictly prohibited.',
     'Quiet hours: 10:00 PM to 6:00 AM are observed as campus quiet hours for study and rest.',
   ],
@@ -113,7 +113,7 @@ export default function Footer() {
             <ul className="footer-features-list" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 'Smart Room & Bed Allotment',
-                'Digital Outpass & Gate Clearance',
+                'Online Leave Applications',
                 '24/7 Grievance & Complaints',
               ].map((feat) => (
                 <li key={feat} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>

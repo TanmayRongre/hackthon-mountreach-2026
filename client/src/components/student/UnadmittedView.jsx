@@ -23,8 +23,8 @@ export default function UnadmittedView({ user, onOpenAdmission }) {
     },
     {
       icon: <Key className="w-6 h-6 text-sky-400" />,
-      title: 'Online Outpass & Leave Gatepass',
-      desc: 'Apply for day outpass, weekend leaves, or vacation permissions with digital Warden e-signatures.',
+      title: 'Online Leave Applications & Gatepass',
+      desc: 'Apply for day leaves, weekend visits, or vacation permissions with digital Warden e-signatures.',
       tag: 'Admission Required',
     },
     {
@@ -74,7 +74,7 @@ export default function UnadmittedView({ user, onOpenAdmission }) {
               Complete Your <span className="text-indigo-400">Hostel Admission</span>
             </h1>
             <p className="text-sm md:text-base text-slate-300/80 leading-relaxed max-w-2xl">
-              You are currently registered as a student user. To access room allotment, mess schedules, digital outpass requests, fee management, and complaint resolution, please complete your hostel admission.
+              You are currently registered as a student user. To access room allotment, mess schedules, leave applications, fee management, and complaint resolution, please complete your hostel admission.
             </p>
           </div>
 

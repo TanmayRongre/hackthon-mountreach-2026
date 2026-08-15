@@ -115,7 +115,7 @@ const createLeave = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: 'Outpass application submitted successfully for Warden review',
+      message: 'Leave application submitted successfully for Warden review',
       data: populated,
     });
   } catch (error) {
@@ -142,11 +142,11 @@ const updateLeave = async (req, res, next) => {
     if (req.user.role === 'student') {
       if (!leave.student.equals(req.user._id)) {
         res.status(403);
-        throw new Error('Not authorized to modify another student outpass');
+        throw new Error('Not authorized to modify another student leave application');
       }
       if (status && !['cancelled', 'pending'].includes(status)) {
         res.status(403);
-        throw new Error('Students cannot approve or reject outpasses');
+        throw new Error('Students cannot approve or reject leave applications');
       }
       if (status === 'cancelled') {
         leave.status = 'cancelled';
@@ -170,7 +170,7 @@ const updateLeave = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: `Outpass marked as ${status || 'updated'} successfully`,
+      message: `Leave application marked as ${status || 'updated'} successfully`,
       data: populated,
     });
   } catch (error) {
@@ -196,7 +196,7 @@ const deleteLeave = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: 'Outpass record deleted successfully',
+      message: 'Leave application record deleted successfully',
     });
   } catch (error) {
     next(error);

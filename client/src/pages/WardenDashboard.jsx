@@ -117,10 +117,10 @@ export default function WardenDashboard() {
     setActionLoading(true);
     try {
       await api.updateLeave(id, { status });
-      showToast(`Outpass request marked as ${status}`);
+      showToast(`Leave application marked as ${status}`);
       loadWardenData();
     } catch (err) {
-      showToast(err.message || 'Failed to update outpass', 'error');
+      showToast(err.message || 'Failed to update leave application', 'error');
     } finally {
       setActionLoading(false);
     }
@@ -157,14 +157,14 @@ export default function WardenDashboard() {
   const pendingVisitors = visitors.filter((v) => v.status === 'pending');
 
   const navItems = [
-    { id: 'overview', label: 'Warden Overview', icon: <Building2 className="w-4 h-4" /> },
-    { id: 'attendance', label: 'Attendance Roster', icon: <QrCode className="w-4 h-4" />, badge: attendance.length > 0 ? `${attendance.length}` : null },
-    { id: 'complaints', label: 'Hostel Complaints', icon: <FileText className="w-4 h-4" />, badge: pendingComplaints.length > 0 ? `${pendingComplaints.length}` : null, badgeColor: 'bg-amber-500/20 text-amber-300' },
-    { id: 'leaves', label: 'Outpass Clearance', icon: <Key className="w-4 h-4" />, badge: pendingLeaves.length > 0 ? `${pendingLeaves.length}` : null, badgeColor: 'bg-sky-500/20 text-sky-300' },
-    { id: 'visitors', label: 'Visitor Pass Clearances', icon: <Users className="w-4 h-4" />, badge: pendingVisitors.length > 0 ? `${pendingVisitors.length}` : null, badgeColor: 'bg-purple-500/20 text-purple-300' },
-    { id: 'students', label: 'Resident Directory', icon: <Users className="w-4 h-4" />, badge: students.length > 0 ? `${students.length}` : null },
-    { id: 'rooms', label: 'Room Inspection', icon: <DoorOpen className="w-4 h-4" /> },
-    { id: 'notices', label: 'Hostel Circulars', icon: <Bell className="w-4 h-4" /> },
+    { id: 'overview', label: 'Overview', icon: <Building2 className="w-4 h-4" /> },
+    { id: 'attendance', label: 'Attendance', icon: <QrCode className="w-4 h-4" />, badge: attendance.length > 0 ? `${attendance.length}` : null },
+    { id: 'complaints', label: 'Complaints', icon: <FileText className="w-4 h-4" />, badge: pendingComplaints.length > 0 ? `${pendingComplaints.length}` : null, badgeColor: 'bg-amber-500/20 text-amber-300' },
+    { id: 'leaves', label: 'Leave Applications', icon: <Key className="w-4 h-4" />, badge: pendingLeaves.length > 0 ? `${pendingLeaves.length}` : null, badgeColor: 'bg-sky-500/20 text-sky-300' },
+    { id: 'visitors', label: 'Visitors', icon: <Users className="w-4 h-4" />, badge: pendingVisitors.length > 0 ? `${pendingVisitors.length}` : null, badgeColor: 'bg-purple-500/20 text-purple-300' },
+    { id: 'students', label: 'Students', icon: <Users className="w-4 h-4" />, badge: students.length > 0 ? `${students.length}` : null },
+    { id: 'rooms', label: 'Rooms', icon: <DoorOpen className="w-4 h-4" /> },
+    { id: 'notices', label: 'Notices', icon: <Bell className="w-4 h-4" /> },
   ];
 
   return (
@@ -296,7 +296,7 @@ export default function WardenDashboard() {
                   <span className="text-[10px] text-sky-400">Allotted Students</span>
                 </div>
                 <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-1">
-                  <span className="text-xs text-slate-400">Pending Outpasses</span>
+                  <span className="text-xs text-slate-400">Pending Leaves</span>
                   <div className="text-2xl font-black text-amber-400">{pendingLeaves.length}</div>
                   <span className="text-[10px] text-amber-400">Requires Clearance</span>
                 </div>
@@ -316,7 +316,7 @@ export default function WardenDashboard() {
               <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   <Key className="w-4 h-4 text-sky-400" />
-                  Urgent Outpass Clearance Queue ({pendingLeaves.length})
+                  Leave Application Review Queue ({pendingLeaves.length})
                 </h3>
 
                 {pendingLeaves.length > 0 ? (
@@ -326,7 +326,7 @@ export default function WardenDashboard() {
                         <div>
                           <div className="font-bold text-white text-sm">{l.student?.name || 'Resident Student'} ({l.leaveType})</div>
                           <div className="text-slate-400 mt-0.5">Destination: {l.destination} · Reason: {l.reason}</div>
-                          <div className="text-[11px] text-slate-500">Departure: {new Date(l.fromDate).toLocaleString()}</div>
+                          <div className="text-[11px] text-slate-500">Departure: {new Date(l.fromDate).toLocaleDateString()}</div>
                         </div>
 
                         <div className="flex items-center gap-2">
@@ -335,12 +335,12 @@ export default function WardenDashboard() {
                             disabled={actionLoading}
                             className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
                           >
-                            ✓ Approve Outpass
+                            ✓ Approve Leave
                           </button>
                           <button
                             onClick={() => handleUpdateLeave(l._id, 'rejected')}
                             disabled={actionLoading}
-                            className="px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/60 border border-rose-700/50 text-rose-300 font-semibold text-xs"
+                            className="px-3.5 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/60 border border-rose-700/50 text-rose-300 font-semibold text-xs"
                           >
                             ✕ Reject
                           </button>
@@ -350,7 +350,84 @@ export default function WardenDashboard() {
                   </div>
                 ) : (
                   <div className="p-8 text-center text-xs text-slate-500">
-                    All outpass requests have been cleared.
+                    All leave applications have been cleared.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: LEAVE APPLICATIONS */}
+          {activeTab === 'leaves' && (
+            <div className="space-y-4">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Key className="w-4 h-4 text-sky-400" />
+                      Student Leave Applications & Permissions
+                    </h3>
+                    <p className="text-xs text-slate-400">Review, verify, and approve resident leave applications</p>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/15 text-sky-300 border border-sky-500/30 self-start sm:self-auto">
+                    {pendingLeaves.length} Pending Review
+                  </span>
+                </div>
+
+                {leaves.length > 0 ? (
+                  <div className="space-y-3">
+                    {leaves.map((l) => (
+                      <div key={l._id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 text-xs">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 rounded-lg bg-sky-500/20 text-sky-300 font-bold uppercase text-[10px]">
+                              {l.leaveType}
+                            </span>
+                            <span className="font-bold text-white text-sm">{l.student?.name || 'Resident Student'}</span>
+                          </div>
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                            l.status === 'approved'
+                              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                              : l.status === 'rejected'
+                              ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                              : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                          }`}>
+                            {l.status === 'approved' ? '✓ Approved' : l.status === 'rejected' ? '✕ Rejected' : '⏳ Pending Review'}
+                          </span>
+                        </div>
+
+                        <p className="text-slate-300">Destination: <strong className="text-white">{l.destination}</strong> · Reason: {l.reason}</p>
+
+                        <div className="flex flex-wrap items-center justify-between pt-2 border-t border-slate-800 text-[11px] text-slate-400 gap-2">
+                          <div>
+                            Departure Date: <strong className="text-white">{new Date(l.fromDate).toLocaleDateString()}</strong> · Return Date: <strong className="text-white">{new Date(l.toDate).toLocaleDateString()}</strong>
+                          </div>
+
+                          {l.status === 'pending' && (
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleUpdateLeave(l._id, 'approved')}
+                                disabled={actionLoading}
+                                className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 cursor-pointer"
+                              >
+                                ✓ Approve Leave
+                              </button>
+                              <button
+                                onClick={() => handleUpdateLeave(l._id, 'rejected')}
+                                disabled={actionLoading}
+                                className="px-3.5 py-1.5 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-bold text-xs border border-rose-500/30 cursor-pointer"
+                              >
+                                ✕ Reject
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-xs text-slate-500">
+                    No leave applications submitted yet.
                   </div>
                 )}
               </div>

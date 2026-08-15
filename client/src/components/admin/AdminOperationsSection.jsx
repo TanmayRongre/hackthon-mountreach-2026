@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import api from '../../services/api';
 
-export default function AdminOperationsSection({ initialSubTab = 'complaints' }) {
+export default function AdminOperationsSection({ initialSubTab = 'complaints', onSubTabChange }) {
   const [subTab, setSubTab] = useState(initialSubTab); // complaints | leaves | visitors | attendance
   const [complaints, setComplaints] = useState([]);
   const [leaves, setLeaves] = useState([]);
@@ -33,6 +33,19 @@ export default function AdminOperationsSection({ initialSubTab = 'complaints' })
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 4000);
+  };
+
+  useEffect(() => {
+    if (initialSubTab) {
+      setSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
+
+  const handleTabClick = (tabId) => {
+    setSubTab(tabId);
+    if (onSubTabChange) {
+      onSubTabChange(tabId);
+    }
   };
 
   const loadData = async () => {
@@ -77,10 +90,10 @@ export default function AdminOperationsSection({ initialSubTab = 'complaints' })
     setActionLoading(true);
     try {
       await api.updateLeave(id, { status });
-      showToast(`Outpass request marked as ${status}`);
+      showToast(`Leave application marked as ${status}`);
       loadData();
     } catch (err) {
-      showToast(err.message || 'Failed to update outpass', 'error');
+      showToast(err.message || 'Failed to update leave application', 'error');
     } finally {
       setActionLoading(false);
     }
@@ -104,19 +117,19 @@ export default function AdminOperationsSection({ initialSubTab = 'complaints' })
             <Activity className="w-5 h-5 text-emerald-400" />
             Central Campus Operations
           </h2>
-          <p className="text-xs text-slate-400">Manage daily hostel attendance, gatepass approvals, complaints escalation, and visitor permits.</p>
+          <p className="text-xs text-slate-400">Manage daily hostel attendance, leave approvals, complaints escalation, and visitor permits.</p>
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto">
           {[
             { id: 'complaints', label: `Complaints (${complaints.filter(c => c.status !== 'resolved').length})`, icon: <FileText className="w-4 h-4" /> },
-            { id: 'leaves', label: `Outpasses (${leaves.filter(l => l.status === 'pending').length})`, icon: <Key className="w-4 h-4" /> },
+            { id: 'leaves', label: `Leave Applications (${leaves.filter(l => l.status === 'pending').length})`, icon: <Key className="w-4 h-4" /> },
             { id: 'visitors', label: `Visitors (${visitors.length})`, icon: <Users className="w-4 h-4" /> },
             { id: 'attendance', label: `Attendance (${attendance.length})`, icon: <QrCode className="w-4 h-4" /> },
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setSubTab(tab.id)}
+              onClick={() => handleTabClick(tab.id)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 shrink-0 transition-all cursor-pointer ${
                 subTab === tab.id
                   ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
@@ -192,7 +205,7 @@ export default function AdminOperationsSection({ initialSubTab = 'complaints' })
         </div>
       )}
 
-      {/* ── 2. OUTPASSES & LEAVES APPROVAL ── */}
+      {/* ── 2. LEAVE APPLICATIONS APPROVAL ── */}
       {subTab === 'leaves' && (
         <div className="space-y-4">
           {leaves.length > 0 ? (
@@ -218,7 +231,7 @@ export default function AdminOperationsSection({ initialSubTab = 'complaints' })
 
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800 text-xs">
                   <div className="text-slate-400 text-[11px]">
-                    Student: <strong className="text-white">{l.student?.name || 'Resident'}</strong> · Departure: {new Date(l.fromDate).toLocaleString()}
+                    Student: <strong className="text-white">{l.student?.name || 'Resident'}</strong> · Departure: {new Date(l.fromDate).toLocaleDateString()}
                   </div>
 
                   {l.status === 'pending' && (
@@ -228,7 +241,7 @@ export default function AdminOperationsSection({ initialSubTab = 'complaints' })
                         disabled={actionLoading}
                         className="px-3 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold"
                       >
-                        ✓ Approve Pass
+                        ✓ Approve Leave
                       </button>
                       <button
                         onClick={() => handleUpdateLeaveStatus(l._id, 'rejected')}
@@ -244,7 +257,7 @@ export default function AdminOperationsSection({ initialSubTab = 'complaints' })
             ))
           ) : (
             <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-slate-800 text-slate-500 text-xs">
-              No leave or outpass requests found.
+              No leave applications found.
             </div>
           )}
         </div>
