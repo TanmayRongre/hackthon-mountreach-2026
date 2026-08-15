@@ -4,8 +4,10 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const path = require('path');
+const fs = require('fs');
 const { connectDB, getDBStatus } = require('./config/db');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
+const { initKeepAlive } = require('./utils/keepAlive');
 
 // Route Imports
 const authRoutes = require('./routes/authRoutes');
@@ -35,13 +37,57 @@ connectDB();
 
 const app = express();
 
-// Enable CORS
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    credentials: true,
-  })
-);
+// ─── Production & Development CORS Configuration ──────────────────────────────
+// Collect all potential origins from environment variables
+const rawClientUrls = [
+  process.env.CLIENT_URL,
+  process.env.FRONTEND_URL,
+  process.env.RENDER_EXTERNAL_URL,
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:5000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:5000',
+]
+  .filter(Boolean)
+  .flatMap((url) => url.split(',').map((u) => u.trim().replace(/\/$/, '')));
+
+const allowedOriginsSet = new Set(rawClientUrls);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // 1. Allow non-browser requests (mobile apps, server-to-server pings, Postman, curl)
+    if (!origin) return callback(null, true);
+
+    // 2. Allow if origin matches configured list
+    if (allowedOriginsSet.has(origin) || allowedOriginsSet.has('*')) {
+      return callback(null, true);
+    }
+
+    // 3. Allow standard hosting preview/production domains (Vercel, Render, Netlify, localhost)
+    const isHostingSubdomain =
+      /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
+      /\.vercel\.app$/.test(origin) ||
+      /\.onrender\.com$/.test(origin) ||
+      /\.netlify\.app$/.test(origin) ||
+      /\.github\.io$/.test(origin);
+
+    if (isHostingSubdomain) {
+      return callback(null, true);
+    }
+
+    // 4. Default permissive fallback for demo and hackathon deployments
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Set-Cookie'],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 
 // Body parser
 app.use(express.json());
@@ -90,6 +136,20 @@ app.use('/api/visitors', visitorRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/contact', contactRoutes);
 
+// ─── Serve Built Frontend in Production (if present) ──────────────────────────
+const clientDistPath = path.join(__dirname, '../client/dist');
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+
+  app.get('*', (req, res, next) => {
+    // If it's an API route that wasn't matched, delegate to notFound handler
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
+
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFound);
 app.use(errorHandler);
@@ -100,6 +160,11 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(
       `🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`
     );
+
+    // Initialize Render / Cloud Keep-Alive self-pinger
+    initKeepAlive({
+      intervalMs: 10 * 60 * 1000, // Ping every 10 minutes
+    });
   });
 }
 
