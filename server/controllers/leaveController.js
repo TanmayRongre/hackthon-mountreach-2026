@@ -1,16 +1,30 @@
 const Leave = require('../models/Leave');
+const Student = require('../models/Student');
+const Hostel = require('../models/Hostel');
 
 /**
- * @desc    Get all leave / outpass requests
+ * @desc    Get all leave / outpass requests (scoped by role)
  * @route   GET /api/leaves
- * @access  Public / Private
+ * @access  Private
  */
 const getLeaves = async (req, res, next) => {
   try {
-    const { student, status, leaveType } = req.query;
+    const { status, leaveType } = req.query;
     const filter = {};
 
-    if (student) filter.student = student;
+    // Role scoping
+    if (req.user.role === 'student') {
+      filter.student = req.user._id;
+    } else if (req.user.role === 'warden') {
+      const assignedHostels = await Hostel.find({ warden: req.user._id }).select('_id');
+      const hostelIds = assignedHostels.map((h) => h._id);
+      if (hostelIds.length > 0) {
+        const hostelStudents = await Student.find({ hostel: { $in: hostelIds } }).select('user');
+        const userIds = hostelStudents.map((s) => s.user);
+        filter.student = { $in: userIds };
+      }
+    }
+
     if (status) filter.status = status;
     if (leaveType) filter.leaveType = leaveType;
 
@@ -32,7 +46,7 @@ const getLeaves = async (req, res, next) => {
 /**
  * @desc    Get single leave request by ID
  * @route   GET /api/leaves/:id
- * @access  Public / Private
+ * @access  Private
  */
 const getLeaveById = async (req, res, next) => {
   try {
@@ -45,6 +59,11 @@ const getLeaveById = async (req, res, next) => {
       throw new Error('Leave request not found');
     }
 
+    if (req.user.role === 'student' && !leave.student._id.equals(req.user._id)) {
+      res.status(403);
+      throw new Error('Not authorized to view another student leave record');
+    }
+
     res.status(200).json({
       success: true,
       data: leave,
@@ -55,7 +74,7 @@ const getLeaveById = async (req, res, next) => {
 };
 
 /**
- * @desc    Create outpass / leave request
+ * @desc    Create outpass / leave request with input validation
  * @route   POST /api/leaves
  * @access  Private
  */
@@ -65,22 +84,29 @@ const createLeave = async (req, res, next) => {
 
     if (!reason || !fromDate || !toDate || !destination) {
       res.status(400);
-      throw new Error('Please provide reason, from-date, to-date, and destination');
+      throw new Error('Please provide reason, departure date, return date, and destination');
     }
 
-    const studentId = req.user ? req.user._id : req.body.student;
-    if (!studentId) {
+    const start = new Date(fromDate);
+    const end = new Date(toDate);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       res.status(400);
-      throw new Error('Please specify student');
+      throw new Error('Please provide valid departure and return dates');
+    }
+
+    if (start >= end) {
+      res.status(400);
+      throw new Error('Expected return date must be later than departure date');
     }
 
     const leave = await Leave.create({
-      student: studentId,
+      student: req.user._id,
       leaveType: leaveType || 'outpass',
-      reason,
-      fromDate,
-      toDate,
-      destination,
+      reason: reason.trim(),
+      fromDate: start,
+      toDate: end,
+      destination: destination.trim(),
       emergencyContact: emergencyContact || '',
       status: 'pending',
     });
@@ -89,7 +115,7 @@ const createLeave = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: 'Outpass / Leave request submitted successfully',
+      message: 'Outpass application submitted successfully for Warden review',
       data: populated,
     });
   } catch (error) {
@@ -98,7 +124,7 @@ const createLeave = async (req, res, next) => {
 };
 
 /**
- * @desc    Approve / Reject leave request
+ * @desc    Approve / Reject leave request (Warden/Admin only) or cancel (Student)
  * @route   PUT /api/leaves/:id
  * @access  Private
  */
@@ -112,11 +138,28 @@ const updateLeave = async (req, res, next) => {
       throw new Error('Leave request not found');
     }
 
-    if (status) leave.status = status;
-    if (approvalRemarks) leave.approvalRemarks = approvalRemarks;
-    if (actualReturnDate) leave.actualReturnDate = actualReturnDate;
-    if (req.user && ['approved', 'rejected'].includes(status)) {
-      leave.approvedBy = req.user._id;
+    // Role verification
+    if (req.user.role === 'student') {
+      if (!leave.student.equals(req.user._id)) {
+        res.status(403);
+        throw new Error('Not authorized to modify another student outpass');
+      }
+      if (status && !['cancelled', 'pending'].includes(status)) {
+        res.status(403);
+        throw new Error('Students cannot approve or reject outpasses');
+      }
+      if (status === 'cancelled') {
+        leave.status = 'cancelled';
+      }
+    } else {
+      // Warden / Admin approval
+      if (status) leave.status = status;
+      if (approvalRemarks) leave.approvalRemarks = approvalRemarks.trim();
+      if (actualReturnDate) leave.actualReturnDate = new Date(actualReturnDate);
+
+      if (['approved', 'rejected'].includes(status)) {
+        leave.approvedBy = req.user._id;
+      }
     }
 
     await leave.save();
@@ -127,7 +170,7 @@ const updateLeave = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: `Leave request ${status || 'updated'} successfully`,
+      message: `Outpass marked as ${status || 'updated'} successfully`,
       data: populated,
     });
   } catch (error) {
@@ -138,7 +181,7 @@ const updateLeave = async (req, res, next) => {
 /**
  * @desc    Delete leave request
  * @route   DELETE /api/leaves/:id
- * @access  Private
+ * @access  Private (Warden / Admin)
  */
 const deleteLeave = async (req, res, next) => {
   try {
@@ -153,7 +196,7 @@ const deleteLeave = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: 'Leave request deleted successfully',
+      message: 'Outpass record deleted successfully',
     });
   } catch (error) {
     next(error);

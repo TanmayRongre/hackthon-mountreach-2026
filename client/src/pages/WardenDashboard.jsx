@@ -25,7 +25,8 @@ import {
   Check,
   X,
   Phone,
-  Plus
+  Plus,
+  Menu
 } from 'lucide-react';
 
 export default function WardenDashboard() {
@@ -33,6 +34,7 @@ export default function WardenDashboard() {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -160,56 +162,57 @@ export default function WardenDashboard() {
         </div>
       )}
 
-      {/* ── TOP WARDEN NAVBAR ── */}
-      <header className="sticky top-0 z-40 bg-[#091527]/95 backdrop-blur-xl border-b border-slate-800 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xl">
+      {/* ── TOP BREADCRUMB & WARDEN DESK BANNER (No duplicate navbar) ── */}
+      <div className="max-w-7xl w-full mx-auto mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white font-black shadow-lg shadow-sky-600/30">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="lg:hidden p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white"
+            aria-label="Toggle warden sidebar"
+          >
+            {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+
+          <div className="w-10 h-10 rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shadow-md">
             <ShieldCheck className="w-5 h-5" />
           </div>
+
           <div>
-            <div className="text-sm font-black text-white tracking-tight flex items-center gap-1.5">
-              <span>HostelHub</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 uppercase tracking-widest border border-sky-500/30">
-                WARDEN DESK
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-white tracking-tight">Warden Control Desk</h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30 uppercase tracking-wider">
+                {hostels[0]?.name || 'Assigned Block'}
               </span>
             </div>
-            <p className="text-[10px] text-slate-400">Hostel Residency & Gatepass Management</p>
+            <p className="text-xs text-slate-400">Hostel residency, gatepass clearances, disciplinary grievances, and daily attendance.</p>
           </div>
         </div>
 
+        {/* Right Action Controls */}
         <div className="flex items-center gap-3">
           <button
             onClick={loadWardenData}
-            title="Refresh"
-            className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white"
+            title="Refresh Records"
+            className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-sky-400' : ''}`} />
+            <span className="hidden sm:inline">Refresh</span>
           </button>
-
-          <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
-            <div className="w-8 h-8 rounded-xl bg-sky-600/30 border border-sky-500/40 text-sky-300 font-bold text-xs flex items-center justify-center">
-              {user?.name?.charAt(0) || 'W'}
-            </div>
-            <div className="hidden sm:block text-left">
-              <div className="text-xs font-bold text-white truncate max-w-[120px]">{user?.name || 'Warden Staff'}</div>
-              <div className="text-[10px] text-sky-400 font-semibold uppercase">Hostel Warden</div>
-            </div>
-          </div>
 
           <button
-            onClick={logout}
-            title="Sign Out"
-            className="p-2 rounded-xl bg-rose-950/40 border border-rose-800/40 text-rose-300 hover:text-rose-200"
+            onClick={() => setNoticeModal(true)}
+            className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-sky-600/30 flex items-center gap-1.5 transition-all"
           >
-            <LogOut className="w-4 h-4" />
+            <Send className="w-3.5 h-3.5" />
+            <span>Post Circular</span>
           </button>
         </div>
-      </header>
+      </div>
 
       {/* ── MAIN WORKSPACE ── */}
       <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
         {/* ── LEFT SIDEBAR ── */}
-        <aside className="w-full lg:w-64 shrink-0 bg-[#0f1b2d]/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 shadow-2xl space-y-4 self-start">
+        <aside className={`${sidebarOpen ? 'flex' : 'hidden'} lg:flex flex-col w-full lg:w-64 shrink-0 bg-[#0f1b2d]/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 shadow-2xl space-y-4 self-start`}>
           <div className="p-3.5 rounded-2xl bg-gradient-to-br from-sky-950/60 to-slate-900 border border-sky-500/25 space-y-1">
             <div className="text-[10px] uppercase font-bold text-sky-400">Assigned Complex</div>
             <div className="text-sm font-bold text-white">{hostels[0]?.name || 'Campus Hostel Block'}</div>

@@ -112,7 +112,7 @@ export default function AdminDashboard() {
     {
       group: 'OPERATIONS',
       items: [
-        { id: 'complaints', label: 'Complaints Escalation', icon: <FileText className="w-4 h-4" />, badge: overviewStats?.kpis?.openComplaints, badgeColor: 'bg-amber-500/20 text-amber-300' },
+        { id: 'complaints', label: 'Complaints', icon: <FileText className="w-4 h-4" />, badge: overviewStats?.kpis?.openComplaints, badgeColor: 'bg-amber-500/20 text-amber-300' },
         { id: 'leaves', label: 'Outpasses & Leaves', icon: <Key className="w-4 h-4" />, badge: overviewStats?.kpis?.pendingLeaves, badgeColor: 'bg-sky-500/20 text-sky-300' },
         { id: 'attendance', label: 'Global Attendance', icon: <QrCode className="w-4 h-4" /> },
       ],
@@ -135,13 +135,13 @@ export default function AdminDashboard() {
       items: [
         { id: 'reports', label: 'Reports & Export', icon: <FileSpreadsheet className="w-4 h-4" /> },
         { id: 'audit-logs', label: 'Security Audit Logs', icon: <Activity className="w-4 h-4" /> },
-        { id: 'health', label: 'System Health Telemetry', icon: <Server className="w-4 h-4" /> },
+        { id: 'health', label: 'System Health', icon: <Server className="w-4 h-4" /> },
       ],
     },
   ];
 
   return (
-    <div className="min-h-screen bg-[#07101f] text-slate-100 font-sans flex flex-col">
+    <div className="min-h-[calc(100vh-64px)] bg-[#07101f] text-slate-100 font-sans flex flex-col p-4 sm:p-6 lg:p-8">
       {/* Toast Feedback */}
       {toast && (
         <div
@@ -156,99 +156,64 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* ════════════════════════════════════════════════
-          TOP ADMIN CONTROL NAVBAR
-          ════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-40 bg-[#091527]/95 backdrop-blur-xl border-b border-slate-800 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xl">
-        {/* Left: Branding & Status */}
-        <div className="flex items-center gap-4">
+      {/* ── TOP BREADCRUMB & TELEMETRY BAR (No duplicate navbar) ── */}
+      <div className="max-w-7xl w-full mx-auto mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white"
+            aria-label="Toggle admin sidebar"
           >
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-sky-500 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-600/30 group-hover:scale-105 transition-transform">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-sm font-black text-white tracking-tight flex items-center gap-1.5">
-                <span>HostelHub</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 uppercase tracking-widest border border-indigo-500/30">
-                  ADMIN
-                </span>
-              </div>
-              <p className="text-[10px] text-slate-400 hidden sm:block">Central Platform Command Center</p>
-            </div>
-          </Link>
-        </div>
-
-        {/* Middle: Live Technical Telemetry */}
-        <div className="hidden md:flex items-center gap-4 text-xs font-mono">
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>System Online</span>
+          <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-md">
+            <ShieldCheck className="w-5 h-5" />
           </div>
 
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-300">
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-white tracking-tight">Admin Command Center</h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
+                Global Control
+              </span>
+            </div>
+            <p className="text-xs text-slate-400">System oversight, resident rosters, financial audits, and security telemetry.</p>
+          </div>
+        </div>
+
+        {/* Right Telemetry Pills */}
+        <div className="flex items-center gap-3 text-xs">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-[11px]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Telemetry Online</span>
+          </div>
+
+          <div className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-[11px] font-mono">
             <span>DB: {healthData?.database?.latencyMs || 3}ms</span>
           </div>
 
-          <div className="text-slate-400 text-[11px]">
-            Updated: {lastUpdated.toLocaleTimeString()}
-          </div>
-        </div>
-
-        {/* Right: Actions, Admin Badge & Switcher */}
-        <div className="flex items-center gap-3">
           <button
             onClick={loadAdminData}
             title="Refresh All Metrics"
-            className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-all cursor-pointer"
+            className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-indigo-400' : ''}`} />
           </button>
-
-          <Link
-            to="/student-dashboard"
-            className="hidden sm:flex px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition-all"
-          >
-            Student View →
-          </Link>
-
-          <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 font-bold text-xs flex items-center justify-center">
-              {user?.name?.charAt(0) || 'A'}
-            </div>
-            <div className="hidden lg:block text-left">
-              <div className="text-xs font-bold text-white truncate max-w-[120px]">{user?.name || 'Administrator'}</div>
-              <div className="text-[10px] text-amber-400 font-semibold uppercase">Global Admin</div>
-            </div>
-          </div>
-
-          <button
-            onClick={logout}
-            title="Sign Out"
-            className="p-2 rounded-xl bg-rose-950/40 border border-rose-800/40 text-rose-300 hover:text-rose-200 hover:bg-rose-900/60 transition-all cursor-pointer ml-1"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
         </div>
-      </header>
+      </div>
 
       {/* ════════════════════════════════════════════════
           MAIN ADMIN WORKSPACE LAYOUT
           ════════════════════════════════════════════════ */}
-      <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
+      <div className="flex-1 max-w-7xl w-full mx-auto flex flex-col lg:flex-row gap-6">
         {/* ── LEFT ADMIN SIDEBAR ── */}
         <aside
           className={`${
             sidebarOpen ? 'flex' : 'hidden'
-          } lg:flex flex-col w-full lg:w-64 shrink-0 bg-[#0f1b2d]/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 shadow-2xl space-y-6 self-start`}
+          } lg:flex flex-col w-full lg:w-64 shrink-0 bg-[#0f1b2d]/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 shadow-2xl space-y-5 self-start`}
         >
-          <div className="space-y-5">
+          <div className="space-y-4">
             {navSections.map((sec, sIdx) => (
               <div key={sIdx} className="space-y-1">
                 <div className="text-[10px] font-black uppercase tracking-wider text-slate-500 px-3 pb-1">
@@ -264,7 +229,7 @@ export default function AdminDashboard() {
                         setActiveTab(item.id);
                         setSidebarOpen(false);
                       }}
-                      className={`w-full px-3 py-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between transition-all cursor-pointer group ${
+                      className={`w-full px-3 py-2 rounded-2xl text-xs font-semibold flex items-center justify-between transition-all cursor-pointer group ${
                         active
                           ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/30'
                           : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
@@ -294,7 +259,7 @@ export default function AdminDashboard() {
           </div>
 
           <div className="pt-3 border-t border-slate-800 text-center">
-            <div className="text-[10px] text-slate-500">HostelHub Enterprise v2.4</div>
+            <div className="text-[10px] text-slate-500">HostelHub Admin Suite v2.6</div>
           </div>
         </aside>
 

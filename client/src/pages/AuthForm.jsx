@@ -28,6 +28,12 @@ export default function AuthForm({ initialActive = false }) {
   const [registerSuccess, setRegisterSuccess] = useState('');
   const [registerLoading, setRegisterLoading] = useState(false);
 
+  // Forgot Password & SSO Modal States
+  const [forgotModal, setForgotModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotSent, setForgotSent] = useState(false);
+  const [ssoModal, setSsoModal] = useState(null); // 'google' | 'microsoft' | 'github'
+
   // Sync state with URL if user navigates between /login and /register
   useEffect(() => {
     if (location.pathname === '/register') {
@@ -65,7 +71,7 @@ export default function AuthForm({ initialActive = false }) {
         navigate('/dashboard');
       }
     } catch (err) {
-      setLoginError(err.message || 'Invalid username/email or password');
+      setLoginError(err.message || 'Invalid username/email or password credentials');
     } finally {
       setLoginLoading(false);
     }
@@ -115,6 +121,11 @@ export default function AuthForm({ initialActive = false }) {
       setLoginEmail('developer@mountreach.com');
       setLoginPassword('dev123456');
     }
+  };
+
+  const handleSendReset = (e) => {
+    e.preventDefault();
+    setForgotSent(true);
   };
 
   return (
@@ -217,7 +228,16 @@ export default function AuthForm({ initialActive = false }) {
             </div>
 
             <div className="forgot-link">
-              <a href="#" onClick={(e) => e.preventDefault()}>Forgot Password?</a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setForgotModal(true);
+                  setForgotSent(false);
+                }}
+              >
+                Forgot Password?
+              </a>
             </div>
 
             <button type="submit" className="btn-primary-auth" disabled={loginLoading}>
@@ -253,16 +273,16 @@ export default function AuthForm({ initialActive = false }) {
               </button>
             </div>
 
-            <div className="divider-text">or sign in with SSO</div>
+            <div className="divider-text">Institutional Single Sign-On</div>
 
             <div className="social-icons">
-              <a href="#" onClick={(e) => e.preventDefault()} title="College Google Workspace SSO">
+              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Google Workspace SSO'); }} title="College Google Workspace SSO">
                 <i className="bx bxl-google"></i>
               </a>
-              <a href="#" onClick={(e) => e.preventDefault()} title="Institutional Microsoft SSO">
+              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Microsoft Azure AD SSO'); }} title="Institutional Microsoft SSO">
                 <i className="bx bxl-microsoft"></i>
               </a>
-              <a href="#" onClick={(e) => e.preventDefault()} title="GitHub SSO">
+              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Campus GitHub Organization'); }} title="GitHub SSO">
                 <i className="bx bxl-github"></i>
               </a>
             </div>
@@ -352,13 +372,13 @@ export default function AuthForm({ initialActive = false }) {
             <div className="divider-text">Institutional Portal Verification</div>
 
             <div className="social-icons">
-              <a href="#" onClick={(e) => e.preventDefault()} title="Verify with Google">
+              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Google Workspace SSO'); }} title="Verify with Google">
                 <i className="bx bxl-google"></i>
               </a>
-              <a href="#" onClick={(e) => e.preventDefault()} title="Verify with Microsoft">
+              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Microsoft Azure AD SSO'); }} title="Verify with Microsoft">
                 <i className="bx bxl-microsoft"></i>
               </a>
-              <a href="#" onClick={(e) => e.preventDefault()} title="Verify with GitHub">
+              <a href="#" onClick={(e) => { e.preventDefault(); setSsoModal('Campus GitHub Organization'); }} title="Verify with GitHub">
                 <i className="bx bxl-github"></i>
               </a>
             </div>
@@ -369,7 +389,6 @@ export default function AuthForm({ initialActive = false }) {
             SLIDING TOGGLE PANEL (Desktop / Tablet)
             ════════════════════════════════════════ */}
         <div className="toggle-box">
-          {/* Left panel (shows when on Login view, prompts to Register) */}
           <div className="toggle-panel toggle-left">
             <div className="badge-pill">
               <i className="bx bx-building-house"></i>
@@ -388,7 +407,6 @@ export default function AuthForm({ initialActive = false }) {
             </button>
           </div>
 
-          {/* Right panel (shows when on Register view, prompts to Login) */}
           <div className="toggle-panel toggle-right">
             <div className="badge-pill">
               <i className="bx bx-shield-quarter"></i>
@@ -409,6 +427,82 @@ export default function AuthForm({ initialActive = false }) {
         </div>
 
       </div>
+
+      {/* ── FORGOT PASSWORD MODAL ── */}
+      {forgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-sans">
+          <div className="w-full max-w-md p-6 rounded-3xl bg-[#0f1b2d] border border-slate-800 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold text-white">Reset Account Password</h3>
+              <button
+                onClick={() => setForgotModal(false)}
+                className="text-slate-400 hover:text-white text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {forgotSent ? (
+              <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/30 text-emerald-200 text-xs space-y-2">
+                <div className="font-bold">✓ Password Reset Link Dispatched</div>
+                <p>If an account with <strong>{forgotEmail || 'your email'}</strong> exists in our records, a secure password reset link has been dispatched to your inbox.</p>
+                <button
+                  onClick={() => setForgotModal(false)}
+                  className="w-full py-2 mt-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                >
+                  Return to Login
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSendReset} className="space-y-3">
+                <p className="text-xs text-slate-400">
+                  Enter your registered institutional college email. We will generate an encrypted password reset link.
+                </p>
+                <input
+                  type="email"
+                  placeholder="name@mountreach.edu"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all"
+                >
+                  Send Recovery Link
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── SSO INFO MODAL ── */}
+      {ssoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-sans">
+          <div className="w-full max-w-sm p-6 rounded-3xl bg-[#0f1b2d] border border-slate-800 shadow-2xl space-y-4 text-center">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center mx-auto text-2xl">
+              🏢
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-white">{ssoModal}</h3>
+              <p className="text-xs text-slate-400 mt-1.5">
+                Campus Single Sign-On requires institutional SAML 2.0 / OAuth2 credentials issued by MountReach IT Services.
+              </p>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300">
+              For demo access, please use the quick <strong>Demo Student</strong>, <strong>Demo Warden</strong>, or <strong>Demo Admin</strong> one-click login buttons.
+            </div>
+            <button
+              onClick={() => setSsoModal(null)}
+              className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 const Attendance = require('../models/Attendance');
 const Student = require('../models/Student');
+const Hostel = require('../models/Hostel');
 
 /**
  * @desc    Scan and mark daily student attendance via QR code
@@ -8,11 +9,7 @@ const Student = require('../models/Student');
  */
 const scanAttendance = async (req, res, next) => {
   try {
-    const studentId = req.user ? req.user._id : req.body.student;
-    if (!studentId) {
-      res.status(400);
-      throw new Error('Please login to mark attendance');
-    }
+    const studentId = req.user._id;
 
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
@@ -29,7 +26,7 @@ const scanAttendance = async (req, res, next) => {
       return res.status(200).json({
         success: true,
         alreadyMarked: true,
-        message: 'Attendance already scanned and verified for today!',
+        message: 'Attendance already recorded and verified for today!',
         data: record,
       });
     }
@@ -51,7 +48,7 @@ const scanAttendance = async (req, res, next) => {
     res.status(201).json({
       success: true,
       alreadyMarked: false,
-      message: '✅ Attendance verified & marked Present successfully!',
+      message: '✅ Daily resident presence verified & marked Present successfully!',
       data: populated,
     });
   } catch (error) {
@@ -60,22 +57,27 @@ const scanAttendance = async (req, res, next) => {
 };
 
 /**
- * @desc    Get attendance records
+ * @desc    Get attendance records (scoped by role)
  * @route   GET /api/attendance
- * @access  Public / Private
+ * @access  Private
  */
 const getAttendances = async (req, res, next) => {
   try {
-    const { student, hostel, room, date, status } = req.query;
+    const { hostel, room, date, status } = req.query;
     const filter = {};
 
-    if (student) {
-      filter.student = student;
-    } else if (req.user && req.user.role === 'student') {
+    // Role scoping
+    if (req.user.role === 'student') {
       filter.student = req.user._id;
+    } else if (req.user.role === 'warden') {
+      const assignedHostels = await Hostel.find({ warden: req.user._id }).select('_id');
+      const hostelIds = assignedHostels.map((h) => h._id);
+      if (hostelIds.length > 0) {
+        filter.hostel = { $in: hostelIds };
+      }
     }
 
-    if (hostel) filter.hostel = hostel;
+    if (hostel && req.user.role !== 'student') filter.hostel = hostel;
     if (room) filter.room = room;
     if (status) filter.status = status;
     if (date) {
@@ -106,7 +108,7 @@ const getAttendances = async (req, res, next) => {
 /**
  * @desc    Get attendance by ID
  * @route   GET /api/attendance/:id
- * @access  Public / Private
+ * @access  Private
  */
 const getAttendanceById = async (req, res, next) => {
   try {
@@ -120,6 +122,11 @@ const getAttendanceById = async (req, res, next) => {
       throw new Error('Attendance record not found');
     }
 
+    if (req.user.role === 'student' && !record.student._id.equals(req.user._id)) {
+      res.status(403);
+      throw new Error('Not authorized to access another resident attendance log');
+    }
+
     res.status(200).json({
       success: true,
       data: record,
@@ -130,28 +137,29 @@ const getAttendanceById = async (req, res, next) => {
 };
 
 /**
- * @desc    Mark attendance
+ * @desc    Mark attendance manually (Warden / Admin)
  * @route   POST /api/attendance
- * @access  Private
+ * @access  Private (Warden / Admin)
  */
 const createAttendance = async (req, res, next) => {
   try {
     const { student, hostel, room, date, status, remarks } = req.body;
 
-    const studentId = student || (req.user ? req.user._id : null);
-    if (!studentId) {
+    if (!student) {
       res.status(400);
       throw new Error('Please specify student');
     }
 
+    const studentDoc = await Student.findOne({ user: student });
+
     const record = await Attendance.create({
-      student: studentId,
-      hostel: hostel || null,
-      room: room || null,
-      date: date || Date.now(),
+      student,
+      hostel: hostel || studentDoc?.hostel || null,
+      room: room || studentDoc?.room || null,
+      date: date ? new Date(date) : new Date(),
       status: status || 'present',
-      markedBy: req.user ? req.user._id : null,
-      remarks: remarks || '',
+      markedBy: req.user._id,
+      remarks: remarks || 'Roster update by Warden/Admin',
     });
 
     const populated = await Attendance.findById(record._id)
@@ -160,7 +168,7 @@ const createAttendance = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: 'Attendance marked successfully',
+      message: 'Attendance record registered successfully',
       data: populated,
     });
   } catch (error) {
@@ -171,7 +179,7 @@ const createAttendance = async (req, res, next) => {
 /**
  * @desc    Update attendance record
  * @route   PUT /api/attendance/:id
- * @access  Private
+ * @access  Private (Warden / Admin)
  */
 const updateAttendance = async (req, res, next) => {
   try {
@@ -189,7 +197,7 @@ const updateAttendance = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: 'Attendance updated successfully',
+      message: 'Attendance record updated successfully',
       data: record,
     });
   } catch (error) {
@@ -200,7 +208,7 @@ const updateAttendance = async (req, res, next) => {
 /**
  * @desc    Delete attendance record
  * @route   DELETE /api/attendance/:id
- * @access  Private/Admin
+ * @access  Private (Admin)
  */
 const deleteAttendance = async (req, res, next) => {
   try {

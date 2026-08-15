@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 const ROLES = [
   {
@@ -18,8 +17,6 @@ const ROLES = [
       'Fee dues & payment history',
       'Notice board & announcements',
     ],
-    ctaLabel: 'Student Login →',
-    ctaCls: 'blue',
   },
   {
     cls: 'warden',
@@ -37,8 +34,6 @@ const ROLES = [
       'Post block-level notices',
       'Report maintenance issues',
     ],
-    ctaLabel: 'Warden Login →',
-    ctaCls: 'green',
   },
   {
     cls: 'admin-r',
@@ -56,8 +51,6 @@ const ROLES = [
       'Analytics & downloadable reports',
       'System-wide settings & roles',
     ],
-    ctaLabel: 'Admin Login →',
-    ctaCls: 'amber',
   },
 ];
 
@@ -94,10 +87,6 @@ export default function RolesSection() {
                   </li>
                 ))}
               </ul>
-              <Link to="/login" className={`role-cta ${r.ctaCls}`}>
-                <i className="bx bx-log-in-circle" style={{ fontSize: 15 }}></i>
-                {r.ctaLabel}
-              </Link>
             </div>
           ))}
         </div>

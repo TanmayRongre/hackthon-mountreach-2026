@@ -1,4 +1,7 @@
 const Hostel = require('../models/Hostel');
+const Room = require('../models/Room');
+const Student = require('../models/Student');
+const Bed = require('../models/Bed');
 
 /**
  * @desc    Get all hostels
@@ -41,9 +44,16 @@ const getHostelById = async (req, res, next) => {
       throw new Error('Hostel not found');
     }
 
+    const rooms = await Room.find({ hostel: hostel._id });
+    const students = await Student.find({ hostel: hostel._id, status: 'active' }).populate('user', 'name email');
+
     res.status(200).json({
       success: true,
-      data: hostel,
+      data: {
+        ...hostel.toObject(),
+        rooms,
+        residentsCount: students.length,
+      },
     });
   } catch (error) {
     next(error);
@@ -64,15 +74,16 @@ const createHostel = async (req, res, next) => {
       throw new Error('Please provide hostel name');
     }
 
-    const existingHostel = await Hostel.findOne({ name });
+    const cleanName = name.trim();
+    const existingHostel = await Hostel.findOne({ name: cleanName });
     if (existingHostel) {
       res.status(400);
       throw new Error('A hostel block with this name already exists');
     }
 
     const hostel = await Hostel.create({
-      name,
-      code: code || name.slice(0, 3).toUpperCase(),
+      name: cleanName,
+      code: code ? code.trim().toUpperCase() : cleanName.slice(0, 3).toUpperCase(),
       gender: gender || 'co-ed',
       totalFloors: totalFloors || 3,
       totalRooms: totalRooms || 30,
@@ -119,7 +130,7 @@ const updateHostel = async (req, res, next) => {
 };
 
 /**
- * @desc    Delete hostel block
+ * @desc    Delete hostel block safely
  * @route   DELETE /api/hostels/:id
  * @access  Private/Admin
  */
@@ -132,11 +143,23 @@ const deleteHostel = async (req, res, next) => {
       throw new Error('Hostel not found');
     }
 
+    // Check for active residents
+    const activeStudents = await Student.countDocuments({ hostel: hostel._id, status: 'active' });
+    if (activeStudents > 0) {
+      res.status(400);
+      throw new Error(`Cannot delete hostel. ${activeStudents} active resident(s) are currently allotted to this block.`);
+    }
+
+    // Delete associated rooms and beds
+    const rooms = await Room.find({ hostel: hostel._id });
+    const roomIds = rooms.map((r) => r._id);
+    await Bed.deleteMany({ room: { $in: roomIds } });
+    await Room.deleteMany({ hostel: hostel._id });
     await hostel.deleteOne();
 
     res.status(200).json({
       success: true,
-      message: 'Hostel block deleted successfully',
+      message: 'Hostel block and associated rooms deleted successfully',
     });
   } catch (error) {
     next(error);
