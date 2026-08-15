@@ -14,18 +14,18 @@ const noticeSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['General', 'Rules & Discipline', 'Mess', 'Maintenance', 'Fee Reminder', 'Event', 'Emergency'],
       default: 'General',
+      trim: true,
     },
     priority: {
       type: String,
-      enum: ['normal', 'high', 'urgent'],
       default: 'normal',
+      trim: true,
     },
     targetAudience: {
       type: String,
-      enum: ['all', 'students', 'wardens', 'specific_block'],
       default: 'all',
+      trim: true,
     },
     hostel: {
       type: mongoose.Schema.Types.ObjectId,
