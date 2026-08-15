@@ -1,132 +1,469 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import api from '../services/api';
-import { 
-  Sparkles, 
-  Layers, 
-  Database, 
-  ShieldCheck, 
-  Terminal, 
-  ArrowRight, 
-  CheckCircle2, 
-  Server,
-  Zap,
-  Lock,
-  Cpu
-} from 'lucide-react';
+import '../styles/Home.css';
+import '../styles/LandingSections.css';
 
+/* ─── DATA ───────────────────────────────────────── */
+
+const ROLES = [
+  {
+    cls: 'student',
+    iconCls: 'blue',
+    labelCls: 'blue',
+    icon: '🎓',
+    label: 'Student Portal',
+    title: 'Student',
+    desc: 'Manage your hostel life from a single dashboard — apply for a room, track complaints, view mess menu, request outpass, and stay connected.',
+    features: [
+      'Apply & track room allotment',
+      'Raise & monitor complaints',
+      'View daily mess menu',
+      'Request outpass / leave',
+      'Fee dues & payment history',
+      'Notice board & announcements',
+    ],
+    ctaLabel: 'Student Login →',
+    ctaCls: 'blue',
+  },
+  {
+    cls: 'warden',
+    iconCls: 'green',
+    labelCls: 'green',
+    icon: '🏫',
+    label: 'Warden Dashboard',
+    title: 'Warden',
+    desc: 'Oversee your hostel block with real-time tools — manage room allotments, approve outpass requests, handle student complaints, and coordinate with admin.',
+    features: [
+      'Manage room allotments',
+      'Approve / reject outpass',
+      'Resolve student complaints',
+      'Track attendance by floor',
+      'Post block-level notices',
+      'Report maintenance issues',
+    ],
+    ctaLabel: 'Warden Login →',
+    ctaCls: 'green',
+  },
+  {
+    cls: 'admin-r',
+    iconCls: 'amber',
+    labelCls: 'amber',
+    icon: '🛡️',
+    label: 'Admin Panel',
+    title: 'Admin',
+    desc: 'Full control over the entire hostel campus — manage wardens, allocate rooms across blocks, oversee fees, generate reports, and configure the system.',
+    features: [
+      'Manage all hostel blocks & rooms',
+      'Add / manage wardens',
+      'Oversee all student records',
+      'Global fee collection overview',
+      'Analytics & downloadable reports',
+      'System-wide settings & roles',
+    ],
+    ctaLabel: 'Admin Login →',
+    ctaCls: 'amber',
+  },
+];
+
+const FEATURES = [
+  { icon: '🏠', title: 'Room Allotment & Management', desc: 'Automated room allocation based on preferences, gender, and availability across all blocks.' },
+  { icon: '📋', title: 'Complaint & Grievance System', desc: 'Students raise issues; wardens resolve them. Track status from submitted to resolved.' },
+  { icon: '🍱', title: 'Mess & Meal Management', desc: 'Weekly mess menu, meal tracking, special dietary requests, and mess feedback system.' },
+  { icon: '🔑', title: 'Outpass & Leave Requests', desc: 'Digital outpass approval — students apply, wardens approve, admin monitors.' },
+  { icon: '📊', title: 'Attendance Monitoring', desc: 'Floor-wise and block-wise daily attendance tracking with defaulter reports.' },
+  { icon: '💳', title: 'Fee & Payment Tracking', desc: 'Hostel fee dues, payment history, receipt generation, and fine management.' },
+  { icon: '📢', title: 'Notice Board & Alerts', desc: 'Instant announcements pushed to students — block-level or campus-wide.' },
+  { icon: '🛠️', title: 'Maintenance Requests', desc: 'Report electrical, plumbing, or furniture issues and track repair progress.' },
+];
+
+const STEPS = [
+  {
+    n: '01',
+    title: 'Register & Get Onboarded',
+    desc: 'Students register with their enrollment ID. Admin verifies and assigns them to a hostel block with a room allotment letter.',
+  },
+  {
+    n: '02',
+    title: 'Access Your Role Dashboard',
+    desc: 'Login with your credentials. Students, Wardens, and Admins each see a personalized dashboard with role-specific tools and data.',
+  },
+  {
+    n: '03',
+    title: 'Manage Everything Digitally',
+    desc: 'No paper. Raise complaints, approve outpass, view mess menu, pay fees, and download reports — all from one platform.',
+  },
+];
+
+const STATS = [
+  { value: '2,400+', label: 'Students Managed' },
+  { value: '12', label: 'Hostel Blocks' },
+  { value: '850+', label: 'Rooms Tracked' },
+  { value: '98%', label: 'Complaint Resolution Rate' },
+];
+
+const FOOTER_PORTAL = ['Student Login', 'Warden Login', 'Admin Panel', 'Register as Student', 'Reset Password'];
+const FOOTER_HMS = ['Room Allotment', 'Mess Schedule', 'Outpass Request', 'Complaint Portal', 'Fee Payment'];
+const FOOTER_SUPPORT = ['FAQ', 'Hostel Rules & Regulations', 'Privacy Policy', 'Terms of Service', 'Grievance Portal'];
+
+/* ─── COMPONENT ──────────────────────────────────── */
 export default function Home() {
   const { isAuthenticated, user } = useAuth();
-  const [healthData, setHealthData] = useState(null);
-
-  useEffect(() => {
-    api.getHealth()
-      .then((data) => setHealthData(data))
-      .catch(() => setHealthData({ success: false }));
-  }, []);
+  const navigate = useNavigate();
 
   return (
-    <div className="flex-1 flex flex-col justify-center relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
-      
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-indigo-600/20 via-sky-600/10 to-transparent blur-[120px] pointer-events-none -z-10" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-600/10 blur-[140px] pointer-events-none -z-10" />
+    <>
+      {/* ════════════════════════════════════════
+          HERO — full-viewport
+          ════════════════════════════════════════ */}
+      <div className="home-page">
+        <div className="home-hero-bg" />
+        <div className="home-hero-overlay" />
 
-      <div className="max-w-5xl mx-auto text-center">
-        
-        {/* Hackathon Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-6 shadow-inner">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>MountReach Hackathon 2026 · Full MERN Architecture</span>
-        </div>
+        <div className="home-layout">
+          {/* ── Left column ── */}
+          <div className="home-left-col">
+            <div className="home-hero-content">
+              <div className="home-badge">
+                <i className="bx bx-building-house" style={{ fontSize: 13 }}></i>
+                College Hostel Management System · 2026
+              </div>
 
-        {/* Hero Title */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-tight mb-6">
-          High Performance{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-400 to-teal-300">
-            MERN Stack
-          </span>{' '}
-          Platform
-        </h1>
+              <h1>
+                Smart Hostel<br />
+                <span>Management</span><br />
+                for Colleges
+              </h1>
 
-        {/* Subtitle */}
-        <p className="text-base sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Production-ready full stack environment with Express API, MongoDB Atlas, JWT authentication, secure authorization roles, and integrated verification tools.
-        </p>
+              <p className="home-hero-desc">
+                A unified digital platform for Students, Wardens, and Admins.
+                Streamline room allotments, complaints, mess management,
+                outpass requests, and more — completely paperless.
+              </p>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
-          <Link
-            to="/dashboard"
-            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-bold text-base shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02]"
-          >
-            <Layers className="w-5 h-5" />
-            <span>Launch Testing Dashboard</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+              <div className="home-cta-row">
+                <Link to="/login" className="home-cta-primary">
+                  <i className="bx bx-log-in-circle" style={{ fontSize: 18 }}></i>
+                  Login to Your Portal
+                </Link>
+                <Link to="/register" className="home-cta-secondary">
+                  <i className="bx bx-user-plus" style={{ fontSize: 18 }}></i>
+                  Register as Student
+                </Link>
+              </div>
 
-          {!isAuthenticated ? (
-            <Link
-              to="/register"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 hover:text-white font-semibold text-base transition-all backdrop-blur-sm"
-            >
-              Sign Up / Get Started
-            </Link>
-          ) : (
-            <div className="px-6 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm font-medium flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>Signed in as {user?.name} ({user?.role})</span>
+              <div className="home-stats-row">
+                <div className="home-stat-item">
+                  <span className="home-stat-value">2,400+</span>
+                  <span className="home-stat-label">Students</span>
+                </div>
+                <div className="home-stat-sep" />
+                <div className="home-stat-item">
+                  <span className="home-stat-value">12</span>
+                  <span className="home-stat-label">Hostel Blocks</span>
+                </div>
+                <div className="home-stat-sep" />
+                <div className="home-stat-item">
+                  <span className="home-stat-value">3</span>
+                  <span className="home-stat-label">User Roles</span>
+                </div>
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* Feature Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-          
-          <div className="p-6 rounded-2xl bg-slate-900/40 border border-white/10 backdrop-blur-md hover:border-indigo-500/40 transition-all group">
-            <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
-              <Lock className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">JWT Authentication</h3>
-            <p className="text-sm text-slate-400 leading-relaxed">
-              Bcrypt hashed passwords, signed JSON Web Tokens, cookie support, and role-based permissions (User / Admin).
-            </p>
+            {/* Left col ends here — hero content only */}
           </div>
 
-          <div className="p-6 rounded-2xl bg-slate-900/40 border border-white/10 backdrop-blur-md hover:border-sky-500/40 transition-all group">
-            <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 mb-4 group-hover:scale-110 transition-transform">
-              <Database className="w-6 h-6" />
+          {/* ── Right column: BOTH cards side by side at bottom ── */}
+          <div className="home-right-col">
+            <div className="home-cards-row">
+
+              {/* Card 1 — Portals */}
+              <div className="home-card-left">
+                <h3>3 Role Portals</h3>
+                <p>One platform, three tailored dashboards.</p>
+                <div className="home-card-left-footer">
+                  <div>
+                    <div className="home-stat-big">100%</div>
+                    <div className="home-stat-tiny">Paperless</div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div className="home-card-avatars">
+                      <div className="home-avatar" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }} title="Student">S</div>
+                      <div className="home-avatar" style={{ background: 'linear-gradient(135deg,#10b981,#059669)' }} title="Warden">W</div>
+                      <div className="home-avatar" style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)' }} title="Admin">A</div>
+                    </div>
+                    <Link to="/login" className="home-card-go-btn" title="Login">→</Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2 — Portal info */}
+              <div className="home-card-right">
+                <div className="home-card-header">
+                  <div>
+                    <div className="home-card-title">HostelHub Portal</div>
+                    <div className="home-card-addr">
+                      <i className="bx bx-map-pin" style={{ fontSize: 12 }}></i>
+                      Campus College, Pune
+                    </div>
+                  </div>
+                  <Link to="/login" className="home-card-go-btn" title="Go to portal">→</Link>
+                </div>
+                <div className="home-card-badge">
+                  <i className="bx bxs-check-circle" style={{ fontSize: 11 }}></i>
+                  System Active
+                </div>
+                <p className="home-card-desc">
+                  Rooms, complaints, mess, outpass &amp; fees — one secure platform.
+                </p>
+                <div className="home-card-specs">
+                  <div className="home-card-spec">
+                    <i className="bx bx-user" style={{ color: '#818cf8' }}></i>Student
+                  </div>
+                  <div className="home-card-spec-sep" />
+                  <div className="home-card-spec">
+                    <i className="bx bx-id-card" style={{ color: '#818cf8' }}></i>Warden
+                  </div>
+                  <div className="home-card-spec-sep" />
+                  <div className="home-card-spec">
+                    <i className="bx bx-shield" style={{ color: '#818cf8' }}></i>Admin
+                  </div>
+                </div>
+              </div>
+
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">MongoDB & Mongoose</h3>
-            <p className="text-sm text-slate-400 leading-relaxed">
-              Complete Items & User schemas with timestamps, relations, category filters, and owner validation.
-            </p>
           </div>
-
-          <div className="p-6 rounded-2xl bg-slate-900/40 border border-white/10 backdrop-blur-md hover:border-teal-500/40 transition-all group">
-            <div className="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 mb-4 group-hover:scale-110 transition-transform">
-              <Terminal className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">Live API Testing Suite</h3>
-            <p className="text-sm text-slate-400 leading-relaxed">
-              Execute live REST endpoints, monitor latency, send custom HTTP payloads, and inspect server responses.
-            </p>
-          </div>
-
         </div>
-
-        {/* Server Status pill */}
-        <div className="mt-12 inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-900/80 border border-white/10 text-xs text-slate-400">
-          <Server className="w-4 h-4 text-slate-400" />
-          <span>Server Status:</span>
-          <span className="font-mono text-emerald-400 font-semibold flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            {healthData?.success ? `Operational (${healthData.uptime || 'active'})` : 'Connecting...'}
-          </span>
-        </div>
-
       </div>
-    </div>
+
+      {/* ════════════════════════════════════════
+          SECTION 1 — ROLE CARDS
+          ════════════════════════════════════════ */}
+      <section className="lp-section lp-bg-a">
+        <div className="lp-inner">
+          <div className="lp-header-center">
+            <div className="lp-tag"><i className="bx bx-group" style={{ fontSize: 12 }}></i>User Roles</div>
+            <h2 className="lp-heading">One Platform, <span>Three Powerful Portals</span></h2>
+            <p className="lp-sub">Every user gets a tailored dashboard with exactly what they need — nothing more, nothing less.</p>
+          </div>
+
+          <div className="roles-grid">
+            {ROLES.map((r) => (
+              <div key={r.cls} className={`role-card ${r.cls}`}>
+                <span className={`role-label ${r.labelCls}`}>{r.label}</span>
+                <div className={`role-icon ${r.iconCls}`}>
+                  <span role="img" aria-label={r.title}>{r.icon}</span>
+                </div>
+                <h3>{r.title}</h3>
+                <p>{r.desc}</p>
+                <ul className="role-features">
+                  {r.features.map((f) => (
+                    <li key={f}>
+                      <span className={`role-check ${r.iconCls}`}>✓</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/login" className={`role-cta ${r.ctaCls}`}>
+                  <i className="bx bx-log-in-circle" style={{ fontSize: 15 }}></i>
+                  {r.ctaLabel}
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          SECTION 2 — FEATURES
+          ════════════════════════════════════════ */}
+      <section className="lp-section lp-bg-b">
+        <div className="lp-inner">
+          <div className="lp-header-center">
+            <div className="lp-tag"><i className="bx bx-grid-alt" style={{ fontSize: 12 }}></i>Features</div>
+            <h2 className="lp-heading">Everything You Need to Run a <span>Modern Hostel</span></h2>
+            <p className="lp-sub">From room allocation to mess management — every hostel operation, digitized and streamlined.</p>
+          </div>
+          <div className="features-grid">
+            {FEATURES.map((f, i) => (
+              <div key={i} className="feature-card">
+                <div className="feature-icon">
+                  <span role="img" aria-label={f.title}>{f.icon}</span>
+                </div>
+                <h3>{f.title}</h3>
+                <p>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          SECTION 3 — HOW IT WORKS
+          ════════════════════════════════════════ */}
+      <section className="lp-section lp-bg-a">
+        <div className="lp-inner">
+          <div className="lp-header-center">
+            <div className="lp-tag"><i className="bx bx-list-check" style={{ fontSize: 12 }}></i>Getting Started</div>
+            <h2 className="lp-heading">Up & Running in <span>3 Simple Steps</span></h2>
+            <p className="lp-sub">From registration to full digital hostel management — onboarding is fast and straightforward.</p>
+          </div>
+          <div className="hiw-steps">
+            {STEPS.map((s, i) => (
+              <div key={i} className="hiw-step">
+                <div className="hiw-number">{s.n}</div>
+                <h3>{s.title}</h3>
+                <p>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          SECTION 4 — STATS
+          ════════════════════════════════════════ */}
+      <section className="lp-section lp-bg-b">
+        <div className="lp-inner">
+          <div className="lp-header-center" style={{ marginBottom: 48 }}>
+            <div className="lp-tag"><i className="bx bx-bar-chart-alt-2" style={{ fontSize: 12 }}></i>Impact</div>
+            <h2 className="lp-heading">Trusted by Colleges, <span>Loved by Students</span></h2>
+            <p className="lp-sub">Real numbers from real hostel campuses using HostelHub.</p>
+          </div>
+          <div className="stats-strip">
+            {STATS.map((s, i) => (
+              <div key={i} className="stat-block">
+                <div className="stat-block-value">{s.value}</div>
+                <div className="stat-block-label">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          SECTION 5 — CTA
+          ════════════════════════════════════════ */}
+      <section className="lp-section lp-bg-c">
+        <div className="lp-inner">
+          <div className="cta-banner">
+            <h2>Ready to <span style={{
+              background: 'linear-gradient(135deg,#818cf8,#a5b4fc)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>Digitise Your Hostel?</span></h2>
+            <p>Replace paper registers, manual attendance, and phone-based complaints with one smart platform built for college hostels.</p>
+            <div className="cta-btn-row">
+              <Link to="/register" className="cta-btn-primary">
+                <i className="bx bx-user-plus" style={{ fontSize: 18 }}></i>
+                Register as Student
+              </Link>
+              <Link to="/login" className="cta-btn-secondary">
+                <i className="bx bx-log-in-circle" style={{ fontSize: 18 }}></i>
+                Login to Your Portal
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          FOOTER
+          ════════════════════════════════════════ */}
+      <footer className="site-footer">
+        <div className="footer-inner">
+          <div className="footer-grid">
+
+            {/* Brand */}
+            <div>
+              <div className="footer-brand-logo">
+                <div className="footer-logo-icon">
+                  <i className="bx bx-building-house"></i>
+                </div>
+                <div>
+                  <div className="footer-brand-name">HostelHub</div>
+                  <span className="footer-brand-tag">College Hostel Management</span>
+                </div>
+              </div>
+              <p className="footer-tagline">
+                A modern, role-based hostel management platform for colleges.
+                Empowering students, wardens, and administrators with seamless digital tools.
+              </p>
+              <div className="footer-social-row">
+                {['bxl-instagram', 'bxl-facebook', 'bxl-twitter', 'bxl-linkedin'].map((ic) => (
+                  <a key={ic} href="#" className="footer-social-btn" onClick={(e) => e.preventDefault()}>
+                    <i className={`bx ${ic}`}></i>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Portals */}
+            <div>
+              <div className="footer-col-title">Portals</div>
+              <ul className="footer-links">
+                {FOOTER_PORTAL.map((l) => (
+                  <li key={l}>
+                    <a href="#" onClick={(e) => e.preventDefault()}>
+                      <i className="bx bx-chevron-right" style={{ color: '#6366f1', fontSize: 16 }}></i>{l}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* HMS */}
+            <div>
+              <div className="footer-col-title">HMS Features</div>
+              <ul className="footer-links">
+                {FOOTER_HMS.map((l) => (
+                  <li key={l}>
+                    <a href="#" onClick={(e) => e.preventDefault()}>
+                      <i className="bx bx-chevron-right" style={{ color: '#6366f1', fontSize: 16 }}></i>{l}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <div className="footer-col-title">Contact & Support</div>
+              <div className="footer-contact-item">
+                <i className="bx bx-phone footer-contact-icon"></i>
+                <div className="footer-contact-text">
+                  <strong>Hostel Office</strong>
+                  +91 98765 43210
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <i className="bx bx-envelope footer-contact-icon"></i>
+                <div className="footer-contact-text">
+                  <strong>Support Email</strong>
+                  hostel@campus.edu.in
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <i className="bx bx-map-pin footer-contact-icon"></i>
+                <div className="footer-contact-text">
+                  <strong>Campus Address</strong>
+                  Hostel Office, Gate No. 2,<br />College Campus, Pune 411005
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="footer-bottom">
+            <span className="footer-copyright">© 2026 HostelHub — College Hostel Management System. All rights reserved.</span>
+            <div className="footer-bottom-links">
+              {FOOTER_SUPPORT.slice(2).map((l) => (
+                <a key={l} href="#" onClick={(e) => e.preventDefault()}>{l}</a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </footer>
+    </>
   );
 }

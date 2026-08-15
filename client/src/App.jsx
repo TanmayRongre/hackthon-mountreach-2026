@@ -4,23 +4,24 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import AuthForm from './pages/AuthForm';
+import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="min-h-screen flex flex-col bg-background text-white selection:bg-indigo-500 selection:text-white font-sans">
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#0f1b2d', color: '#fff' }}>
           <Navbar />
-          <main className="flex-1 flex flex-col">
+          <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/"          element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/login"     element={<AuthForm initialActive={false} />} />
+              <Route path="/register"  element={<AuthForm initialActive={true} />} />
+              <Route path="/contact"   element={<Contact />} />
+              <Route path="*"          element={<NotFound />} />
             </Routes>
           </main>
         </div>

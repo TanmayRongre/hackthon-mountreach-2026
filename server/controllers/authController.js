@@ -70,7 +70,7 @@ const registerUser = async (req, res, next) => {
       name,
       email: email.toLowerCase(),
       password,
-      role: role && ['user', 'admin'].includes(role) ? role : 'user',
+      role: role && ['user', 'student', 'warden', 'admin'].includes(role) ? role : 'student',
     });
 
     sendTokenResponse(user, 201, res, 'User registered successfully');
@@ -93,8 +93,13 @@ const loginUser = async (req, res, next) => {
       throw new Error('Please provide email and password');
     }
 
-    // Check for user (include password field for verification)
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    // Check for user by email or name (include password field for verification)
+    const user = await User.findOne({
+      $or: [
+        { email: email.toLowerCase() },
+        { name: { $regex: new RegExp(`^${email.trim()}$`, 'i') } }
+      ]
+    }).select('+password');
 
     if (!user || !(await user.matchPassword(password))) {
       res.status(401);
