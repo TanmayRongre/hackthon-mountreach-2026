@@ -1,4 +1,5 @@
 import React from 'react';
+import useInView from '../../hooks/useInView';
 
 const STATS = [
   { value: '2,400+', label: 'Students Managed' },
@@ -8,10 +9,13 @@ const STATS = [
 ];
 
 export default function StatsSection() {
+  const { ref: headRef, inView: headIn } = useInView();
+  const { ref: stripRef, inView: stripIn } = useInView({ threshold: 0.2 });
+
   return (
     <section className="lp-section lp-bg-b">
       <div className="lp-inner">
-        <div className="lp-header-center" style={{ marginBottom: 48 }}>
+        <div ref={headRef} className={`lp-header-center reveal ${headIn ? 'in-view' : ''}`} style={{ marginBottom: 48 }}>
           <div className="lp-tag">
             <i className="bx bx-bar-chart-alt-2" style={{ fontSize: 12 }}></i>Impact
           </div>
@@ -20,9 +24,9 @@ export default function StatsSection() {
           </h2>
           <p className="lp-sub">Real numbers from real hostel campuses using HostelHub.</p>
         </div>
-        <div className="stats-strip">
+        <div ref={stripRef} className="stats-strip">
           {STATS.map((s, i) => (
-            <div key={i} className="stat-block">
+            <div key={i} className={`stat-block reveal stagger-${i + 1} ${stripIn ? 'in-view' : ''}`}>
               <div className="stat-block-value">{s.value}</div>
               <div className="stat-block-label">{s.label}</div>
             </div>

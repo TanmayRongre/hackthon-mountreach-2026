@@ -1,4 +1,5 @@
 import React from 'react';
+import useInView from '../../hooks/useInView';
 
 const ROLES = [
   {
@@ -55,10 +56,13 @@ const ROLES = [
 ];
 
 export default function RolesSection() {
+  const { ref: headRef, inView: headIn } = useInView();
+  const { ref: gridRef, inView: gridIn } = useInView({ threshold: 0.1 });
+
   return (
     <section className="lp-section lp-bg-a">
       <div className="lp-inner">
-        <div className="lp-header-center">
+        <div ref={headRef} className={`lp-header-center reveal ${headIn ? 'in-view' : ''}`}>
           <div className="lp-tag">
             <i className="bx bx-group" style={{ fontSize: 12 }}></i>User Roles
           </div>
@@ -70,9 +74,12 @@ export default function RolesSection() {
           </p>
         </div>
 
-        <div className="roles-grid">
-          {ROLES.map((r) => (
-            <div key={r.cls} className={`role-card ${r.cls}`}>
+        <div ref={gridRef} className="roles-grid">
+          {ROLES.map((r, i) => (
+            <div
+              key={r.cls}
+              className={`role-card ${r.cls} reveal stagger-${i + 1} ${gridIn ? 'in-view' : ''}`}
+            >
               <span className={`role-label ${r.labelCls}`}>{r.label}</span>
               <div className={`role-icon ${r.iconCls}`}>
                 <span role="img" aria-label={r.title}>{r.icon}</span>

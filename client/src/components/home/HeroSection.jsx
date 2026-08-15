@@ -20,24 +20,24 @@ export default function HeroSection() {
         {/* ── Left column ── */}
         <div className="home-left-col">
           <div className="home-hero-content">
-            <div className="home-badge">
+            <div className="home-badge hero-badge-anim">
               <i className="bx bx-building-house" style={{ fontSize: 13 }}></i>
               College Hostel Management System · 2026
             </div>
 
-            <h1>
+            <h1 className="hero-title-anim">
               Smart Hostel<br />
               <span>Management</span><br />
               for Colleges
             </h1>
 
-            <p className="home-hero-desc">
+            <p className="home-hero-desc hero-desc-anim">
               A unified digital platform for Students, Wardens, and Admins.
               Streamline room allotments, complaints, mess management,
               leave applications, and more — completely paperless.
             </p>
 
-            <div className="home-cta-row">
+            <div className="home-cta-row hero-cta-anim">
               <Link to="/login" className="home-cta-primary">
                 <i className="bx bx-log-in-circle" style={{ fontSize: 18 }}></i>
                 Login to Your Portal
@@ -48,7 +48,7 @@ export default function HeroSection() {
               </Link>
             </div>
 
-            <div className="home-stats-row">
+            <div className="home-stats-row hero-stats-anim">
               <div className="home-stat-item">
                 <span className="home-stat-value">2,400+</span>
                 <span className="home-stat-label">Students</span>
@@ -71,7 +71,7 @@ export default function HeroSection() {
         <div className="home-right-col">
           <div className="home-cards-row">
             {/* Card 1 — Portals */}
-            <div className="home-card-left">
+            <div className="home-card-left hero-card-left-anim">
               <h3>3 Role Portals</h3>
               <p>One platform, three tailored dashboards.</p>
               <div className="home-card-left-footer">
@@ -91,7 +91,7 @@ export default function HeroSection() {
             </div>
 
             {/* Card 2 — Portal info */}
-            <div className="home-card-right">
+            <div className="home-card-right hero-card-right-anim">
               <div className="home-card-header">
                 <div>
                   <div className="home-card-title">HostelHub Portal</div>
@@ -103,7 +103,7 @@ export default function HeroSection() {
                 <Link to="/login" className="home-card-go-btn" title="Go to portal">→</Link>
               </div>
               <div className="home-card-badge">
-                <i className="bx bxs-check-circle" style={{ fontSize: 11 }}></i>
+                <i className="bxs-check-circle" style={{ fontSize: 11 }}></i>
                 System Active
               </div>
               <p className="home-card-desc">

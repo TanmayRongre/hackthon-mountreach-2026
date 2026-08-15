@@ -145,7 +145,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#07101f] text-slate-100 font-sans flex flex-col p-4 sm:p-6 lg:p-8">
+    <div className="min-h-[calc(100vh-64px)] bg-[#07101f] text-slate-100 font-sans flex flex-col">
       {/* Toast Feedback */}
       {toast && (
         <div
@@ -160,57 +160,59 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* ── TOP BREADCRUMB & TELEMETRY BAR (No duplicate navbar) ── */}
-      <div className="max-w-7xl w-full mx-auto mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="lg:hidden p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white"
-            aria-label="Toggle admin sidebar"
-          >
-            {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+      {/* ── TOP BREADCRUMB & TELEMETRY BAR ── */}
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="lg:hidden p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white cursor-pointer"
+              aria-label="Toggle admin sidebar"
+            >
+              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
 
-          <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-md">
-            <ShieldCheck className="w-5 h-5" />
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-white tracking-tight">Admin Command Center</h1>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
-                Global Control
-              </span>
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-md">
+              <ShieldCheck className="w-5 h-5" />
             </div>
-            <p className="text-xs text-slate-400">System oversight, resident rosters, financial audits, and security telemetry.</p>
-          </div>
-        </div>
 
-        {/* Right Telemetry Pills */}
-        <div className="flex items-center gap-3 text-xs">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-[11px]">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Telemetry Online</span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-[11px] font-mono">
-            <span>DB: {healthData?.database?.latencyMs || 3}ms</span>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold text-white tracking-tight">Admin Command Center</h1>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
+                  Global Control
+                </span>
+              </div>
+              <p className="text-xs text-slate-400">System oversight, resident rosters, financial audits, and security telemetry.</p>
+            </div>
           </div>
 
-          <button
-            onClick={loadAdminData}
-            title="Refresh All Metrics"
-            className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-indigo-400' : ''}`} />
-          </button>
+          {/* Right Telemetry Pills */}
+          <div className="flex items-center gap-3 text-xs">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-[11px]">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Telemetry Online</span>
+            </div>
+
+            <div className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-[11px] font-mono">
+              <span>DB: {healthData?.database?.latencyMs || 3}ms</span>
+            </div>
+
+            <button
+              onClick={loadAdminData}
+              title="Refresh All Metrics"
+              className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-indigo-400' : ''}`} />
+            </button>
+          </div>
         </div>
       </div>
 
       {/* ════════════════════════════════════════════════
           MAIN ADMIN WORKSPACE LAYOUT
           ════════════════════════════════════════════════ */}
-      <div className="flex-1 max-w-7xl w-full mx-auto flex flex-col lg:flex-row gap-6">
+      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
         {/* ── LEFT ADMIN SIDEBAR ── */}
         <aside
           className={`${

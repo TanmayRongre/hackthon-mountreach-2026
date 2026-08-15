@@ -296,17 +296,6 @@
   position: relative;
 }
 
-.hiw-steps::before {
-  content: "";
-  position: absolute;
-  top: 42px;
-  left: calc(16.66% + 24px);
-  right: calc(16.66% + 24px);
-  height: 1px;
-  background: linear-gradient(to right, rgba(99,102,241,0.5), rgba(99,102,241,0.2), rgba(99,102,241,0.5));
-  z-index: 0;
-}
-
 .hiw-step {
   position: relative;
   z-index: 1;
@@ -535,7 +524,6 @@
   .roles-grid { grid-template-columns: 1fr; }
   .features-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
   .hiw-steps { grid-template-columns: 1fr; }
-  .hiw-steps::before { display: none; }
   .stats-strip { grid-template-columns: repeat(2, 1fr); }
   .cta-banner { padding: 44px 28px; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
