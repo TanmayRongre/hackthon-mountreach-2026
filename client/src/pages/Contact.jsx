@@ -1,28 +1,63 @@
 import React, { useState } from 'react';
+import api from '../services/api';
 import '../styles/Home.css';
 
+const demoValues = {
+  firstName: 'Tanmay',
+  lastName: 'Rongre',
+  email: 'tanmay@mountreach.edu',
+  phone: '+91 98765 43210',
+  inquiry: 'booking',
+  message: 'Hello, I would like to inquire about the room allotment process for the upcoming semester and facility details for Block A.',
+};
+
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    inquiry: 'general',
-    message: '',
-  });
-  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState(demoValues);
+  const [submittedTicket, setSubmittedTicket] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const autofillDemo = () => {
+    setFormData(demoValues);
+    setErrorMsg('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg('');
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setSubmitted(true);
-    setLoading(false);
+
+    try {
+      const res = await api.submitContact(formData);
+      if (res.success) {
+        setSubmittedTicket(res.data);
+      } else {
+        setErrorMsg(res.message || 'Failed to submit inquiry ticket');
+      }
+    } catch (err) {
+      setErrorMsg(err.message || 'Network error while submitting inquiry. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCopyTicket = () => {
+    if (submittedTicket?.ticketNumber) {
+      navigator.clipboard.writeText(submittedTicket.ticketNumber);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    }
+  };
+
+  const handleReset = () => {
+    setSubmittedTicket(null);
+    setFormData(demoValues);
+    setErrorMsg('');
   };
 
   return (
@@ -32,8 +67,8 @@ export default function Contact() {
         <div className="contact-header">
           <h1>Get In Touch</h1>
           <p>
-            Have questions about our hostel facilities or want to book a room?
-            We'd love to hear from you. Reach out and we'll get back within 24 hours.
+            Have questions about our hostel facilities, room allotment, or admissions?
+            Submit an official support ticket and our team will get back within 24 hours.
           </p>
         </div>
 
@@ -41,51 +76,51 @@ export default function Contact() {
           {/* Info Card */}
           <div className="contact-info-card">
             <h2>Contact Information</h2>
-            <p>Fill out the form and our hostel team will get back to you as soon as possible.</p>
+            <p>Reach out directly to the hostel administrative office or connect with us on our official profiles.</p>
 
-            <div className="contact-info-item">
+            <a href="https://maps.google.com/?q=Shivaji+Nagar+Pune" target="_blank" rel="noopener noreferrer" className="contact-info-item" style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className="contact-info-icon">📍</div>
               <div className="contact-info-text">
-                <strong>Address</strong>
-                <span>12 College Road, Shivaji Nagar, Pune, Maharashtra 411005</span>
+                <strong>Campus Address</strong>
+                <span>Hostel Office, Gate No. 2, Shivaji Nagar, Pune 411005</span>
               </div>
-            </div>
+            </a>
 
-            <div className="contact-info-item">
+            <a href="tel:+919876543210" className="contact-info-item" style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className="contact-info-icon">📞</div>
               <div className="contact-info-text">
-                <strong>Phone</strong>
+                <strong>Official Helpline</strong>
                 <span>+91 98765 43210</span>
               </div>
-            </div>
+            </a>
 
-            <div className="contact-info-item">
+            <a href="mailto:info@hostelmanage.in" className="contact-info-item" style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className="contact-info-icon">✉️</div>
               <div className="contact-info-text">
-                <strong>Email</strong>
+                <strong>Helpdesk Email</strong>
                 <span>info@hostelmanage.in</span>
               </div>
-            </div>
+            </a>
 
             <div className="contact-info-item">
               <div className="contact-info-icon">🕐</div>
               <div className="contact-info-text">
-                <strong>Office Hours</strong>
+                <strong>Office Timings</strong>
                 <span>Mon – Sat: 9:00 AM – 6:00 PM IST</span>
               </div>
             </div>
 
             <div className="contact-social-row">
-              <a href="https://www.facebook.com/profile.php?id=61590433170519" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Facebook">
+              <a href="https://www.facebook.com/profile.php?id=61590433170519" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Facebook" title="Facebook">
                 <i className="bx bxl-facebook"></i>
               </a>
-              <a href="https://www.instagram.com/zxy_tanmay/" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Instagram">
+              <a href="https://www.instagram.com/zxy_tanmay/" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Instagram" title="Instagram">
                 <i className="bx bxl-instagram"></i>
               </a>
-              <a href="https://x.com/Zxy_Tanmay" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Twitter (X)">
+              <a href="https://x.com/Zxy_Tanmay" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="Twitter (X)" title="Twitter (X)">
                 <i className="bx bxl-twitter"></i>
               </a>
-              <a href="https://www.linkedin.com/in/tanmayrongre/" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="LinkedIn">
+              <a href="https://www.linkedin.com/in/tanmayrongre/" target="_blank" rel="noopener noreferrer" className="contact-social-btn" aria-label="LinkedIn" title="LinkedIn">
                 <i className="bx bxl-linkedin"></i>
               </a>
             </div>
@@ -93,38 +128,135 @@ export default function Contact() {
 
           {/* Form Card */}
           <div className="contact-form-card">
-            {submitted ? (
-              <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-                <div style={{ fontSize: 56, marginBottom: 16 }}>🎉</div>
-                <h2 style={{ color: '#fff', margin: '0 0 10px', fontSize: 22 }}>Message Sent!</h2>
-                <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, lineHeight: 1.7 }}>
-                  Thank you for reaching out. Our team will get back to you within 24 hours.
+            {submittedTicket ? (
+              <div style={{ textAlign: 'center', padding: '30px 16px' }} className="animate-fade-in">
+                <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>
+                <h2 style={{ color: '#fff', margin: '0 0 8px', fontSize: 22 }}>Inquiry Ticket Created!</h2>
+                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, lineHeight: 1.6, maxWidth: 420, margin: '0 auto 16px' }}>
+                  Thank you, <strong>{submittedTicket.firstName}</strong>. Your ticket has been logged into the hostel administrative database.
                 </p>
-                <button
-                  onClick={() => setSubmitted(false)}
+
+                {/* Ticket Badge */}
+                <div
                   style={{
-                    marginTop: 24,
-                    padding: '10px 28px',
-                    background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
-                    border: 'none',
-                    borderRadius: 10,
-                    color: '#fff',
-                    fontFamily: 'Poppins,sans-serif',
-                    fontWeight: 600,
-                    fontSize: 14,
-                    cursor: 'pointer',
+                    background: 'rgba(99,102,241,0.12)',
+                    border: '1px solid rgba(99,102,241,0.35)',
+                    borderRadius: 16,
+                    padding: '16px 20px',
+                    maxWidth: 360,
+                    margin: '0 auto 20px',
+                    textAlign: 'left',
                   }}
                 >
-                  Send Another Message
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                    <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#818cf8', fontWeight: 'bold' }}>
+                      Reference Ticket No
+                    </span>
+                    <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: 'rgba(16,185,129,0.2)', color: '#34d399', fontWeight: 'bold' }}>
+                      Status: Open
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 18, fontWeight: 'bold', color: '#fff', letterSpacing: '0.04em', fontFamily: 'monospace' }}>
+                    {submittedTicket.ticketNumber}
+                  </div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 6 }}>
+                    Category: {submittedTicket.inquiry?.toUpperCase()} • Email: {submittedTicket.email}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleCopyTicket}
+                    style={{
+                      marginTop: 12,
+                      width: '100%',
+                      padding: '8px',
+                      borderRadius: 10,
+                      background: copied ? '#059669' : '#1e1b4b',
+                      border: '1px solid rgba(99,102,241,0.4)',
+                      color: '#fff',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                    }}
+                  >
+                    <i className={`bx ${copied ? 'bx-check' : 'bx-copy'}`}></i>
+                    {copied ? 'Copied to Clipboard!' : 'Copy Ticket ID'}
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  style={{
+                    padding: '10px 24px',
+                    background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
+                    border: 'none',
+                    borderRadius: 12,
+                    color: '#fff',
+                    fontFamily: 'inherit',
+                    fontWeight: 600,
+                    fontSize: 13,
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 15px rgba(99,102,241,0.3)',
+                  }}
+                >
+                  Submit Another Inquiry
                 </button>
               </div>
             ) : (
               <>
-                <h2>Send a Message</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                  <h2 style={{ margin: 0 }}>Send an Official Inquiry</h2>
+                  <button
+                    type="button"
+                    onClick={autofillDemo}
+                    style={{
+                      padding: '4px 10px',
+                      borderRadius: 20,
+                      background: 'rgba(99,102,241,0.15)',
+                      border: '1px solid rgba(99,102,241,0.3)',
+                      color: '#818cf8',
+                      fontSize: 11,
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                    title="Fill realistic demonstration details"
+                  >
+                    ✨ Demo Autofill
+                  </button>
+                </div>
+
+                {errorMsg && (
+                  <div
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: 12,
+                      background: 'rgba(239,68,68,0.15)',
+                      border: '1px solid rgba(239,68,68,0.35)',
+                      color: '#fca5a5',
+                      fontSize: 12,
+                      marginBottom: 16,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                    }}
+                  >
+                    <i className="bx bx-error-circle" style={{ fontSize: 16 }}></i>
+                    <span>{errorMsg}</span>
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit}>
                   <div className="contact-form-row">
                     <div className="contact-form-group">
-                      <label>First Name</label>
+                      <label>First Name *</label>
                       <input
                         type="text"
                         name="firstName"
@@ -142,25 +274,24 @@ export default function Contact() {
                         placeholder="Rongre"
                         value={formData.lastName}
                         onChange={handleChange}
-                        required
                       />
                     </div>
                   </div>
 
                   <div className="contact-form-row">
                     <div className="contact-form-group">
-                      <label>Email</label>
+                      <label>Email Address *</label>
                       <input
                         type="email"
                         name="email"
-                        placeholder="you@example.com"
+                        placeholder="student@mountreach.edu"
                         value={formData.email}
                         onChange={handleChange}
                         required
                       />
                     </div>
                     <div className="contact-form-group">
-                      <label>Phone</label>
+                      <label>Phone Number</label>
                       <input
                         type="tel"
                         name="phone"
@@ -172,27 +303,27 @@ export default function Contact() {
                   </div>
 
                   <div className="contact-form-group">
-                    <label>Inquiry Type</label>
+                    <label>Inquiry Category</label>
                     <select
                       name="inquiry"
                       value={formData.inquiry}
                       onChange={handleChange}
                     >
-                      <option value="general">General Inquiry</option>
-                      <option value="booking">Room Booking</option>
-                      <option value="fees">Fees & Payment</option>
-                      <option value="facilities">Facilities</option>
-                      <option value="complaint">Complaint / Feedback</option>
-                      <option value="other">Other</option>
+                      <option value="general">General Campus Inquiry</option>
+                      <option value="booking">Hostel Admission & Bed Allotment</option>
+                      <option value="fees">Fee Dues & Payment Inquiries</option>
+                      <option value="facilities">Mess & Room Facilities</option>
+                      <option value="complaint">Complaint & Grievance</option>
+                      <option value="other">Other Official Query</option>
                     </select>
                   </div>
 
                   <div className="contact-form-group">
-                    <label>Message</label>
+                    <label>Your Message *</label>
                     <textarea
                       name="message"
                       rows={4}
-                      placeholder="Write your message here..."
+                      placeholder="Please specify your query in detail..."
                       value={formData.message}
                       onChange={handleChange}
                       required
@@ -203,12 +334,12 @@ export default function Contact() {
                     {loading ? (
                       <>
                         <span style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} />
-                        Sending...
+                        Logging Ticket...
                       </>
                     ) : (
                       <>
                         <i className="bx bx-send" style={{ fontSize: 18 }}></i>
-                        Send Message
+                        Submit Ticket
                       </>
                     )}
                   </button>

@@ -25,6 +25,7 @@ const messRoutes = require('./routes/messRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const visitorRoutes = require('./routes/visitorRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 // ─── Load Environment Variables ──────────────────────────────────────────────
 dotenv.config();
@@ -87,6 +88,7 @@ app.use('/api/mess', messRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/visitors', visitorRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/contact', contactRoutes);
 
 // ─── 404 & Error Handlers ────────────────────────────────────────────────────
 app.use(notFound);
