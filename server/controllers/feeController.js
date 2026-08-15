@@ -10,7 +10,13 @@ const getFees = async (req, res, next) => {
     const { student, status, feeType } = req.query;
     const filter = {};
 
-    if (student) filter.student = student;
+    // If authenticated user is requesting their own fees, default to req.user._id if not admin
+    if (student) {
+      filter.student = student;
+    } else if (req.user && req.user.role === 'student') {
+      filter.student = req.user._id;
+    }
+
     if (status) filter.status = status;
     if (feeType) filter.feeType = feeType;
 
@@ -89,6 +95,38 @@ const createFee = async (req, res, next) => {
 };
 
 /**
+ * @desc    Pay fee / Process payment
+ * @route   POST /api/fees/:id/pay
+ * @access  Private
+ */
+const payFee = async (req, res, next) => {
+  try {
+    const { paymentMode, transactionId } = req.body;
+    const fee = await Fee.findById(req.params.id);
+
+    if (!fee) {
+      res.status(404);
+      throw new Error('Fee record not found');
+    }
+
+    fee.status = 'paid';
+    fee.paidDate = new Date();
+    fee.paymentMode = paymentMode || 'Online (UPI/NetBanking)';
+    fee.transactionId = transactionId || `TXN-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+    fee.receiptNumber = fee.receiptNumber || `REC-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    await fee.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Payment processed successfully! Receipt generated.',
+      data: fee,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * @desc    Update fee record
  * @route   PUT /api/fees/:id
  * @access  Private
@@ -144,6 +182,7 @@ module.exports = {
   getFees,
   getFeeById,
   createFee,
+  payFee,
   updateFee,
   deleteFee,
 };

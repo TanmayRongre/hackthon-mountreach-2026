@@ -97,8 +97,8 @@ const loginUser = async (req, res, next) => {
     const user = await User.findOne({
       $or: [
         { email: email.toLowerCase() },
-        { name: { $regex: new RegExp(`^${email.trim()}$`, 'i') } }
-      ]
+        { name: { $regex: new RegExp(`^${email.trim()}$`, 'i') } },
+      ],
     }).select('+password');
 
     if (!user || !(await user.matchPassword(password))) {
@@ -120,6 +120,11 @@ const loginUser = async (req, res, next) => {
 const getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
 
     res.status(200).json({
       success: true,

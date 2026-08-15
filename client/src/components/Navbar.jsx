@@ -30,8 +30,24 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path;
 
+  const getDashboardPath = () => {
+    if (user?.role === 'admin') return '/admin';
+    if (user?.role === 'warden') return '/warden';
+    return '/dashboard';
+  };
+
+  const getDashboardLabel = () => {
+    if (user?.role === 'admin') return 'Admin Hub';
+    if (user?.role === 'warden') return 'Warden Desk';
+    return 'Dashboard';
+  };
+
   const navLinks = [
-    { to: '/',        label: 'Home',    icon: 'bx bx-home-alt-2' },
+    { to: '/', label: 'Home', icon: 'bx bx-home-alt-2' },
+    ...(isAuthenticated ? [
+      { to: getDashboardPath(), label: getDashboardLabel(), icon: user?.role === 'admin' ? 'bx bx-shield-quarter' : user?.role === 'warden' ? 'bx bx-building' : 'bx bx-layout' },
+      ...(user?.role === 'admin' ? [{ to: '/student-dashboard', label: 'Student Portal', icon: 'bx bx-user' }] : [])
+    ] : []),
     { to: '/contact', label: 'Contact', icon: 'bx bx-envelope' },
   ];
 
@@ -176,15 +192,31 @@ export default function Navbar() {
             {/* Auth Controls */}
             {isAuthenticated ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '5px 12px',
-                  borderRadius: 10,
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                }}>
+                {/* Clickable User Name to Open Dashboard */}
+                <Link
+                  to={getDashboardPath()}
+                  title={`Open ${getDashboardLabel()}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: '5px 12px',
+                    borderRadius: 10,
+                    background: (isActive('/dashboard') || isActive('/admin') || isActive('/warden')) ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.06)',
+                    border: (isActive('/dashboard') || isActive('/admin') || isActive('/warden')) ? '1px solid rgba(99,102,241,0.45)' : '1px solid rgba(255,255,255,0.12)',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(99,102,241,0.25)';
+                    e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = isActive('/dashboard') ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.06)';
+                    e.currentTarget.style.borderColor = isActive('/dashboard') ? '1px solid rgba(99,102,241,0.45)' : '1px solid rgba(255,255,255,0.12)';
+                  }}
+                >
                   <div style={{
                     width: 26,
                     height: 26,
@@ -196,10 +228,11 @@ export default function Navbar() {
                     fontSize: 11,
                     fontWeight: 700,
                     color: '#fff',
+                    boxShadow: '0 2px 8px rgba(99,102,241,0.4)',
                   }}>
                     {user?.name?.[0]?.toUpperCase() || 'U'}
                   </div>
-                  <span style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.85)' }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>
                     {user?.name}
                   </span>
                   <span style={{
@@ -215,7 +248,7 @@ export default function Navbar() {
                   }}>
                     {user?.role}
                   </span>
-                </div>
+                </Link>
 
                 <button
                   onClick={logout}

@@ -1,5 +1,4 @@
 const express = require("express");
-
 const {
   getLeaves,
   getLeaveById,
@@ -7,14 +6,15 @@ const {
   updateLeave,
   deleteLeave
 } = require("../controllers/leaveController");
+const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Routes for leave operations
-router.get("/", getLeaves);
-router.get("/:id", getLeaveById);
-router.post("/", createLeave);
-router.put("/:id", updateLeave);
-router.delete("/:id", deleteLeave);
+// Routes for leave / outpass operations
+router.get("/", protect, getLeaves);
+router.get("/:id", protect, getLeaveById);
+router.post("/", protect, createLeave);
+router.put("/:id", protect, updateLeave);
+router.delete("/:id", protect, deleteLeave);
 
 module.exports = router;
