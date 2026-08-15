@@ -112,127 +112,16 @@ export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <>
-      {/* ════════════════════════════════════════
-          HERO — full-viewport
-          ════════════════════════════════════════ */}
-      <div className="home-page">
-        <div className="home-hero-bg" />
-        <div className="home-hero-overlay" />
-
-        <div className="home-layout">
-          {/* ── Left column ── */}
-          <div className="home-left-col">
-            <div className="home-hero-content">
-              <div className="home-badge">
-                <i className="bx bx-building-house" style={{ fontSize: 13 }}></i>
-                College Hostel Management System · 2026
-              </div>
-
-              <h1>
-                Smart Hostel<br />
-                <span>Management</span><br />
-                for Colleges
-              </h1>
-
-              <p className="home-hero-desc">
-                A unified digital platform for Students, Wardens, and Admins.
-                Streamline room allotments, complaints, mess management,
-                outpass requests, and more — completely paperless.
-              </p>
-
-              <div className="home-cta-row">
-                <Link to="/login" className="home-cta-primary">
-                  <i className="bx bx-log-in-circle" style={{ fontSize: 18 }}></i>
-                  Login to Your Portal
-                </Link>
-                <Link to="/register" className="home-cta-secondary">
-                  <i className="bx bx-user-plus" style={{ fontSize: 18 }}></i>
-                  Register as Student
-                </Link>
-              </div>
-
-              <div className="home-stats-row">
-                <div className="home-stat-item">
-                  <span className="home-stat-value">2,400+</span>
-                  <span className="home-stat-label">Students</span>
-                </div>
-                <div className="home-stat-sep" />
-                <div className="home-stat-item">
-                  <span className="home-stat-value">12</span>
-                  <span className="home-stat-label">Hostel Blocks</span>
-                </div>
-                <div className="home-stat-sep" />
-                <div className="home-stat-item">
-                  <span className="home-stat-value">3</span>
-                  <span className="home-stat-label">User Roles</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Left col ends here — hero content only */}
-          </div>
-
-          {/* ── Right column: BOTH cards side by side at bottom ── */}
-          <div className="home-right-col">
-            <div className="home-cards-row">
-
-              {/* Card 1 — Portals */}
-              <div className="home-card-left">
-                <h3>3 Role Portals</h3>
-                <p>One platform, three tailored dashboards.</p>
-                <div className="home-card-left-footer">
-                  <div>
-                    <div className="home-stat-big">100%</div>
-                    <div className="home-stat-tiny">Paperless</div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <div className="home-card-avatars">
-                      <div className="home-avatar" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }} title="Student">S</div>
-                      <div className="home-avatar" style={{ background: 'linear-gradient(135deg,#10b981,#059669)' }} title="Warden">W</div>
-                      <div className="home-avatar" style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)' }} title="Admin">A</div>
-                    </div>
-                    <Link to="/login" className="home-card-go-btn" title="Login">→</Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 2 — Portal info */}
-              <div className="home-card-right">
-                <div className="home-card-header">
-                  <div>
-                    <div className="home-card-title">HostelHub Portal</div>
-                    <div className="home-card-addr">
-                      <i className="bx bx-map-pin" style={{ fontSize: 12 }}></i>
-                      Campus College, Pune
-                    </div>
-                  </div>
-                  <Link to="/login" className="home-card-go-btn" title="Go to portal">→</Link>
-                </div>
-                <div className="home-card-badge">
-                  <i className="bx bxs-check-circle" style={{ fontSize: 11 }}></i>
-                  System Active
-                </div>
-                <p className="home-card-desc">
-                  Rooms, complaints, mess, outpass &amp; fees — one secure platform.
-                </p>
-                <div className="home-card-specs">
-                  <div className="home-card-spec">
-                    <i className="bx bx-user" style={{ color: '#818cf8' }}></i>Student
-                  </div>
-                  <div className="home-card-spec-sep" />
-                  <div className="home-card-spec">
-                    <i className="bx bx-id-card" style={{ color: '#818cf8' }}></i>Warden
-                  </div>
-                  <div className="home-card-spec-sep" />
-                  <div className="home-card-spec">
-                    <i className="bx bx-shield" style={{ color: '#818cf8' }}></i>Admin
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
+    <div className="min-h-screen flex items-center justify-center p-8 bg-[radial-gradient(ellipse_at_60%_30%,rgba(99,102,241,0.12)_0%,transparent_60%),radial-gradient(ellipse_at_20%_80%,rgba(14,165,233,0.08)_0%,transparent_50%)]">
+      <div className="text-center max-w-2xl animate-fade-in-up">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold bg-linear-to-br from-primary to-secondary bg-clip-text text-transparent mb-6">
+          MountReach 2026 🏔️
+        </h1>
+        <p className="text-lg text-slate-400 mb-8 leading-relaxed">
+          Hackathon project is ready. Waiting for the problem statement...
+        </p>
+        <div className="inline-block px-5 py-2 bg-background-card border border-slate-800 rounded-full text-sm text-slate-400 tracking-wide">
+          🚀 MERN Stack · React + Vite · Express . Mongodb
         </div>
       </div>
 

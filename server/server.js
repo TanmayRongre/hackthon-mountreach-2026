@@ -7,9 +7,23 @@ const path = require('path');
 const { connectDB, getDBStatus } = require('./config/db');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
-// Load env vars
-dotenv.config({ path: path.resolve(__dirname, '.env') });
-dotenv.config(); // fallback to root .env if present
+// routes 
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const studentRoutes = require('./routes/studentRoutes');
+const hostelRoutes = require('./routes/hostelRoutes');
+const roomRoutes = require('./routes/roomRoutes');
+const bedRoutes = require('./routes/bedRoutes');
+const feeRoutes = require('./routes/feeRoutes');
+const attendanceRoutes = require('./routes/attendanceRoutes');
+const complaintRoutes = require('./routes/complaintRoutes');
+const leaveRoutes = require('./routes/leaveRoutes');
+const noticeRoutes = require('./routes/noticeRoutes');
+const messRoutes = require('./routes/messRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+
+// ─── Load Environment Variables ──────────────────────────────────────────────
+dotenv.config();
 
 // Connect to Database asynchronously
 connectDB();
@@ -36,19 +50,24 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
-// Health Check Route (Includes Server & Database connection state)
-app.get('/api/health', (req, res) => {
-  const dbStatus = getDBStatus();
-  res.status(200).json({
-    success: true,
-    message: 'Backend server is running smoothly 🚀',
-    uptime: `${Math.floor(process.uptime())}s`,
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    database: {
-      status: dbStatus.stateName,
-      connected: dbStatus.connected,
-    },
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/students', studentRoutes);
+app.use('/api/hostels', hostelRoutes);
+app.use('/api/rooms', roomRoutes);
+app.use('/api/beds', bedRoutes);
+app.use('/api/fees', feeRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/complaints', complaintRoutes);
+app.use('/api/leaves', leaveRoutes);
+app.use('/api/notices', noticeRoutes);
+app.use('/api/mess', messRoutes);
+app.use('/api/notifications', notificationRoutes);
+// ─── 404 Handler (must be after all routes) ───────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route not found: ${req.method} ${req.originalUrl}`,
   });
 });
 
