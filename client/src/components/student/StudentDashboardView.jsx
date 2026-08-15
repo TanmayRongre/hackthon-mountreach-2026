@@ -748,11 +748,11 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-xs">
                       <div>
                         <span className="text-slate-500 block text-[11px]">Departure:</span>
-                        <strong className="text-white">{new Date(l.fromDate).toLocaleString()}</strong>
+                        <strong className="text-white">{new Date(l.fromDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</strong>
                       </div>
                       <div>
                         <span className="text-slate-500 block text-[11px]">Expected Return:</span>
-                        <strong className="text-white">{new Date(l.toDate).toLocaleString()}</strong>
+                        <strong className="text-white">{new Date(l.toDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</strong>
                       </div>
                       <div>
                         <span className="text-slate-500 block text-[11px]">Emergency Contact:</span>
@@ -1093,9 +1093,9 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Departure Date & Time *</label>
+                  <label className="block font-semibold text-slate-300 mb-1">Departure Date *</label>
                   <input
-                    type="datetime-local"
+                    type="date"
                     required
                     value={leaveForm.fromDate}
                     onChange={(e) => setLeaveForm({ ...leaveForm, fromDate: e.target.value })}
@@ -1103,9 +1103,9 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Expected Return *</label>
+                  <label className="block font-semibold text-slate-300 mb-1">Expected Return Date *</label>
                   <input
-                    type="datetime-local"
+                    type="date"
                     required
                     value={leaveForm.toDate}
                     onChange={(e) => setLeaveForm({ ...leaveForm, toDate: e.target.value })}
