@@ -1,0 +1,549 @@
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../services/api';
+import {
+  ShieldCheck,
+  Building2,
+  Users,
+  QrCode,
+  FileText,
+  Key,
+  CreditCard,
+  Bell,
+  UtensilsCrossed,
+  RefreshCw,
+  LogOut,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  Clock,
+  Send,
+  DoorOpen,
+  Search,
+  Filter,
+  Check,
+  X,
+  Phone,
+  Plus
+} from 'lucide-react';
+
+export default function WardenDashboard() {
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const [activeTab, setActiveTab] = useState('overview');
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  // Warden Module States
+  const [hostels, setHostels] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [complaints, setComplaints] = useState([]);
+  const [leaves, setLeaves] = useState([]);
+  const [visitors, setVisitors] = useState([]);
+  const [attendance, setAttendance] = useState([]);
+  const [notices, setNotices] = useState([]);
+
+  // Toast
+  const [toast, setToast] = useState(null);
+  const showToast = (msg, type = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 4000);
+  };
+
+  // Post Notice Modal
+  const [noticeModal, setNoticeModal] = useState(false);
+  const [noticeForm, setNoticeForm] = useState({
+    title: '',
+    content: '',
+    category: 'Hostel Rules',
+    priority: 'normal',
+    targetAudience: 'students',
+  });
+
+  const loadWardenData = async () => {
+    setLoading(true);
+    try {
+      const [hostelsRes, roomsRes, studentsRes, compRes, leaveRes, visRes, attRes, notRes] = await Promise.allSettled([
+        api.getHostels(),
+        api.getRooms(),
+        api.getStudents(),
+        api.getComplaints(),
+        api.getLeaves(),
+        api.getVisitors(),
+        api.getAttendance(),
+        api.getNotices(),
+      ]);
+
+      if (hostelsRes.status === 'fulfilled' && hostelsRes.value.data) setHostels(hostelsRes.value.data);
+      if (roomsRes.status === 'fulfilled' && roomsRes.value.data) setRooms(roomsRes.value.data);
+      if (studentsRes.status === 'fulfilled' && studentsRes.value.data) setStudents(studentsRes.value.data);
+      if (compRes.status === 'fulfilled' && compRes.value.data) setComplaints(compRes.value.data);
+      if (leaveRes.status === 'fulfilled' && leaveRes.value.data) setLeaves(leaveRes.value.data);
+      if (visRes.status === 'fulfilled' && visRes.value.data) setVisitors(visRes.value.data);
+      if (attRes.status === 'fulfilled' && attRes.value.data) setAttendance(attRes.value.data);
+      if (notRes.status === 'fulfilled' && notRes.value.data) setNotices(notRes.value.data);
+    } catch (err) {
+      showToast(err.message || 'Failed to load warden data', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadWardenData();
+  }, []);
+
+  const handleUpdateComplaint = async (id, status) => {
+    setActionLoading(true);
+    try {
+      await api.updateComplaint(id, { status });
+      showToast(`Complaint status updated to ${status}`);
+      loadWardenData();
+    } catch (err) {
+      showToast(err.message || 'Failed to update complaint', 'error');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleUpdateLeave = async (id, status) => {
+    setActionLoading(true);
+    try {
+      await api.updateLeave(id, { status });
+      showToast(`Outpass request marked as ${status}`);
+      loadWardenData();
+    } catch (err) {
+      showToast(err.message || 'Failed to update outpass', 'error');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handlePostNotice = async (e) => {
+    e.preventDefault();
+    try {
+      await api.createNotice(noticeForm);
+      showToast('Notice published successfully!');
+      setNoticeModal(false);
+      setNoticeForm({ title: '', content: '', category: 'Hostel Rules', priority: 'normal', targetAudience: 'students' });
+      loadWardenData();
+    } catch (err) {
+      showToast(err.message || 'Failed to publish notice', 'error');
+    }
+  };
+
+  const pendingComplaints = complaints.filter((c) => c.status !== 'resolved');
+  const pendingLeaves = leaves.filter((l) => l.status === 'pending');
+
+  const navItems = [
+    { id: 'overview', label: 'Warden Overview', icon: <Building2 className="w-4 h-4" /> },
+    { id: 'attendance', label: 'Attendance Roster', icon: <QrCode className="w-4 h-4" />, badge: attendance.length > 0 ? `${attendance.length}` : null },
+    { id: 'complaints', label: 'Hostel Complaints', icon: <FileText className="w-4 h-4" />, badge: pendingComplaints.length > 0 ? `${pendingComplaints.length}` : null, badgeColor: 'bg-amber-500/20 text-amber-300' },
+    { id: 'leaves', label: 'Outpass Clearance', icon: <Key className="w-4 h-4" />, badge: pendingLeaves.length > 0 ? `${pendingLeaves.length}` : null, badgeColor: 'bg-sky-500/20 text-sky-300' },
+    { id: 'students', label: 'Resident Directory', icon: <Users className="w-4 h-4" />, badge: students.length > 0 ? `${students.length}` : null },
+    { id: 'rooms', label: 'Room Inspection', icon: <DoorOpen className="w-4 h-4" /> },
+    { id: 'notices', label: 'Hostel Circulars', icon: <Bell className="w-4 h-4" /> },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#07101f] text-slate-100 font-sans flex flex-col">
+      {/* Toast Feedback */}
+      {toast && (
+        <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-medium border animate-slide-up ${
+          toast.type === 'error' ? 'bg-rose-950/95 text-rose-200 border-rose-700/60' : 'bg-emerald-950/95 text-emerald-200 border-emerald-700/60'
+        }`}>
+          {toast.type === 'error' ? <AlertCircle className="w-4 h-4 text-rose-400" /> : <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+          <span>{toast.msg}</span>
+        </div>
+      )}
+
+      {/* ── TOP WARDEN NAVBAR ── */}
+      <header className="sticky top-0 z-40 bg-[#091527]/95 backdrop-blur-xl border-b border-slate-800 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xl">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white font-black shadow-lg shadow-sky-600/30">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="text-sm font-black text-white tracking-tight flex items-center gap-1.5">
+              <span>HostelHub</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 uppercase tracking-widest border border-sky-500/30">
+                WARDEN DESK
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-400">Hostel Residency & Gatepass Management</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={loadWardenData}
+            title="Refresh"
+            className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+
+          <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
+            <div className="w-8 h-8 rounded-xl bg-sky-600/30 border border-sky-500/40 text-sky-300 font-bold text-xs flex items-center justify-center">
+              {user?.name?.charAt(0) || 'W'}
+            </div>
+            <div className="hidden sm:block text-left">
+              <div className="text-xs font-bold text-white truncate max-w-[120px]">{user?.name || 'Warden Staff'}</div>
+              <div className="text-[10px] text-sky-400 font-semibold uppercase">Hostel Warden</div>
+            </div>
+          </div>
+
+          <button
+            onClick={logout}
+            title="Sign Out"
+            className="p-2 rounded-xl bg-rose-950/40 border border-rose-800/40 text-rose-300 hover:text-rose-200"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </header>
+
+      {/* ── MAIN WORKSPACE ── */}
+      <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
+        {/* ── LEFT SIDEBAR ── */}
+        <aside className="w-full lg:w-64 shrink-0 bg-[#0f1b2d]/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 shadow-2xl space-y-4 self-start">
+          <div className="p-3.5 rounded-2xl bg-gradient-to-br from-sky-950/60 to-slate-900 border border-sky-500/25 space-y-1">
+            <div className="text-[10px] uppercase font-bold text-sky-400">Assigned Complex</div>
+            <div className="text-sm font-bold text-white">{hostels[0]?.name || 'Campus Hostel Block'}</div>
+            <div className="text-[11px] text-slate-400">Total Residents: {students.length}</div>
+          </div>
+
+          <div className="space-y-1">
+            {navItems.map((item) => {
+              const active = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`w-full px-3 py-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between transition-all cursor-pointer ${
+                    active
+                      ? 'bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-lg shadow-sky-600/30'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </div>
+                  {item.badge && (
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      active ? 'bg-white/20 text-white' : item.badgeColor || 'bg-slate-800 text-slate-300'
+                    }`}>
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="pt-3 border-t border-slate-800">
+            <button
+              onClick={() => setNoticeModal(true)}
+              className="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>Broadcast Circular</span>
+            </button>
+          </div>
+        </aside>
+
+        {/* ── MAIN CONTENT ── */}
+        <main className="flex-1 space-y-6 min-w-0">
+          {/* TAB: OVERVIEW */}
+          {activeTab === 'overview' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-1">
+                  <span className="text-xs text-slate-400">Total Residents</span>
+                  <div className="text-2xl font-black text-white">{students.length}</div>
+                  <span className="text-[10px] text-sky-400">Allotted Students</span>
+                </div>
+                <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-1">
+                  <span className="text-xs text-slate-400">Pending Outpasses</span>
+                  <div className="text-2xl font-black text-amber-400">{pendingLeaves.length}</div>
+                  <span className="text-[10px] text-amber-400">Requires Clearance</span>
+                </div>
+                <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-1">
+                  <span className="text-xs text-slate-400">Open Complaints</span>
+                  <div className="text-2xl font-black text-rose-400">{pendingComplaints.length}</div>
+                  <span className="text-[10px] text-rose-400">Maintenance & Room</span>
+                </div>
+                <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-1">
+                  <span className="text-xs text-slate-400">Today's Visitors</span>
+                  <div className="text-2xl font-black text-purple-400">{visitors.length}</div>
+                  <span className="text-[10px] text-purple-400">Guest Passes</span>
+                </div>
+              </div>
+
+              {/* Pending Approvals Section */}
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Key className="w-4 h-4 text-sky-400" />
+                  Urgent Outpass Clearance Queue ({pendingLeaves.length})
+                </h3>
+
+                {pendingLeaves.length > 0 ? (
+                  <div className="space-y-3">
+                    {pendingLeaves.map((l) => (
+                      <div key={l._id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                        <div>
+                          <div className="font-bold text-white text-sm">{l.student?.name || 'Resident Student'} ({l.leaveType})</div>
+                          <div className="text-slate-400 mt-0.5">Destination: {l.destination} · Reason: {l.reason}</div>
+                          <div className="text-[11px] text-slate-500">Departure: {new Date(l.fromDate).toLocaleString()}</div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleUpdateLeave(l._id, 'approved')}
+                            disabled={actionLoading}
+                            className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                          >
+                            ✓ Approve Outpass
+                          </button>
+                          <button
+                            onClick={() => handleUpdateLeave(l._id, 'rejected')}
+                            disabled={actionLoading}
+                            className="px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/60 border border-rose-700/50 text-rose-300 font-semibold text-xs"
+                          >
+                            ✕ Reject
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-xs text-slate-500">
+                    All outpass requests have been cleared.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: COMPLAINTS */}
+          {activeTab === 'complaints' && (
+            <div className="space-y-4">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-amber-400" />
+                  Hostel Grievance & Maintenance Tickets
+                </h3>
+
+                {complaints.length > 0 ? (
+                  complaints.map((c) => (
+                    <div key={c._id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 text-xs">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold uppercase text-[10px]">
+                            {c.category}
+                          </span>
+                          <span className="font-bold text-white text-sm">{c.title}</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                          c.status === 'resolved' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-400'
+                        }`}>
+                          {c.status}
+                        </span>
+                      </div>
+
+                      <p className="text-slate-300">{c.description}</p>
+
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-[11px] text-slate-400">
+                        <span>Resident: <strong className="text-white">{c.student?.name || 'Student'}</strong></span>
+                        <div className="flex items-center gap-2">
+                          {c.status !== 'resolved' && (
+                            <button
+                              onClick={() => handleUpdateComplaint(c._id, 'resolved')}
+                              className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                            >
+                              ✓ Mark Resolved
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-8 text-center text-xs text-slate-500">No active complaints.</div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: ATTENDANCE */}
+          {activeTab === 'attendance' && (
+            <div className="space-y-4">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <QrCode className="w-4 h-4 text-emerald-400" />
+                  Daily Floor Attendance Stream
+                </h3>
+
+                <div className="space-y-2">
+                  {attendance.map((att) => (
+                    <div key={att._id} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
+                      <div>
+                        <div className="font-bold text-white">{att.student?.name || 'Resident Student'}</div>
+                        <div className="text-[11px] text-slate-500">{new Date(att.date).toLocaleString()} · {att.remarks || 'QR Code Verified'}</div>
+                      </div>
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold uppercase text-[10px]">
+                        ✓ {att.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: RESIDENTS */}
+          {activeTab === 'students' && (
+            <div className="space-y-4">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Users className="w-4 h-4 text-indigo-400" />
+                  Allotted Hostel Residents ({students.length})
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {students.map((s) => (
+                    <div key={s._id} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs space-y-1">
+                      <div className="font-bold text-white text-sm">{s.user?.name || s.enrollmentNumber}</div>
+                      <div className="text-slate-400">Roll: {s.enrollmentNumber} · Dept: {s.department}</div>
+                      <div className="text-indigo-400 font-semibold">Room #{s.room?.roomNumber || '101'} · Bed {s.bed?.bedNumber || 'B-1'}</div>
+                      <div className="text-slate-500 text-[11px] pt-1">Parent: {s.parentName || 'N/A'} ({s.parentPhone || 'N/A'})</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: ROOMS */}
+          {activeTab === 'rooms' && (
+            <div className="space-y-4">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <DoorOpen className="w-4 h-4 text-sky-400" />
+                  Hostel Room Allotments & Bed Vacancies
+                </h3>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {rooms.map((r) => (
+                    <div key={r._id} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-white text-sm">#{r.roomNumber}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold uppercase">{r.type}</span>
+                      </div>
+                      <div className="text-slate-400">Floor {r.floor} · {r.capacity} Beds</div>
+                      <div className="text-emerald-400 font-mono font-bold">₹{r.rentPerMonth?.toLocaleString('en-IN')}/mo</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: NOTICES */}
+          {activeTab === 'notices' && (
+            <div className="space-y-4">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Bell className="w-4 h-4 text-indigo-400" />
+                    Hostel Circulars & Announcements
+                  </h3>
+                  <button
+                    onClick={() => setNoticeModal(true)}
+                    className="px-3.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center gap-1.5"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Post Notice</span>
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {notices.map((n) => (
+                    <div key={n._id} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-white text-sm">{n.title}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold uppercase">{n.priority}</span>
+                      </div>
+                      <p className="text-slate-300">{n.content}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* ── MODAL: POST NOTICE ── */}
+      {noticeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+          <div className="w-full max-w-md bg-[#0f1b2d] border border-sky-500/30 rounded-3xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <Send className="w-4 h-4 text-sky-400" />
+                Post Hostel Circular
+              </h3>
+              <button onClick={() => setNoticeModal(false)} className="text-slate-400 hover:text-white">✕</button>
+            </div>
+
+            <form onSubmit={handlePostNotice} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Title *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Night Gate Closure at 10:00 PM"
+                  value={noticeForm.title}
+                  onChange={(e) => setNoticeForm({ ...noticeForm, title: e.target.value })}
+                  className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-300 mb-1">Content *</label>
+                <textarea
+                  rows={3}
+                  required
+                  placeholder="Enter circular details..."
+                  value={noticeForm.content}
+                  onChange={(e) => setNoticeForm({ ...noticeForm, content: e.target.value })}
+                  className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500 resize-none"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setNoticeModal(false)}
+                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold"
+                >
+                  Broadcast Circular
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
