@@ -1,11 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import useInView from '../../hooks/useInView';
 
 export default function CtaSection() {
+  const { ref, inView } = useInView({ threshold: 0.2 });
+
   return (
     <section className="lp-section lp-bg-c">
       <div className="lp-inner">
-        <div className="cta-banner">
+        <div ref={ref} className={`cta-banner reveal-scale ${inView ? 'in-view' : ''}`}>
           <h2>
             Ready to{' '}
             <span

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import '../styles/Home.css';
+import useInView from '../hooks/useInView';
+
 
 const demoValues = {
   firstName: 'Tanmay',
@@ -17,6 +19,10 @@ export default function Contact() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [copied, setCopied] = useState(false);
+
+  const { ref: headerRef, inView: headerIn } = useInView({ threshold: 0.2 });
+  const { ref: infoRef, inView: infoIn } = useInView({ threshold: 0.1 });
+  const { ref: formRef, inView: formIn } = useInView({ threshold: 0.1 });
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -64,7 +70,7 @@ export default function Contact() {
     <div className="contact-page">
       <div className="contact-container">
         {/* Header */}
-        <div className="contact-header">
+        <div ref={headerRef} className={`contact-header reveal ${headerIn ? 'in-view' : ''}`}>
           <h1>Get In Touch</h1>
           <p>
             Have questions about our hostel facilities, room allotment, or admissions?
@@ -74,7 +80,8 @@ export default function Contact() {
 
         <div className="contact-grid">
           {/* Info Card */}
-          <div className="contact-info-card">
+          <div ref={infoRef} className={`contact-info-card reveal-left ${infoIn ? 'in-view' : ''}`}>
+
             <h2>Contact Information</h2>
             <p>Reach out directly to the hostel administrative office or connect with us on our official profiles.</p>
 
@@ -127,7 +134,8 @@ export default function Contact() {
           </div>
 
           {/* Form Card */}
-          <div className="contact-form-card">
+          <div ref={formRef} className={`contact-form-card reveal-right ${formIn ? 'in-view' : ''}`}>
+
             {submittedTicket ? (
               <div style={{ textAlign: 'center', padding: '30px 16px' }} className="animate-fade-in">
                 <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>

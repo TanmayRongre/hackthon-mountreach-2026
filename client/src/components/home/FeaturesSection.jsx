@@ -1,4 +1,5 @@
 import React from 'react';
+import useInView from '../../hooks/useInView';
 
 const FEATURES = [
   { icon: '🏠', title: 'Room Allotment & Management', desc: 'Automated room allocation based on preferences, gender, and availability across all blocks.' },
@@ -12,10 +13,13 @@ const FEATURES = [
 ];
 
 export default function FeaturesSection() {
+  const { ref: headRef, inView: headIn } = useInView();
+  const { ref: gridRef, inView: gridIn } = useInView({ threshold: 0.08 });
+
   return (
     <section className="lp-section lp-bg-b">
       <div className="lp-inner">
-        <div className="lp-header-center">
+        <div ref={headRef} className={`lp-header-center reveal ${headIn ? 'in-view' : ''}`}>
           <div className="lp-tag">
             <i className="bx bx-grid-alt" style={{ fontSize: 12 }}></i>Features
           </div>
@@ -26,9 +30,12 @@ export default function FeaturesSection() {
             From room allocation to mess management — every hostel operation, digitized and streamlined.
           </p>
         </div>
-        <div className="features-grid">
+        <div ref={gridRef} className="features-grid">
           {FEATURES.map((f, i) => (
-            <div key={i} className="feature-card">
+            <div
+              key={i}
+              className={`feature-card reveal-scale stagger-${i + 1} ${gridIn ? 'in-view' : ''}`}
+            >
               <div className="feature-icon">
                 <span role="img" aria-label={f.title}>{f.icon}</span>
               </div>

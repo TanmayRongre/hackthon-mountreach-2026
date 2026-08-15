@@ -1,4 +1,5 @@
 import React from 'react';
+import useInView from '../../hooks/useInView';
 
 const STEPS = [
   {
@@ -19,10 +20,13 @@ const STEPS = [
 ];
 
 export default function HowItWorksSection() {
+  const { ref: headRef, inView: headIn } = useInView();
+  const { ref: stepsRef, inView: stepsIn } = useInView({ threshold: 0.15 });
+
   return (
     <section className="lp-section lp-bg-a">
       <div className="lp-inner">
-        <div className="lp-header-center">
+        <div ref={headRef} className={`lp-header-center reveal ${headIn ? 'in-view' : ''}`}>
           <div className="lp-tag">
             <i className="bx bx-list-check" style={{ fontSize: 12 }}></i>Getting Started
           </div>
@@ -33,9 +37,12 @@ export default function HowItWorksSection() {
             From registration to full digital hostel management — onboarding is fast and straightforward.
           </p>
         </div>
-        <div className="hiw-steps">
+        <div ref={stepsRef} className="hiw-steps">
           {STEPS.map((s, i) => (
-            <div key={i} className="hiw-step">
+            <div
+              key={i}
+              className={`hiw-step reveal stagger-${i + 1} ${stepsIn ? 'in-view' : ''}`}
+            >
               <div className="hiw-number">{s.n}</div>
               <h3>{s.title}</h3>
               <p>{s.desc}</p>

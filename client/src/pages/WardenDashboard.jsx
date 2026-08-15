@@ -186,7 +186,7 @@ export default function WardenDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#07101f] text-slate-100 font-sans flex flex-col">
+    <div className="min-h-[calc(100vh-64px)] bg-[#07101f] text-slate-100 font-sans flex flex-col">
       {/* Toast Feedback */}
       {toast && (
         <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-medium border animate-slide-up ${
@@ -197,71 +197,62 @@ export default function WardenDashboard() {
         </div>
       )}
 
-      {/* ── TOP BREADCRUMB & WARDEN DESK BANNER (No duplicate navbar) ── */}
-      <div className="max-w-7xl w-full mx-auto mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="lg:hidden p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white"
-            aria-label="Toggle warden sidebar"
-          >
-            {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+      {/* ── TOP BREADCRUMB & WARDEN DESK BANNER ── */}
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="lg:hidden p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white cursor-pointer"
+              aria-label="Toggle warden sidebar"
+            >
+              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
 
-          <div className="w-10 h-10 rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shadow-md">
-            <ShieldCheck className="w-5 h-5" />
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-white tracking-tight">Warden Control Desk</h1>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30 uppercase tracking-wider">
-                {hostels[0]?.name || 'Assigned Block'}
-              </span>
+            <div className="w-10 h-10 rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shadow-md">
+              <ShieldCheck className="w-5 h-5" />
             </div>
-            <p className="text-xs text-slate-400">Hostel residency, gatepass clearances, disciplinary grievances, and daily attendance.</p>
+
+            <div>
+              <h1 className="text-xl font-bold text-white tracking-tight">Warden Control Desk</h1>
+              <p className="text-xs text-slate-400">Hostel residency, leave applications, disciplinary grievances, and daily attendance.</p>
+            </div>
           </div>
-        </div>
 
-        {/* Right Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <button
-            onClick={loadWardenData}
-            title="Refresh Records"
-            className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-sky-400' : ''}`} />
-            <span className="hidden sm:inline">Refresh</span>
-          </button>
+          {/* Right Action Controls */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              onClick={loadWardenData}
+              title="Refresh Records"
+              className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-sky-400' : ''}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
 
-          <button
-            onClick={() => setQrModalOpen(true)}
-            className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 transition-all cursor-pointer"
-          >
-            <QrCode className="w-3.5 h-3.5" />
-            <span>Generate Daily QR</span>
-          </button>
+            <button
+              onClick={() => setQrModalOpen(true)}
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <QrCode className="w-3.5 h-3.5" />
+              <span>Generate Daily QR</span>
+            </button>
 
-          <button
-            onClick={() => setNoticeModal(true)}
-            className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-sky-600/30 flex items-center gap-1.5 transition-all"
-          >
-            <Send className="w-3.5 h-3.5" />
-            <span>Post Circular</span>
-          </button>
+            <button
+              onClick={() => setNoticeModal(true)}
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-sky-600/30 flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>Post Circular</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* ── MAIN WORKSPACE ── */}
-      <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
+      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
         {/* ── LEFT SIDEBAR ── */}
         <aside className={`${sidebarOpen ? 'flex' : 'hidden'} lg:flex flex-col w-full lg:w-64 shrink-0 bg-[#0f1b2d]/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 shadow-2xl space-y-4 self-start`}>
-          <div className="p-3.5 rounded-2xl bg-gradient-to-br from-sky-950/60 to-slate-900 border border-sky-500/25 space-y-1">
-            <div className="text-[10px] uppercase font-bold text-sky-400">Assigned Complex</div>
-            <div className="text-sm font-bold text-white">{hostels[0]?.name || 'Campus Hostel Block'}</div>
-            <div className="text-[11px] text-slate-400">Total Residents: {students.length}</div>
-          </div>
-
           <div className="space-y-1">
             {navItems.map((item) => {
               const active = activeTab === item.id;
