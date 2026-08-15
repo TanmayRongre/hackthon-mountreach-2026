@@ -11,6 +11,7 @@ const Visitor = require('../models/Visitor');
 const Notice = require('../models/Notice');
 const Mess = require('../models/Mess');
 const AuditLog = require('../models/AuditLog');
+const ContactMessage = require('../models/ContactMessage');
 const mongoose = require('mongoose');
 
 /**
@@ -62,7 +63,9 @@ const getAdminOverview = async (req, res, next) => {
       todayAttendance,
       visitors,
       recentAuditLogs,
-      notices
+      notices,
+      openContactTickets,
+      totalContactTickets
     ] = await Promise.all([
       User.countDocuments(),
       Student.countDocuments(),
@@ -77,7 +80,9 @@ const getAdminOverview = async (req, res, next) => {
       Attendance.find({ date: { $gte: todayStart, $lte: todayEnd } }),
       Visitor.find(),
       AuditLog.find().sort({ createdAt: -1 }).limit(10),
-      Notice.find().sort({ createdAt: -1 }).limit(5)
+      Notice.find().sort({ createdAt: -1 }).limit(5),
+      ContactMessage.countDocuments({ status: 'open' }),
+      ContactMessage.countDocuments()
     ]);
 
     // Financial KPIs
@@ -149,6 +154,8 @@ const getAdminOverview = async (req, res, next) => {
           approvedLeaves,
           totalLeaves: leaves.length,
           totalVisitors: visitors.length,
+          openContactTickets: openContactTickets || 0,
+          totalContactTickets: totalContactTickets || 0,
         },
         hostelSummaries,
         recentAuditLogs,

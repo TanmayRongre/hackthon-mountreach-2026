@@ -213,6 +213,19 @@ export const api = {
       method: 'DELETE',
     }),
 
+  // Contact & Helpdesk
+  submitContact: (data) =>
+    request('/contact', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  getContactMessages: (params = '') => request(`/contact${params}`, { method: 'GET' }),
+  updateContactMessage: (id, data) =>
+    request(`/contact/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
   // Custom Raw Request Tester
   rawRequest: (endpoint, method = 'GET', body = null) => {
     const options = { method };

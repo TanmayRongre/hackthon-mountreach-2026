@@ -27,7 +27,8 @@ import {
   Key,
   QrCode,
   Sliders,
-  DollarSign
+  DollarSign,
+  Inbox
 } from 'lucide-react';
 
 // Modular Admin Sections
@@ -41,6 +42,7 @@ import AdminMessSection from '../components/admin/AdminMessSection';
 import AdminAuditLogsSection from '../components/admin/AdminAuditLogsSection';
 import AdminSystemHealthSection from '../components/admin/AdminSystemHealthSection';
 import AdminReportsSection from '../components/admin/AdminReportsSection';
+import AdminContactInquiries from '../components/admin/AdminContactInquiries';
 
 export default function AdminDashboard() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -124,8 +126,9 @@ export default function AdminDashboard() {
       ],
     },
     {
-      group: 'COMMUNICATION & DINING',
+      group: 'COMMUNICATION & HELPDESK',
       items: [
+        { id: 'inquiries', label: 'Contact Inquiries', icon: <Inbox className="w-4 h-4" />, badge: overviewStats?.kpis?.openContactTickets, badgeColor: 'bg-indigo-500/20 text-indigo-300' },
         { id: 'notices', label: 'Announcements Hub', icon: <Bell className="w-4 h-4" /> },
         { id: 'mess', label: 'Mess & Dining Menu', icon: <UtensilsCrossed className="w-4 h-4" /> },
       ],
@@ -284,6 +287,10 @@ export default function AdminDashboard() {
 
           {activeTab === 'finance' && (
             <AdminFinanceSection onFinanceUpdated={loadAdminData} />
+          )}
+
+          {activeTab === 'inquiries' && (
+            <AdminContactInquiries />
           )}
 
           {activeTab === 'notices' && (
