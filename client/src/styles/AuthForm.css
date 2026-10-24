@@ -116,31 +116,72 @@
   padding: 36px 40px;
   z-index: 1;
   overflow-y: auto;
-  transition: 0.6s ease-in-out 1.2s, visibility 0s 1s;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: right 0.8s cubic-bezier(0.77, 0, 0.175, 1) 0.1s,
+              opacity 0.2s ease-out 0s,
+              transform 0.2s ease-out 0s,
+              visibility 0s 0.2s;
 }
 
 .auth-container.active .form-box {
   right: 50%;
 }
 
+/* ── Login Form: Active when NOT in register mode ── */
 .auth-container .form-box.login {
+  opacity: 1;
   visibility: visible;
-  transition: 0.6s ease-in-out 1.2s, visibility 0s 0s;
+  pointer-events: auto;
+  z-index: 5;
+  transform: translateY(0);
+  /* Delayed fade-in when switching back to login: stays opacity 0 initially during slide */
+  transition: right 0.8s cubic-bezier(0.77, 0, 0.175, 1) 0.1s,
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.65s,
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.65s,
+              visibility 0s 0.65s;
 }
 
+/* ── Login Form: Inactive when in register mode ── */
 .auth-container.active .form-box.login {
+  opacity: 0;
   visibility: hidden;
-  transition: 0.6s ease-in-out, visibility 0s 0.6s;
+  pointer-events: none;
+  z-index: 1;
+  transform: translateY(6px);
+  /* Immediately fades out to 0 so it never overlaps or slides visibly */
+  transition: opacity 0.2s ease-out 0s,
+              transform 0.2s ease-out 0s,
+              visibility 0s 0.2s;
 }
 
+/* ── Register Form: Inactive when in login mode ── */
 .auth-container .form-box.register {
+  opacity: 0;
   visibility: hidden;
-  transition: 0.6s ease-in-out, visibility 0s 0.6s;
+  pointer-events: none;
+  z-index: 1;
+  transform: translateY(6px);
+  /* Immediately fades out to 0 so it never overlaps or slides visibly */
+  transition: opacity 0.2s ease-out 0s,
+              transform 0.2s ease-out 0s,
+              visibility 0s 0.2s;
 }
 
+/* ── Register Form: Active when in register mode ── */
 .auth-container.active .form-box.register {
+  opacity: 1;
   visibility: visible;
-  transition: 0.6s ease-in-out 1.2s, visibility 0s 0s;
+  pointer-events: auto;
+  z-index: 5;
+  transform: translateY(0);
+  /* Delayed fade-in when switching to register: stays opacity 0 initially during slide */
+  transition: right 0.8s cubic-bezier(0.77, 0, 0.175, 1) 0.1s,
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.65s,
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.65s,
+              visibility 0s 0.65s;
 }
 
 /* ===================================================
@@ -631,25 +672,37 @@
     height: auto;
     padding: 0;
     right: 0 !important;
+    transform: none !important;
+    transition: none !important;
   }
 
   /* Show only the active form on mobile */
   .auth-container .form-box.login {
-    display: flex;
+    display: flex !important;
     visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 
   .auth-container.active .form-box.login {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 
   .auth-container .form-box.register {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 
   .auth-container.active .form-box.register {
     display: flex !important;
     visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 
   .auth-container .toggle-box {
