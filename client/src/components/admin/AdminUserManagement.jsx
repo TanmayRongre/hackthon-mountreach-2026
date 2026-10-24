@@ -109,10 +109,10 @@ export default function AdminUserManagement({ onUserUpdated }) {
       )}
 
       {/* Header & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900/70 border border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-xl bg-[#0e1219] border border-white/[0.08]">
         <div>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Users className="w-5 h-5 text-indigo-400" />
+          <h2 className="text-lg font-bold font-serif text-white tracking-tight flex items-center gap-2">
+            <Users className="w-5 h-5 text-[#dfba73]" />
             User & Role Management
           </h2>
           <p className="text-xs text-slate-400">Manage registered residents, wardens, staff credentials, and platform role authorizations.</p>
@@ -123,10 +123,10 @@ export default function AdminUserManagement({ onUserUpdated }) {
             <button
               key={tab}
               onClick={() => setActiveSubTab(tab)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold capitalize transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
                 activeSubTab === tab
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                  ? 'bg-[#c5a059] text-[#090b10] font-bold shadow-md shadow-[#c5a059]/20'
+                  : 'bg-white/[0.05] border border-white/[0.08] text-slate-400 hover:text-white'
               }`}
             >
               {tab}
@@ -143,16 +143,16 @@ export default function AdminUserManagement({ onUserUpdated }) {
           placeholder="Search by name, email, or role..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-slate-900/80 border border-slate-800 rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+          className="w-full pl-10 pr-4 py-2.5 bg-[#0e1219] border border-white/[0.08] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#dfba73]"
         />
       </div>
 
       {/* Users Table */}
-      <div className="overflow-hidden border border-slate-800 rounded-3xl bg-slate-900/60 shadow-xl">
+      <div className="overflow-hidden border border-white/[0.08] rounded-xl bg-[#0e1219] shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-950/80 border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+              <tr className="bg-[#121620] border-b border-white/[0.08] text-slate-400 uppercase text-[10px] tracking-wider">
                 <th className="p-4">User</th>
                 <th className="p-4">Email</th>
                 <th className="p-4">Current Role</th>
@@ -161,7 +161,7 @@ export default function AdminUserManagement({ onUserUpdated }) {
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-slate-300">
+            <tbody className="divide-y divide-white/[0.06] text-slate-300">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="p-8 text-center text-slate-500">Loading user directory...</td>
@@ -170,10 +170,10 @@ export default function AdminUserManagement({ onUserUpdated }) {
                 filteredUsers.map((u) => {
                   const studentProfile = students.find((s) => s.user?._id?.toString() === u._id.toString() || s.user?.toString() === u._id.toString());
                   return (
-                    <tr key={u._id} className="hover:bg-slate-800/40 transition-colors">
+                    <tr key={u._id} className="hover:bg-white/[0.02] transition-colors">
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-sky-500 text-white font-bold text-xs flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-lg bg-[#c5a059] text-[#090b10] font-serif font-bold text-xs flex items-center justify-center">
                             {u.name?.charAt(0) || 'U'}
                           </div>
                           <div>
@@ -188,8 +188,8 @@ export default function AdminUserManagement({ onUserUpdated }) {
                       <td className="p-4">
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                           u.role === 'admin' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
-                          u.role === 'warden' ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30' :
-                          'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                          u.role === 'warden' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
+                          'bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30'
                         }`}>
                           {u.role}
                         </span>
@@ -202,7 +202,7 @@ export default function AdminUserManagement({ onUserUpdated }) {
                             <span className="text-slate-500 ml-1">({studentProfile.hostel?.name || 'Block A'})</span>
                           </div>
                         ) : u.role === 'warden' ? (
-                          <span className="text-[11px] text-sky-400 font-medium">Hostel Warden</span>
+                          <span className="text-[11px] text-[#dfba73] font-medium">Hostel Warden</span>
                         ) : (
                           <span className="text-slate-500 text-[11px]">Unallotted</span>
                         )}
@@ -217,7 +217,7 @@ export default function AdminUserManagement({ onUserUpdated }) {
                           {studentProfile && (
                             <button
                               onClick={() => setViewingStudent(studentProfile)}
-                              className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-medium transition-all"
+                              className="px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white text-[11px] font-medium transition-all cursor-pointer"
                             >
                               Profile
                             </button>
@@ -227,7 +227,7 @@ export default function AdminUserManagement({ onUserUpdated }) {
                               setRoleModal(u);
                               setSelectedRole(u.role);
                             }}
-                            className="px-3 py-1 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 text-indigo-300 text-[11px] font-bold transition-all"
+                            className="btn-arch-secondary px-3 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer"
                           >
                             Change Role
                           </button>
@@ -249,16 +249,16 @@ export default function AdminUserManagement({ onUserUpdated }) {
       {/* ── MODAL: CHANGE ROLE ── */}
       {roleModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md bg-[#0f1b2d] border border-indigo-500/30 rounded-3xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="w-full max-w-md bg-[#0e1219] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/5 pb-3">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-indigo-400" />
+                <ShieldCheck className="w-5 h-5 text-[#dfba73]" />
                 Modify User Authority & Role
               </h3>
-              <button onClick={() => setRoleModal(null)} className="text-slate-400 hover:text-white">✕</button>
+              <button onClick={() => setRoleModal(null)} className="text-slate-400 hover:text-white transition-colors">✕</button>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
+            <div className="p-3.5 rounded-xl bg-[#121620] border border-white/5 space-y-1">
               <div className="text-xs text-slate-400">Target User Account:</div>
               <div className="text-sm font-bold text-white">{roleModal.name}</div>
               <div className="text-xs font-mono text-slate-400">{roleModal.email}</div>
@@ -270,7 +270,7 @@ export default function AdminUserManagement({ onUserUpdated }) {
                 <select
                   value={selectedRole}
                   onChange={(e) => setSelectedRole(e.target.value)}
-                  className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-bold focus:outline-none focus:border-indigo-500"
+                  className="w-full p-2.5 bg-[#121620] border border-white/10 rounded-xl text-white font-semibold focus:outline-none focus:border-[#c5a059] transition-colors"
                 >
                   <option value="student">Student (Hostel Resident)</option>
                   <option value="warden">Warden (Hostel Supervisor & Approver)</option>
@@ -279,23 +279,23 @@ export default function AdminUserManagement({ onUserUpdated }) {
                 </select>
               </div>
 
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 text-amber-400" />
+              <div className="p-3 rounded-xl bg-[#c5a059]/10 border border-[#c5a059]/20 text-[11px] text-[#dfba73] flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-[#dfba73]" />
                 <span>Privilege changes are logged permanently in the system Audit Log.</span>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+              <div className="flex justify-end gap-2 pt-2 border-t border-white/5">
                 <button
                   type="button"
                   onClick={() => setRoleModal(null)}
-                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium"
+                  className="btn-arch-secondary text-xs px-4 py-2"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={updatingRole}
-                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-600/30"
+                  className="btn-arch-primary text-xs px-5 py-2.5"
                 >
                   {updatingRole ? 'Updating...' : 'Confirm Role Update'}
                 </button>
@@ -308,35 +308,35 @@ export default function AdminUserManagement({ onUserUpdated }) {
       {/* ── MODAL: VIEW STUDENT DETAILS ── */}
       {viewingStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-lg bg-[#0f1b2d] border border-slate-700 rounded-3xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="w-full max-w-lg bg-[#0e1219] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/5 pb-3">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <GraduationCap className="w-5 h-5 text-indigo-400" />
+                <GraduationCap className="w-5 h-5 text-[#dfba73]" />
                 Student Residency Dossier
               </h3>
-              <button onClick={() => setViewingStudent(null)} className="text-slate-400 hover:text-white">✕</button>
+              <button onClick={() => setViewingStudent(null)} className="text-slate-400 hover:text-white transition-colors">✕</button>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <div className="p-3 rounded-xl bg-[#121620] border border-white/5 space-y-1">
                 <span className="text-slate-400">Roll ID</span>
                 <div className="text-sm font-bold text-white uppercase">{viewingStudent.enrollmentNumber}</div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <div className="p-3 rounded-xl bg-[#121620] border border-white/5 space-y-1">
                 <span className="text-slate-400">Department</span>
                 <div className="text-sm font-bold text-white">{viewingStudent.department}</div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <div className="p-3 rounded-xl bg-[#121620] border border-white/5 space-y-1">
                 <span className="text-slate-400">Allocated Room</span>
                 <div className="text-sm font-bold text-white">Room #{viewingStudent.room?.roomNumber || '101'}</div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <div className="p-3 rounded-xl bg-[#121620] border border-white/5 space-y-1">
                 <span className="text-slate-400">Assigned Bed</span>
-                <div className="text-sm font-bold text-indigo-400">Bed {viewingStudent.bed?.bedNumber || 'B-1'}</div>
+                <div className="text-sm font-bold text-[#dfba73]">Bed {viewingStudent.bed?.bedNumber || 'B-1'}</div>
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1">
+            <div className="p-3 rounded-xl bg-[#121620] border border-white/5 text-xs space-y-1">
               <div className="text-slate-400">Parent / Guardian:</div>
               <div className="font-bold text-white">{viewingStudent.parentName || 'N/A'} · Phone: {viewingStudent.parentPhone || 'N/A'}</div>
               <div className="text-slate-400 text-[11px]">Address: {viewingStudent.address || 'Pune, Maharashtra'}</div>
@@ -345,7 +345,7 @@ export default function AdminUserManagement({ onUserUpdated }) {
             <div className="flex justify-end pt-2">
               <button
                 onClick={() => setViewingStudent(null)}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold"
+                className="btn-arch-secondary text-xs px-4 py-2"
               >
                 Close Dossier
               </button>

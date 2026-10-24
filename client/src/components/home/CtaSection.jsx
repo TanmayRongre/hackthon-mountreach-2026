@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import useInView from '../../hooks/useInView';
+import { LogIn, UserPlus, Sparkles } from 'lucide-react';
 
 export default function CtaSection() {
   const { ref, inView } = useInView({ threshold: 0.2 });
@@ -10,29 +11,31 @@ export default function CtaSection() {
       <div className="lp-inner">
         <div ref={ref} className={`cta-banner reveal-scale ${inView ? 'in-view' : ''}`}>
           <h2>
-            Ready to{' '}
+            Modernize Your Institution's{' '}
             <span
               style={{
-                background: 'linear-gradient(135deg,#818cf8,#a5b4fc)',
+                background: 'linear-gradient(135deg, #ffffff 0%, #e8d7b3 40%, #c5a059 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
+                fontStyle: 'italic',
               }}
             >
-              Digitise Your Hostel?
+              Residential Operations
             </span>
           </h2>
           <p>
-            Replace paper registers, manual attendance, and phone-based complaints with one smart platform built for college hostels.
+            Retire fragmented paper manifests, untracked complaints, and manual nightly rolls.
+            Deploy an auditable, high-security campus management system today.
           </p>
           <div className="cta-btn-row">
             <Link to="/register" className="cta-btn-primary">
-              <i className="bx bx-user-plus" style={{ fontSize: 18 }}></i>
-              Register as Student
+              <UserPlus className="w-4 h-4" />
+              <span>Student Resident Onboarding</span>
             </Link>
             <Link to="/login" className="cta-btn-secondary">
-              <i className="bx bx-log-in-circle" style={{ fontSize: 18 }}></i>
-              Login to Your Portal
+              <LogIn className="w-4 h-4" />
+              <span>Sign In to Institutional Portal</span>
             </Link>
           </div>
         </div>

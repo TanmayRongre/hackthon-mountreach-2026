@@ -1,6 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import {
+  GraduationCap,
+  Building2,
+  ShieldCheck,
+  LogIn,
+  UserPlus,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  CheckCircle2,
+  Mail,
+  Lock,
+  User,
+  X,
+  ChevronDown
+} from 'lucide-react';
 import '../styles/AuthForm.css';
 
 export default function AuthForm({ initialActive = false }) {
@@ -99,24 +115,24 @@ export default function AuthForm({ initialActive = false }) {
         } else {
           navigate('/dashboard');
         }
-      }, 800);
+      }, 1000);
     } catch (err) {
-      setRegisterError(err.message || 'Failed to create account');
+      setRegisterError(err.message || 'Registration failed. Please check your details.');
     } finally {
       setRegisterLoading(false);
     }
   };
 
   const autofillDemo = (role) => {
-    if (role === 'admin') {
-      setLoginEmail('admin@mountreach.com');
-      setLoginPassword('admin123');
+    if (role === 'student') {
+      setLoginEmail('student@mountreach.edu');
+      setLoginPassword('student123');
     } else if (role === 'warden') {
-      setLoginEmail('warden@mountreach.com');
+      setLoginEmail('warden@mountreach.edu');
       setLoginPassword('warden123');
-    } else {
-      setLoginEmail('developer@mountreach.com');
-      setLoginPassword('dev123456');
+    } else if (role === 'admin') {
+      setLoginEmail('admin@mountreach.edu');
+      setLoginPassword('admin123');
     }
   };
 
@@ -140,16 +156,16 @@ export default function AuthForm({ initialActive = false }) {
             className={`mobile-switcher-btn ${!isActive ? 'active' : ''}`}
             onClick={() => handleToggle(false)}
           >
-            <i className="bx bx-log-in-circle" style={{ marginRight: 6 }}></i>
-            Login
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Sign In</span>
           </button>
           <button
             type="button"
             className={`mobile-switcher-btn ${isActive ? 'active' : ''}`}
             onClick={() => handleToggle(true)}
           >
-            <i className="bx bx-user-plus" style={{ marginRight: 6 }}></i>
-            Register
+            <UserPlus className="w-3.5 h-3.5" />
+            <span>Register</span>
           </button>
         </div>
 
@@ -158,33 +174,33 @@ export default function AuthForm({ initialActive = false }) {
             ════════════════════════════════════════ */}
         <div className="form-box login">
           <form onSubmit={handleLoginSubmit}>
-            <h1>Welcome Back</h1>
+            <h1>Portal Sign In</h1>
             <p className="auth-subtitle">
-              Sign in to your College Hostel portal
+              Access your institutional residence dashboard
             </p>
 
             {loginError && (
               <div className="auth-alert error">
-                <i className="bx bx-error-circle" style={{ fontSize: 16 }}></i>
-                {loginError}
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                <span>{loginError}</span>
               </div>
             )}
 
             <div className="input-box">
               <input
                 type="text"
-                placeholder="Enrollment No / Email / Username"
+                placeholder="Enrollment ID / Institutional Email"
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
                 required
               />
-              <i className="bx bxs-user input-icon"></i>
+              <User className="input-icon w-4 h-4" />
             </div>
 
             <div className="input-box">
               <input
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Password"
+                placeholder="Account Password"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
                 required
@@ -195,7 +211,7 @@ export default function AuthForm({ initialActive = false }) {
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label="Toggle password visibility"
               >
-                <i className={`bx ${showPassword ? 'bx-show' : 'bx-hide'}`}></i>
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
 
@@ -213,8 +229,8 @@ export default function AuthForm({ initialActive = false }) {
             </div>
 
             <button type="submit" className="btn-primary-auth" disabled={loginLoading}>
-              <i className="bx bx-log-in-circle" style={{ fontSize: 18 }}></i>
-              {loginLoading ? 'Signing In...' : 'Sign In to Portal'}
+              <LogIn className="w-4 h-4" />
+              <span>{loginLoading ? 'Authenticating...' : 'Sign In to Portal'}</span>
             </button>
 
             {/* Quick Demo Credentials */}
@@ -225,7 +241,8 @@ export default function AuthForm({ initialActive = false }) {
                 onClick={() => autofillDemo('student')}
                 title="Fill Student credentials"
               >
-                🎓 Demo Student
+                <GraduationCap className="w-3.5 h-3.5 text-[#dfba73]" />
+                <span>Student Demo</span>
               </button>
               <button
                 type="button"
@@ -233,7 +250,8 @@ export default function AuthForm({ initialActive = false }) {
                 onClick={() => autofillDemo('warden')}
                 title="Fill Warden credentials"
               >
-                🏫 Demo Warden
+                <Building2 className="w-3.5 h-3.5 text-[#34d399]" />
+                <span>Warden Demo</span>
               </button>
               <button
                 type="button"
@@ -241,7 +259,8 @@ export default function AuthForm({ initialActive = false }) {
                 onClick={() => autofillDemo('admin')}
                 title="Fill Admin credentials"
               >
-                🛡️ Demo Admin
+                <ShieldCheck className="w-3.5 h-3.5 text-[#38bdf8]" />
+                <span>Admin Demo</span>
               </button>
             </div>
           </form>
@@ -252,44 +271,44 @@ export default function AuthForm({ initialActive = false }) {
             ════════════════════════════════════════ */}
         <div className="form-box register">
           <form onSubmit={handleRegisterSubmit}>
-            <h1>Create Portal Account</h1>
+            <h1>Create Resident Account</h1>
             <p className="auth-subtitle">
               Register as Student, Warden, or Administrator
             </p>
 
             {registerError && (
               <div className="auth-alert error">
-                <i className="bx bx-error-circle" style={{ fontSize: 16 }}></i>
-                {registerError}
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                <span>{registerError}</span>
               </div>
             )}
             {registerSuccess && (
               <div className="auth-alert success">
-                <i className="bx bx-check-circle" style={{ fontSize: 16 }}></i>
-                {registerSuccess}
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>{registerSuccess}</span>
               </div>
             )}
 
             <div className="input-box">
               <input
                 type="text"
-                placeholder="Full Name (as per College ID)"
+                placeholder="Full Name (as per Institutional Record)"
                 value={registerName}
                 onChange={(e) => setRegisterName(e.target.value)}
                 required
               />
-              <i className="bx bxs-user input-icon"></i>
+              <User className="input-icon w-4 h-4" />
             </div>
 
             <div className="input-box">
               <input
                 type="email"
-                placeholder="Official College Email ID"
+                placeholder="Institutional College Email ID"
                 value={registerEmail}
                 onChange={(e) => setRegisterEmail(e.target.value)}
                 required
               />
-              <i className="bx bxs-envelope input-icon"></i>
+              <Mail className="input-icon w-4 h-4" />
             </div>
 
             <div className="input-box">
@@ -297,17 +316,17 @@ export default function AuthForm({ initialActive = false }) {
                 value={registerRole}
                 onChange={(e) => setRegisterRole(e.target.value)}
               >
-                <option value="student">🎓 Role: Student / Resident</option>
-                <option value="warden">🏫 Role: Warden Staff</option>
-                <option value="admin">🛡️ Role: Administrator (Admin)</option>
+                <option value="student">Role: Student Resident</option>
+                <option value="warden">Role: Residence Warden Staff</option>
+                <option value="admin">Role: Campus Administrator</option>
               </select>
-              <i className="bx bx-chevron-down input-icon"></i>
+              <ChevronDown className="input-icon w-4 h-4 pointer-events-none" />
             </div>
 
             <div className="input-box">
               <input
                 type={showRegPassword ? 'text' : 'password'}
-                placeholder="Create Secure Password (min 6 chars)"
+                placeholder="Create Password (min 6 characters)"
                 value={registerPassword}
                 onChange={(e) => setRegisterPassword(e.target.value)}
                 required
@@ -318,13 +337,13 @@ export default function AuthForm({ initialActive = false }) {
                 onClick={() => setShowRegPassword(!showRegPassword)}
                 aria-label="Toggle password visibility"
               >
-                <i className={`bx ${showRegPassword ? 'bx-show' : 'bx-hide'}`}></i>
+                {showRegPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
 
             <button type="submit" className="btn-primary-auth" disabled={registerLoading}>
-              <i className="bx bx-user-plus" style={{ fontSize: 18 }}></i>
-              {registerLoading ? 'Creating Account...' : 'Register Account'}
+              <UserPlus className="w-4 h-4" />
+              <span>{registerLoading ? 'Provisioning Account...' : 'Register Account'}</span>
             </button>
           </form>
         </div>
@@ -335,12 +354,13 @@ export default function AuthForm({ initialActive = false }) {
         <div className="toggle-box">
           <div className="toggle-panel toggle-left">
             <div className="badge-pill">
-              <i className="bx bx-building-house"></i>
-              HostelHub Portal
+              <Building2 className="w-3.5 h-3.5 text-[#dfba73]" />
+              <span>HostelHub Institutional</span>
             </div>
-            <h1>New to HostelHub?</h1>
+            <h1>New to Residence?</h1>
             <p>
-              Register with your student details to apply for hostel rooms, access the mess schedule, and track complaints.
+              Enroll with your student credentials to submit room allotment requests,
+              access meal schedules, and raise maintenance tickets.
             </p>
             <button
               type="button"
@@ -353,12 +373,13 @@ export default function AuthForm({ initialActive = false }) {
 
           <div className="toggle-panel toggle-right">
             <div className="badge-pill">
-              <i className="bx bx-shield-quarter"></i>
-              Unified Access
+              <ShieldCheck className="w-3.5 h-3.5 text-[#dfba73]" />
+              <span>Verified Gateway</span>
             </div>
-            <h1>Welcome Back!</h1>
+            <h1>Welcome Back</h1>
             <p>
-              Already registered? Sign in to access your student, warden, or administrative hostel dashboard.
+              Already registered? Sign in to access your student, warden, or administrative
+              residential dashboard.
             </p>
             <button
               type="button"
@@ -375,24 +396,27 @@ export default function AuthForm({ initialActive = false }) {
       {/* ── FORGOT PASSWORD MODAL ── */}
       {forgotModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-sans">
-          <div className="w-full max-w-md p-6 rounded-3xl bg-[#0f1b2d] border border-slate-800 shadow-2xl space-y-4">
+          <div className="w-full max-w-md p-6 rounded-xl bg-[#0e1219] border border-white/[0.1] shadow-2xl space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-white">Reset Account Password</h3>
+              <h3 className="font-serif text-base font-bold text-white">Reset Account Password</h3>
               <button
                 onClick={() => setForgotModal(false)}
-                className="text-slate-400 hover:text-white text-lg font-bold"
+                className="text-slate-400 hover:text-white cursor-pointer"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {forgotSent ? (
-              <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/30 text-emerald-200 text-xs space-y-2">
-                <div className="font-bold">✓ Password Reset Link Dispatched</div>
+              <div className="p-4 rounded-lg bg-emerald-950/60 border border-emerald-500/30 text-emerald-200 text-xs space-y-2">
+                <div className="font-bold flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>Password Reset Link Dispatched</span>
+                </div>
                 <p>If an account with <strong>{forgotEmail || 'your email'}</strong> exists in our records, a secure password reset link has been dispatched to your inbox.</p>
                 <button
                   onClick={() => setForgotModal(false)}
-                  className="w-full py-2 mt-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                  className="w-full py-2 mt-2 rounded-md bg-[#c5a059] text-[#090b10] font-semibold text-xs cursor-pointer"
                 >
                   Return to Login
                 </button>
@@ -407,12 +431,12 @@ export default function AuthForm({ initialActive = false }) {
                   placeholder="name@mountreach.edu"
                   value={forgotEmail}
                   onChange={(e) => setForgotEmail(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2.5 rounded-md bg-[#141824] border border-white/[0.1] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#dfba73]"
                   required
                 />
                 <button
                   type="submit"
-                  className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all"
+                  className="w-full py-2.5 rounded-md bg-[#c5a059] hover:bg-[#dfba73] text-[#090b10] font-semibold text-xs shadow-sm transition-all cursor-pointer"
                 >
                   Send Recovery Link
                 </button>

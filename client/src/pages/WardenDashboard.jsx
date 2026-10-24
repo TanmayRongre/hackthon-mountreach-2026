@@ -26,7 +26,8 @@ import {
   X,
   Phone,
   Plus,
-  Menu
+  Menu,
+  Sparkles
 } from 'lucide-react';
 import WardenAttendanceQRModal from '../components/warden/WardenAttendanceQRModal';
 
@@ -70,7 +71,7 @@ export default function WardenDashboard() {
 
   const handleDemoNoticeFill = () => {
     setNoticeForm({
-      title: '📢 Night Gate Closure & Attendance Verification at 10:00 PM',
+      title: 'Night Gate Closure & Attendance Verification at 10:00 PM',
       content: 'All block residents are advised that hostel gates will be locked strictly at 10:00 PM tonight. Please ensure your digital floor attendance is marked on time.',
       category: 'Rules & Discipline',
       priority: 'high',
@@ -178,19 +179,22 @@ export default function WardenDashboard() {
     { id: 'overview', label: 'Overview', icon: <Building2 className="w-4 h-4" /> },
     { id: 'attendance', label: 'Attendance', icon: <QrCode className="w-4 h-4" />, badge: attendance.length > 0 ? `${attendance.length}` : null },
     { id: 'complaints', label: 'Complaints', icon: <FileText className="w-4 h-4" />, badge: pendingComplaints.length > 0 ? `${pendingComplaints.length}` : null, badgeColor: 'bg-amber-500/20 text-amber-300' },
-    { id: 'leaves', label: 'Leave Applications', icon: <Key className="w-4 h-4" />, badge: pendingLeaves.length > 0 ? `${pendingLeaves.length}` : null, badgeColor: 'bg-sky-500/20 text-sky-300' },
-    { id: 'visitors', label: 'Visitors', icon: <Users className="w-4 h-4" />, badge: pendingVisitors.length > 0 ? `${pendingVisitors.length}` : null, badgeColor: 'bg-purple-500/20 text-purple-300' },
+    { id: 'leaves', label: 'Leave Applications', icon: <Key className="w-4 h-4" />, badge: pendingLeaves.length > 0 ? `${pendingLeaves.length}` : null, badgeColor: 'bg-[#c5a059]/20 text-[#dfba73]' },
+    { id: 'visitors', label: 'Visitors', icon: <Users className="w-4 h-4" />, badge: pendingVisitors.length > 0 ? `${pendingVisitors.length}` : null, badgeColor: 'bg-emerald-500/20 text-emerald-300' },
     { id: 'students', label: 'Students', icon: <Users className="w-4 h-4" />, badge: students.length > 0 ? `${students.length}` : null },
     { id: 'rooms', label: 'Rooms', icon: <DoorOpen className="w-4 h-4" /> },
     { id: 'notices', label: 'Notices', icon: <Bell className="w-4 h-4" /> },
   ];
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#07101f] text-slate-100 font-sans flex flex-col">
+    <div className="min-h-[calc(100vh-64px)] bg-[#090b10] text-slate-100 font-sans flex flex-col relative">
+      {/* Ambient Architectural Gradient Glow */}
+      <div className="absolute top-0 inset-x-0 h-96 bg-[radial-gradient(ellipse_80%_40%_at_50%_-10%,rgba(197,160,89,0.06),transparent)] pointer-events-none" />
+
       {/* Toast Feedback */}
       {toast && (
-        <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-medium border animate-slide-up ${
-          toast.type === 'error' ? 'bg-rose-950/95 text-rose-200 border-rose-700/60' : 'bg-emerald-950/95 text-emerald-200 border-emerald-700/60'
+        <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium border animate-slide-up ${
+          toast.type === 'error' ? 'bg-rose-950/95 text-rose-200 border-rose-700/60' : 'bg-[#0e1219] text-[#dfba73] border-[#c5a059]/40'
         }`}>
           {toast.type === 'error' ? <AlertCircle className="w-4 h-4 text-rose-400" /> : <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
           <span>{toast.msg}</span>
@@ -198,23 +202,23 @@ export default function WardenDashboard() {
       )}
 
       {/* ── TOP BREADCRUMB & WARDEN DESK BANNER ── */}
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+      <div className="relative max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.08] pb-5">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white cursor-pointer"
+              className="lg:hidden p-2 rounded-lg bg-white/[0.05] border border-white/[0.08] text-slate-300 hover:text-white cursor-pointer"
               aria-label="Toggle warden sidebar"
             >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <div className="w-10 h-10 rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-[#c5a059]/10 border border-[#c5a059]/30 flex items-center justify-center text-[#dfba73] shadow-md shadow-[#c5a059]/10">
               <ShieldCheck className="w-5 h-5" />
             </div>
 
             <div>
-              <h1 className="text-xl font-bold text-white tracking-tight">Warden Control Desk</h1>
+              <h1 className="text-xl font-bold font-serif text-white tracking-tight">Warden Control Desk</h1>
               <p className="text-xs text-slate-400">Hostel residency, leave applications, disciplinary grievances, and daily attendance.</p>
             </div>
           </div>
@@ -224,23 +228,23 @@ export default function WardenDashboard() {
             <button
               onClick={loadWardenData}
               title="Refresh Records"
-              className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
+              className="p-2 rounded-lg bg-[#0e1219] hover:bg-white/[0.05] border border-white/[0.08] text-slate-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-sky-400' : ''}`} />
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#dfba73]' : ''}`} />
               <span className="hidden sm:inline">Refresh</span>
             </button>
 
             <button
               onClick={() => setQrModalOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 transition-all cursor-pointer"
+              className="btn-arch-secondary px-3.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
             >
-              <QrCode className="w-3.5 h-3.5" />
+              <QrCode className="w-3.5 h-3.5 text-[#dfba73]" />
               <span>Generate Daily QR</span>
             </button>
 
             <button
               onClick={() => setNoticeModal(true)}
-              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-sky-600/30 flex items-center gap-1.5 transition-all cursor-pointer"
+              className="btn-arch-primary px-3.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <Send className="w-3.5 h-3.5" />
               <span>Post Circular</span>
@@ -250,9 +254,9 @@ export default function WardenDashboard() {
       </div>
 
       {/* ── MAIN WORKSPACE ── */}
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
+      <div className="relative flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
         {/* ── LEFT SIDEBAR ── */}
-        <aside className={`${sidebarOpen ? 'flex' : 'hidden'} lg:flex flex-col w-full lg:w-64 shrink-0 bg-[#0f1b2d]/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 shadow-2xl space-y-4 self-start`}>
+        <aside className={`${sidebarOpen ? 'flex' : 'hidden'} lg:flex flex-col w-full lg:w-64 shrink-0 bg-[#0e1219] border border-white/[0.08] rounded-xl p-3.5 shadow-xl space-y-3 self-start`}>
           <div className="space-y-1">
             {navItems.map((item) => {
               const active = activeTab === item.id;
@@ -260,10 +264,10 @@ export default function WardenDashboard() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full px-3 py-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between transition-all cursor-pointer ${
+                  className={`w-full px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-all cursor-pointer ${
                     active
-                      ? 'bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-lg shadow-sky-600/30'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-[#c5a059] text-[#090b10] font-bold shadow-md shadow-[#c5a059]/20'
+                      : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
@@ -272,7 +276,7 @@ export default function WardenDashboard() {
                   </div>
                   {item.badge && (
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      active ? 'bg-white/20 text-white' : item.badgeColor || 'bg-slate-800 text-slate-300'
+                      active ? 'bg-[#090b10]/20 text-[#090b10]' : item.badgeColor || 'bg-white/[0.06] text-slate-300'
                     }`}>
                       {item.badge}
                     </span>
@@ -282,10 +286,10 @@ export default function WardenDashboard() {
             })}
           </div>
 
-          <div className="pt-3 border-t border-slate-800">
+          <div className="pt-2 border-t border-white/[0.08]">
             <button
               onClick={() => setNoticeModal(true)}
-              className="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md"
+              className="btn-arch-primary w-full py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 cursor-pointer"
             >
               <Send className="w-3.5 h-3.5" />
               <span>Broadcast Circular</span>
@@ -299,39 +303,39 @@ export default function WardenDashboard() {
           {activeTab === 'overview' && (
             <div className="space-y-6 animate-fade-in">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-1">
+                <div className="p-5 rounded-xl bg-[#0e1219] border border-white/[0.08] hover:border-[#c5a059]/30 transition-all space-y-1">
                   <span className="text-xs text-slate-400">Total Residents</span>
                   <div className="text-2xl font-black text-white">{students.length}</div>
-                  <span className="text-[10px] text-sky-400">Allotted Students</span>
+                  <span className="text-[10px] text-[#dfba73]">Allotted Students</span>
                 </div>
-                <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-1">
+                <div className="p-5 rounded-xl bg-[#0e1219] border border-white/[0.08] hover:border-[#c5a059]/30 transition-all space-y-1">
                   <span className="text-xs text-slate-400">Pending Leaves</span>
-                  <div className="text-2xl font-black text-amber-400">{pendingLeaves.length}</div>
-                  <span className="text-[10px] text-amber-400">Requires Clearance</span>
+                  <div className="text-2xl font-black text-[#dfba73]">{pendingLeaves.length}</div>
+                  <span className="text-[10px] text-[#dfba73]">Requires Clearance</span>
                 </div>
-                <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-1">
+                <div className="p-5 rounded-xl bg-[#0e1219] border border-white/[0.08] hover:border-[#c5a059]/30 transition-all space-y-1">
                   <span className="text-xs text-slate-400">Open Complaints</span>
-                  <div className="text-2xl font-black text-rose-400">{pendingComplaints.length}</div>
-                  <span className="text-[10px] text-rose-400">Maintenance & Room</span>
+                  <div className="text-2xl font-black text-amber-400">{pendingComplaints.length}</div>
+                  <span className="text-[10px] text-amber-400">Maintenance & Room</span>
                 </div>
-                <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-1">
+                <div className="p-5 rounded-xl bg-[#0e1219] border border-white/[0.08] hover:border-[#c5a059]/30 transition-all space-y-1">
                   <span className="text-xs text-slate-400">Today's Visitors</span>
-                  <div className="text-2xl font-black text-purple-400">{visitors.length}</div>
-                  <span className="text-[10px] text-purple-400">Guest Passes</span>
+                  <div className="text-2xl font-black text-emerald-400">{visitors.length}</div>
+                  <span className="text-[10px] text-emerald-400">Guest Passes</span>
                 </div>
               </div>
 
               {/* Pending Approvals Section */}
-              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Key className="w-4 h-4 text-sky-400" />
+              <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4">
+                <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+                  <Key className="w-4 h-4 text-[#dfba73]" />
                   Leave Application Review Queue ({pendingLeaves.length})
                 </h3>
 
                 {pendingLeaves.length > 0 ? (
                   <div className="space-y-3">
                     {pendingLeaves.map((l) => (
-                      <div key={l._id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                      <div key={l._id} className="p-4 rounded-lg bg-[#121620] border border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                         <div>
                           <div className="font-bold text-white text-sm">{l.student?.name || 'Resident Student'} ({l.leaveType})</div>
                           <div className="text-slate-400 mt-0.5">Destination: {l.destination} · Reason: {l.reason}</div>
@@ -342,14 +346,14 @@ export default function WardenDashboard() {
                           <button
                             onClick={() => handleUpdateLeave(l._id, 'approved')}
                             disabled={actionLoading}
-                            className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors cursor-pointer"
                           >
                             ✓ Approve Leave
                           </button>
                           <button
                             onClick={() => handleUpdateLeave(l._id, 'rejected')}
                             disabled={actionLoading}
-                            className="px-3.5 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/60 border border-rose-700/50 text-rose-300 font-semibold text-xs"
+                            className="px-3.5 py-1.5 rounded-lg bg-white/[0.05] border border-rose-500/30 text-rose-300 hover:bg-rose-500/10 font-semibold text-xs transition-colors cursor-pointer"
                           >
                             ✕ Reject
                           </button>
@@ -369,16 +373,16 @@ export default function WardenDashboard() {
           {/* TAB: LEAVE APPLICATIONS */}
           {activeTab === 'leaves' && (
             <div className="space-y-4">
-              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+              <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.08] pb-3">
                   <div>
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                      <Key className="w-4 h-4 text-sky-400" />
+                    <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+                      <Key className="w-4 h-4 text-[#dfba73]" />
                       Student Leave Applications & Permissions
                     </h3>
                     <p className="text-xs text-slate-400">Review, verify, and approve resident leave applications</p>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/15 text-sky-300 border border-sky-500/30 self-start sm:self-auto">
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30 self-start sm:self-auto">
                     {pendingLeaves.length} Pending Review
                   </span>
                 </div>
@@ -386,10 +390,10 @@ export default function WardenDashboard() {
                 {leaves.length > 0 ? (
                   <div className="space-y-3">
                     {leaves.map((l) => (
-                      <div key={l._id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 text-xs">
+                      <div key={l._id} className="p-4 rounded-lg bg-[#121620] border border-white/[0.08] space-y-2 text-xs">
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 rounded-lg bg-sky-500/20 text-sky-300 font-bold uppercase text-[10px]">
+                            <span className="px-2 py-0.5 rounded bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30 font-bold uppercase text-[10px]">
                               {l.leaveType}
                             </span>
                             <span className="font-bold text-white text-sm">{l.student?.name || 'Resident Student'}</span>
@@ -401,13 +405,13 @@ export default function WardenDashboard() {
                               ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
                               : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
                           }`}>
-                            {l.status === 'approved' ? '✓ Approved' : l.status === 'rejected' ? '✕ Rejected' : '⏳ Pending Review'}
+                            {l.status === 'approved' ? 'Approved' : l.status === 'rejected' ? 'Rejected' : 'Pending Review'}
                           </span>
                         </div>
 
                         <p className="text-slate-300">Destination: <strong className="text-white">{l.destination}</strong> · Reason: {l.reason}</p>
 
-                        <div className="flex flex-wrap items-center justify-between pt-2 border-t border-slate-800 text-[11px] text-slate-400 gap-2">
+                        <div className="flex flex-wrap items-center justify-between pt-2 border-t border-white/[0.08] text-[11px] text-slate-400 gap-2">
                           <div>
                             Departure Date: <strong className="text-white">{new Date(l.fromDate).toLocaleDateString()}</strong> · Return Date: <strong className="text-white">{new Date(l.toDate).toLocaleDateString()}</strong>
                           </div>
@@ -417,14 +421,14 @@ export default function WardenDashboard() {
                               <button
                                 onClick={() => handleUpdateLeave(l._id, 'approved')}
                                 disabled={actionLoading}
-                                className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 cursor-pointer"
+                                className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs cursor-pointer transition-colors"
                               >
                                 ✓ Approve Leave
                               </button>
                               <button
                                 onClick={() => handleUpdateLeave(l._id, 'rejected')}
                                 disabled={actionLoading}
-                                className="px-3.5 py-1.5 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-bold text-xs border border-rose-500/30 cursor-pointer"
+                                className="px-3.5 py-1.5 rounded-lg bg-white/[0.05] hover:bg-rose-500/10 text-rose-300 border border-rose-500/30 font-semibold text-xs cursor-pointer transition-colors"
                               >
                                 ✕ Reject
                               </button>
@@ -446,16 +450,16 @@ export default function WardenDashboard() {
           {/* TAB: VISITOR CLEARANCES */}
           {activeTab === 'visitors' && (
             <div className="space-y-4">
-              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+              <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.08] pb-3">
                   <div>
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                      <Users className="w-4 h-4 text-purple-400" />
+                    <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+                      <Users className="w-4 h-4 text-[#dfba73]" />
                       Guest & Visitor Gatepass Clearances
                     </h3>
                     <p className="text-xs text-slate-400">Review parent and guest entrance requests submitted by hostel residents</p>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-500/15 text-purple-300 border border-purple-500/30 self-start sm:self-auto">
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 self-start sm:self-auto">
                     {pendingVisitors.length} Pending Approval
                   </span>
                 </div>
@@ -463,10 +467,10 @@ export default function WardenDashboard() {
                 {visitors.length > 0 ? (
                   <div className="space-y-3">
                     {visitors.map((v) => (
-                      <div key={v._id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 text-xs">
+                      <div key={v._id} className="p-4 rounded-lg bg-[#121620] border border-white/[0.08] space-y-2 text-xs">
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 rounded-lg bg-purple-500/20 text-purple-300 font-mono font-bold text-[10px]">
+                            <span className="px-2 py-0.5 rounded bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30 font-mono font-bold text-[10px]">
                               {v.passNumber}
                             </span>
                             <span className="font-bold text-white text-sm">{v.visitorName} ({v.relationship})</span>
@@ -478,13 +482,13 @@ export default function WardenDashboard() {
                               ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
                               : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
                           }`}>
-                            {v.status === 'approved' ? '✓ Approved' : v.status === 'rejected' ? '✕ Rejected' : '⏳ Pending Review'}
+                            {v.status === 'approved' ? 'Approved' : v.status === 'rejected' ? 'Rejected' : 'Pending Review'}
                           </span>
                         </div>
 
                         <p className="text-slate-300">Purpose: {v.purpose}</p>
 
-                        <div className="flex flex-wrap items-center justify-between pt-2 border-t border-slate-800 text-[11px] text-slate-400 gap-2">
+                        <div className="flex flex-wrap items-center justify-between pt-2 border-t border-white/[0.08] text-[11px] text-slate-400 gap-2">
                           <div>
                             Resident Host: <strong className="text-white">{v.student?.name || 'Student'}</strong> · Phone: <strong className="text-slate-300">{v.phone}</strong> · Visit Date: <strong className="text-white">{new Date(v.visitDate).toLocaleDateString()}</strong>
                           </div>
@@ -494,14 +498,14 @@ export default function WardenDashboard() {
                               <button
                                 onClick={() => handleUpdateVisitor(v._id, 'approved')}
                                 disabled={actionLoading}
-                                className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 cursor-pointer"
+                                className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors cursor-pointer"
                               >
                                 ✓ Approve Pass
                               </button>
                               <button
                                 onClick={() => handleUpdateVisitor(v._id, 'rejected')}
                                 disabled={actionLoading}
-                                className="px-3.5 py-1.5 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white font-bold text-xs border border-rose-500/30 cursor-pointer"
+                                className="px-3.5 py-1.5 rounded-lg bg-white/[0.05] hover:bg-rose-500/10 text-rose-300 border border-rose-500/30 font-semibold text-xs transition-colors cursor-pointer"
                               >
                                 ✕ Reject
                               </button>
@@ -523,15 +527,15 @@ export default function WardenDashboard() {
           {/* TAB: COMPLAINTS */}
           {activeTab === 'complaints' && (
             <div className="space-y-4">
-              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4">
+                <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
                   <FileText className="w-4 h-4 text-amber-400" />
                   Hostel Grievance & Maintenance Tickets
                 </h3>
 
                 {complaints.length > 0 ? (
                   complaints.map((c) => (
-                    <div key={c._id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 text-xs">
+                    <div key={c._id} className="p-4 rounded-lg bg-[#121620] border border-white/[0.08] space-y-2 text-xs">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold uppercase text-[10px]">
@@ -548,13 +552,13 @@ export default function WardenDashboard() {
 
                       <p className="text-slate-300">{c.description}</p>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-[11px] text-slate-400">
+                      <div className="flex items-center justify-between pt-2 border-t border-white/[0.08] text-[11px] text-slate-400">
                         <span>Resident: <strong className="text-white">{c.student?.name || 'Student'}</strong></span>
                         <div className="flex items-center gap-2">
                           {c.status !== 'resolved' && (
                             <button
                               onClick={() => handleUpdateComplaint(c._id, 'resolved')}
-                              className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                              className="btn-arch-primary px-3 py-1 rounded-lg text-xs font-bold cursor-pointer"
                             >
                               ✓ Mark Resolved
                             </button>
@@ -573,11 +577,11 @@ export default function WardenDashboard() {
           {/* TAB: ATTENDANCE */}
           {activeTab === 'attendance' && (
             <div className="space-y-4">
-              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+              <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
                   <div>
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                      <QrCode className="w-4 h-4 text-emerald-400" />
+                    <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+                      <QrCode className="w-4 h-4 text-[#dfba73]" />
                       Daily Floor Attendance Stream
                     </h3>
                     <p className="text-xs text-slate-400 mt-0.5">
@@ -587,7 +591,7 @@ export default function WardenDashboard() {
 
                   <button
                     onClick={() => setQrModalOpen(true)}
-                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer self-start sm:self-auto"
+                    className="btn-arch-primary px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all cursor-pointer self-start sm:self-auto"
                   >
                     <QrCode className="w-4 h-4" />
                     <span>Display Terminal QR</span>
@@ -601,7 +605,7 @@ export default function WardenDashboard() {
                     </div>
                   ) : (
                     attendance.map((att) => (
-                      <div key={att._id} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
+                      <div key={att._id} className="p-3.5 rounded-lg bg-[#121620] border border-white/[0.08] flex items-center justify-between text-xs">
                         <div>
                           <div className="font-bold text-white">{att.student?.name || 'Resident Student'}</div>
                           <div className="text-[11px] text-slate-500">{new Date(att.date).toLocaleString()} · {att.remarks || 'QR Code Verified'}</div>
@@ -620,18 +624,18 @@ export default function WardenDashboard() {
           {/* TAB: RESIDENTS */}
           {activeTab === 'students' && (
             <div className="space-y-4">
-              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Users className="w-4 h-4 text-indigo-400" />
+              <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4">
+                <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+                  <Users className="w-4 h-4 text-[#dfba73]" />
                   Allotted Hostel Residents ({students.length})
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {students.map((s) => (
-                    <div key={s._id} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs space-y-1">
+                    <div key={s._id} className="p-4 rounded-lg bg-[#121620] border border-white/[0.08] text-xs space-y-1">
                       <div className="font-bold text-white text-sm">{s.user?.name || s.enrollmentNumber}</div>
                       <div className="text-slate-400">Roll: {s.enrollmentNumber} · Dept: {s.department}</div>
-                      <div className="text-indigo-400 font-semibold">Room #{s.room?.roomNumber || '101'} · Bed {s.bed?.bedNumber || 'B-1'}</div>
+                      <div className="text-[#dfba73] font-semibold">Room #{s.room?.roomNumber || '101'} · Bed {s.bed?.bedNumber || 'B-1'}</div>
                       <div className="text-slate-500 text-[11px] pt-1">Parent: {s.parentName || 'N/A'} ({s.parentPhone || 'N/A'})</div>
                     </div>
                   ))}
@@ -643,18 +647,18 @@ export default function WardenDashboard() {
           {/* TAB: ROOMS */}
           {activeTab === 'rooms' && (
             <div className="space-y-4">
-              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <DoorOpen className="w-4 h-4 text-sky-400" />
+              <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4">
+                <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+                  <DoorOpen className="w-4 h-4 text-[#dfba73]" />
                   Hostel Room Allotments & Bed Vacancies
                 </h3>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {rooms.map((r) => (
-                    <div key={r._id} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs space-y-2">
+                    <div key={r._id} className="p-4 rounded-lg bg-[#121620] border border-white/[0.08] hover:border-[#c5a059]/30 transition-all text-xs space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-white text-sm">#{r.roomNumber}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold uppercase">{r.type}</span>
+                        <span className="font-bold text-white text-sm font-mono">#{r.roomNumber}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30 font-bold uppercase">{r.type}</span>
                       </div>
                       <div className="text-slate-400">Floor {r.floor} · {r.capacity} Beds</div>
                       <div className="text-emerald-400 font-mono font-bold">₹{r.rentPerMonth?.toLocaleString('en-IN')}/mo</div>
@@ -668,15 +672,15 @@ export default function WardenDashboard() {
           {/* TAB: NOTICES */}
           {activeTab === 'notices' && (
             <div className="space-y-4">
-              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
+              <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Bell className="w-4 h-4 text-indigo-400" />
+                  <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+                    <Bell className="w-4 h-4 text-[#dfba73]" />
                     Hostel Circulars & Announcements
                   </h3>
                   <button
                     onClick={() => setNoticeModal(true)}
-                    className="px-3.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center gap-1.5"
+                    className="btn-arch-primary px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Post Notice</span>
@@ -685,7 +689,7 @@ export default function WardenDashboard() {
 
                 <div className="space-y-3">
                   {notices.map((n) => (
-                    <div key={n._id} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs space-y-2">
+                    <div key={n._id} className="p-4 rounded-lg bg-[#121620] border border-white/[0.08] text-xs space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-white text-sm">{n.title}</span>
                         <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold uppercase">{n.priority}</span>
@@ -702,45 +706,48 @@ export default function WardenDashboard() {
 
       {/* ── MODAL: POST NOTICE ── */}
       {noticeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md bg-[#0f1b2d] border border-sky-500/30 rounded-3xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-sans">
+          <div className="w-full max-w-md bg-[#0e1219] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <Send className="w-4 h-4 text-sky-400" />
+                <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+                  <Send className="w-4 h-4 text-[#dfba73]" />
                   Post Hostel Circular
                 </h3>
                 <button
                   type="button"
                   onClick={handleDemoNoticeFill}
-                  className="px-2.5 py-1 rounded-lg bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 text-[11px] font-bold transition-all cursor-pointer"
+                  className="px-2.5 py-1 rounded-md bg-[#c5a059]/10 text-[#dfba73] hover:bg-[#c5a059]/20 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1.5"
                 >
-                  ✨ Demo Fill
+                  <Sparkles className="w-3 h-3 text-[#dfba73]" />
+                  <span>Autofill Sample</span>
                 </button>
               </div>
-              <button onClick={() => setNoticeModal(false)} className="text-slate-400 hover:text-white cursor-pointer">✕</button>
+              <button onClick={() => setNoticeModal(false)} className="w-7 h-7 rounded-lg bg-white/[0.05] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer">
+                <X className="w-3.5 h-3.5" />
+              </button>
             </div>
 
             <form onSubmit={handlePostNotice} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Notice Title *</label>
+                <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Notice Title *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Night Gate Closure at 10:00 PM"
                   value={noticeForm.title}
                   onChange={(e) => setNoticeForm({ ...noticeForm, title: e.target.value })}
-                  className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                  className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Category</label>
+                  <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Category</label>
                   <select
                     value={noticeForm.category}
                     onChange={(e) => setNoticeForm({ ...noticeForm, category: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   >
                     <option value="Rules & Discipline">Rules & Discipline</option>
                     <option value="General">General Notice</option>
@@ -751,11 +758,11 @@ export default function WardenDashboard() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Priority</label>
+                  <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Priority</label>
                   <select
                     value={noticeForm.priority}
                     onChange={(e) => setNoticeForm({ ...noticeForm, priority: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   >
                     <option value="normal">Normal</option>
                     <option value="high">Important (High)</option>
@@ -765,31 +772,31 @@ export default function WardenDashboard() {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Content *</label>
+                <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Content *</label>
                 <textarea
                   rows={4}
                   required
                   placeholder="Enter circular details..."
                   value={noticeForm.content}
                   onChange={(e) => setNoticeForm({ ...noticeForm, content: e.target.value })}
-                  className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500 resize-none"
+                  className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73] resize-none"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+              <div className="flex justify-end gap-2.5 pt-2 border-t border-white/[0.08]">
                 <button
                   type="button"
                   onClick={() => setNoticeModal(false)}
-                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium cursor-pointer"
+                  className="px-4 py-2 rounded-lg border border-white/[0.1] text-slate-400 hover:text-white font-medium cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={postingNotice}
-                  className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white font-bold cursor-pointer flex items-center gap-2 shadow-lg shadow-sky-600/30"
+                  className="btn-arch-primary px-5 py-2.5 rounded-lg disabled:opacity-50 text-xs font-bold cursor-pointer flex items-center gap-2"
                 >
-                  {postingNotice && <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+                  {postingNotice && <span className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />}
                   <span>{postingNotice ? 'Publishing...' : 'Broadcast Circular'}</span>
                 </button>
               </div>

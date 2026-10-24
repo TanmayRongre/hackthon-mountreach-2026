@@ -43,20 +43,20 @@ export default function AdminAuditLogsSection() {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in font-['Inter',sans-serif]">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900/70 border border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-[#0e1219] border border-white/10">
         <div>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Activity className="w-5 h-5 text-emerald-400" />
+          <h2 className="text-xl font-bold text-white font-['Playfair_Display',serif] flex items-center gap-2.5">
+            <Activity className="w-5 h-5 text-[#dfba73]" />
             Compliance & Security Audit Logs
           </h2>
-          <p className="text-xs text-slate-400">Immutable chronological records of all administrative actions, permissions, and platform events.</p>
+          <p className="text-xs text-slate-400 mt-1">Immutable chronological records of all administrative actions, permissions, and platform events.</p>
         </div>
 
         <button
           onClick={loadAuditLogs}
-          className="p-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white flex items-center gap-2 text-xs font-semibold"
+          className="btn-arch-secondary text-xs px-3.5 py-2 flex items-center gap-2 cursor-pointer"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh Logs</span>
@@ -64,7 +64,7 @@ export default function AdminAuditLogsSection() {
       </div>
 
       {/* Filter & Search */}
-      <div className="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="p-4 rounded-xl bg-[#0e1219] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -72,35 +72,35 @@ export default function AdminAuditLogsSection() {
             placeholder="Filter by user, action, or target resource..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none"
+            className="w-full pl-10 pr-4 py-2 bg-[#121620] border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#c5a059] transition-colors"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <span className="text-[11px] text-slate-400">Status:</span>
-          <span className="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 text-xs font-bold">
+          <span className="px-2.5 py-1 rounded-lg bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30 text-xs font-semibold">
             ✓ Log Integrity Verified
           </span>
         </div>
       </div>
 
       {/* Audit Log Stream Table */}
-      <div className="overflow-hidden border border-slate-800 rounded-3xl bg-slate-900/60 shadow-xl">
+      <div className="overflow-hidden border border-white/10 rounded-2xl bg-[#0e1219] shadow-xl">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
-            <tr className="bg-slate-950/80 border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
-              <th className="p-4">Timestamp</th>
-              <th className="p-4">Actor</th>
-              <th className="p-4">Action</th>
-              <th className="p-4">Resource Target</th>
-              <th className="p-4">Details / Metadata</th>
-              <th className="p-4 text-right">Result</th>
+            <tr className="bg-[#121620] border-b border-white/10 text-slate-400 uppercase text-[10px] tracking-wider">
+              <th className="p-4 font-semibold">Timestamp</th>
+              <th className="p-4 font-semibold">Actor</th>
+              <th className="p-4 font-semibold">Action</th>
+              <th className="p-4 font-semibold">Resource Target</th>
+              <th className="p-4 font-semibold">Details / Metadata</th>
+              <th className="p-4 text-right font-semibold">Result</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60 text-slate-300">
+          <tbody className="divide-y divide-white/5 text-slate-300">
             {filteredLogs.length > 0 ? (
               filteredLogs.map((log) => (
-                <tr key={log._id} className="hover:bg-slate-800/40 transition-colors">
+                <tr key={log._id} className="hover:bg-[#121620]/60 transition-colors">
                   <td className="p-4 text-slate-400 font-mono text-[11px]">
                     {new Date(log.createdAt || Date.now()).toLocaleString()}
                   </td>
@@ -109,7 +109,7 @@ export default function AdminAuditLogsSection() {
                     <div className="text-[10px] text-slate-500 capitalize">{log.role}</div>
                   </td>
                   <td className="p-4">
-                    <span className="font-mono text-xs font-bold text-indigo-300">
+                    <span className="font-mono text-xs font-bold text-[#dfba73]">
                       {log.action}
                     </span>
                   </td>

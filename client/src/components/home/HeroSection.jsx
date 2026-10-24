@@ -1,5 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Building2,
+  LogIn,
+  UserPlus,
+  ArrowRight,
+  MapPin,
+  User,
+  ShieldCheck,
+  CheckCircle2
+} from 'lucide-react';
 import heroVideo from '../../assests/Video.mp4';
 
 export default function HeroSection() {
@@ -21,47 +31,47 @@ export default function HeroSection() {
         <div className="home-left-col">
           <div className="home-hero-content">
             <div className="home-badge hero-badge-anim">
-              <i className="bx bx-building-house" style={{ fontSize: 13 }}></i>
-              College Hostel Management System · 2026
+              <Building2 className="w-3.5 h-3.5 text-[#dfba73]" />
+              <span>Campus Residence Operations · Academic Year 2026</span>
             </div>
 
             <h1 className="hero-title-anim">
-              Smart Hostel<br />
-              <span>Management</span><br />
-              for Colleges
+              Institutional Living<br />
+              <span>Re-engineered</span><br />
+              for Modern Campuses
             </h1>
 
             <p className="home-hero-desc hero-desc-anim">
-              A unified digital platform for Students, Wardens, and Admins.
-              Streamline room allotments, complaints, mess management,
-              leave applications, and more — completely paperless.
+              A high-precision operating platform connecting Students, Resident Wardens,
+              and Campus Administration. Automated room allocations, QR attendance,
+              maintenance workorders, and institutional transparency.
             </p>
 
             <div className="home-cta-row hero-cta-anim">
               <Link to="/login" className="home-cta-primary">
-                <i className="bx bx-log-in-circle" style={{ fontSize: 18 }}></i>
-                Login to Your Portal
+                <LogIn className="w-4 h-4" />
+                <span>Access Portal</span>
               </Link>
               <Link to="/register" className="home-cta-secondary">
-                <i className="bx bx-user-plus" style={{ fontSize: 18 }}></i>
-                Register as Student
+                <UserPlus className="w-4 h-4" />
+                <span>Student Onboarding</span>
               </Link>
             </div>
 
             <div className="home-stats-row hero-stats-anim">
               <div className="home-stat-item">
                 <span className="home-stat-value">2,400+</span>
-                <span className="home-stat-label">Students</span>
+                <span className="home-stat-label">Active Residents</span>
               </div>
               <div className="home-stat-sep" />
               <div className="home-stat-item">
                 <span className="home-stat-value">12</span>
-                <span className="home-stat-label">Hostel Blocks</span>
+                <span className="home-stat-label">Residence Blocks</span>
               </div>
               <div className="home-stat-sep" />
               <div className="home-stat-item">
-                <span className="home-stat-value">3</span>
-                <span className="home-stat-label">User Roles</span>
+                <span className="home-stat-value">99.8%</span>
+                <span className="home-stat-label">System Uptime</span>
               </div>
             </div>
           </div>
@@ -70,56 +80,63 @@ export default function HeroSection() {
         {/* ── Right column: floating cards ── */}
         <div className="home-right-col">
           <div className="home-cards-row">
-            {/* Card 1 — Portals */}
+            {/* Card 1 — Role Portals */}
             <div className="home-card-left hero-card-left-anim">
-              <h3>3 Role Portals</h3>
-              <p>One platform, three tailored dashboards.</p>
+              <h3>Role-Scoped Portals</h3>
+              <p>Granular access control tailored for campus workflows.</p>
               <div className="home-card-left-footer">
                 <div>
                   <div className="home-stat-big">100%</div>
-                  <div className="home-stat-tiny">Paperless</div>
+                  <div className="home-stat-tiny">Digital &amp; Audited</div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div className="home-card-avatars">
-                    <div className="home-avatar" style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }} title="Student">S</div>
-                    <div className="home-avatar" style={{ background: 'linear-gradient(135deg,#10b981,#059669)' }} title="Warden">W</div>
-                    <div className="home-avatar" style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)' }} title="Admin">A</div>
+                    <div className="home-avatar bg-[#c5a059]" title="Student">S</div>
+                    <div className="home-avatar bg-[#10b981]" title="Warden">W</div>
+                    <div className="home-avatar bg-[#38bdf8]" title="Admin">A</div>
                   </div>
-                  <Link to="/login" className="home-card-go-btn" title="Login">→</Link>
+                  <Link to="/login" className="home-card-go-btn" title="Sign In">
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
               </div>
             </div>
 
-            {/* Card 2 — Portal info */}
+            {/* Card 2 — Residence System */}
             <div className="home-card-right hero-card-right-anim">
               <div className="home-card-header">
                 <div>
-                  <div className="home-card-title">HostelHub Portal</div>
+                  <div className="home-card-title">HostelHub Infrastructure</div>
                   <div className="home-card-addr">
-                    <i className="bx bx-map-pin" style={{ fontSize: 12 }}></i>
-                    Campus College, Pune
+                    <MapPin className="w-3 h-3 text-[#dfba73]" />
+                    <span>Central Campus Complex</span>
                   </div>
                 </div>
-                <Link to="/login" className="home-card-go-btn" title="Go to portal">→</Link>
+                <Link to="/login" className="home-card-go-btn" title="View details">
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
               <div className="home-card-badge">
-                <i className="bxs-check-circle" style={{ fontSize: 11 }}></i>
-                System Active
+                <CheckCircle2 className="w-3 h-3" />
+                <span>Verified System Live</span>
               </div>
               <p className="home-card-desc">
-                Rooms, complaints, mess, leave applications &amp; fees — one secure platform.
+                Real-time room allotment, QR attendance logging, warden ticketing, and fee clearance.
               </p>
               <div className="home-card-specs">
                 <div className="home-card-spec">
-                  <i className="bx bx-user" style={{ color: '#818cf8' }}></i>Student
+                  <User className="w-3 h-3" />
+                  <span>Student</span>
                 </div>
                 <div className="home-card-spec-sep" />
                 <div className="home-card-spec">
-                  <i className="bx bx-id-card" style={{ color: '#818cf8' }}></i>Warden
+                  <Building2 className="w-3 h-3" />
+                  <span>Warden</span>
                 </div>
                 <div className="home-card-spec-sep" />
                 <div className="home-card-spec">
-                  <i className="bx bx-shield" style={{ color: '#818cf8' }}></i>Admin
+                  <ShieldCheck className="w-3 h-3" />
+                  <span>Admin</span>
                 </div>
               </div>
             </div>

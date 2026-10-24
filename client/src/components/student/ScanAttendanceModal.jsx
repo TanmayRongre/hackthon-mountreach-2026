@@ -282,23 +282,23 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-sans">
-      <div className="relative w-full max-w-md bg-[#0f1b2d] border border-indigo-500/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-sans">
+      <div className="relative w-full max-w-md bg-[#0e1219] border border-white/10 rounded-xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+        <div className="px-6 py-4 bg-[#121620] border-b border-white/[0.08] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-indigo-500/20 text-indigo-400">
+            <div className="p-2 rounded-lg bg-[#c5a059]/10 border border-[#c5a059]/25 text-[#dfba73]">
               <Camera className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Live Attendance Scanner</h3>
+              <h3 className="font-serif text-base font-bold text-white">Live Attendance Scanner</h3>
               <p className="text-[11px] text-slate-400">Scan Warden's daily QR code to mark presence</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-lg bg-[#0e1219] text-slate-400 hover:text-white border border-white/10 flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -317,14 +317,14 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
         {/* Scanner Viewfinder Box */}
         <div className="p-6 space-y-4 text-center">
           {error && (
-            <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300 flex items-center gap-2 text-left animate-slide-up">
+            <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg text-xs text-rose-300 flex items-center gap-2 text-left animate-slide-up">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{error}</span>
             </div>
           )}
 
           {scanResult ? (
-            <div className="p-6 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 space-y-3 animate-fade-in">
+            <div className="p-6 rounded-xl bg-emerald-950/40 border border-emerald-500/40 space-y-3 animate-fade-in">
               <div className="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
@@ -339,7 +339,7 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
               </div>
             </div>
           ) : (
-            <div className="relative mx-auto w-full max-w-[280px] h-[280px] rounded-3xl bg-slate-950 border-2 border-indigo-500/40 flex flex-col items-center justify-center overflow-hidden shadow-inner">
+            <div className="relative mx-auto w-full max-w-[280px] h-[280px] rounded-xl bg-[#090b10] border-2 border-[#c5a059]/40 flex flex-col items-center justify-center overflow-hidden shadow-inner">
               {/* Video Element is ALWAYS rendered to prevent null ref binding */}
               <video
                 ref={videoRef}
@@ -356,7 +356,7 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
                 </>
               ) : (
                 <div className="p-6 text-center space-y-3 z-10">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center mx-auto">
+                  <div className="w-12 h-12 rounded-lg bg-[#c5a059]/10 border border-[#c5a059]/25 text-[#dfba73] flex items-center justify-center mx-auto">
                     <QrCode className="w-6 h-6" />
                   </div>
                   <div className="text-xs font-semibold text-slate-300">
@@ -372,10 +372,10 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
 
               {/* Viewfinder Target Reticle Frame */}
               <div className="absolute inset-4 pointer-events-none z-10">
-                <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-indigo-400 rounded-tl-xl" />
-                <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-indigo-400 rounded-tr-xl" />
-                <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-indigo-400 rounded-bl-xl" />
-                <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-indigo-400 rounded-br-xl" />
+                <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-[#dfba73] rounded-tl-lg" />
+                <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-[#dfba73] rounded-tr-lg" />
+                <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-[#dfba73] rounded-bl-lg" />
+                <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-[#dfba73] rounded-br-lg" />
               </div>
 
               {cameraActive && (
@@ -388,17 +388,17 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
           )}
 
           {/* Student Terminal Location Info */}
-          <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-left text-xs space-y-1.5">
+          <div className="p-3.5 rounded-lg bg-[#121620] border border-white/[0.06] text-left text-xs space-y-1.5">
             <div className="flex items-center justify-between text-slate-300">
               <span className="flex items-center gap-1.5 text-slate-400">
-                <MapPin className="w-3.5 h-3.5 text-indigo-400" />
+                <MapPin className="w-3.5 h-3.5 text-[#dfba73]" />
                 Hostel Complex:
               </span>
               <strong className="text-white">{student?.hostel?.name || 'Campus Block'}</strong>
             </div>
             <div className="flex items-center justify-between text-slate-300">
               <span className="flex items-center gap-1.5 text-slate-400">
-                <Clock className="w-3.5 h-3.5 text-indigo-400" />
+                <Clock className="w-3.5 h-3.5 text-[#dfba73]" />
                 Resident Roll:
               </span>
               <strong className="text-white uppercase">{student?.enrollmentNumber || user?.enrollmentNumber || 'CS2026'}</strong>
@@ -408,7 +408,7 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
           {/* Manual Input Drawer */}
           {showManualInput && !scanResult && (
             <form onSubmit={handleManualSubmit} className="space-y-2 text-left animate-fade-in">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+              <label className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
                 Enter Warden QR Session Code
               </label>
               <div className="flex gap-2">
@@ -417,13 +417,13 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
                   placeholder="e.g. ATT-SAY-A-XXXX"
                   value={manualCode}
                   onChange={(e) => setManualCode(e.target.value)}
-                  className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 uppercase font-mono"
+                  className="flex-1 px-3 py-2 rounded-lg bg-[#121620] border border-white/10 text-xs text-white placeholder-slate-500 uppercase font-mono focus:outline-none focus:border-[#dfba73]"
                   required
                 />
                 <button
                   type="submit"
                   disabled={verifying}
-                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs cursor-pointer"
+                  className="btn-arch-primary text-xs !py-2 !px-4"
                 >
                   {verifying ? 'Verifying...' : 'Verify'}
                 </button>
@@ -440,16 +440,16 @@ export default function ScanAttendanceModal({ isOpen, onClose, student, user, on
                     type="button"
                     disabled={verifying}
                     onClick={handleInstantDemoScan}
-                    className="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                    className="flex-1 py-3 rounded-lg btn-arch-primary text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all"
                   >
-                    <Zap className={`w-4 h-4 text-amber-300 ${verifying ? 'animate-spin' : ''}`} />
+                    <Zap className={`w-4 h-4 text-[#090b10] ${verifying ? 'animate-spin' : ''}`} />
                     <span>{verifying ? 'Verifying Scan...' : 'Instant Verify Active QR'}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3.5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold cursor-pointer border border-slate-700 flex items-center gap-1"
+                    className="px-3.5 py-3 rounded-lg bg-[#121620] hover:bg-white/[0.06] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer border border-white/10 flex items-center gap-1"
                     title="Upload QR Image file"
                   >
                     <UploadCloud className="w-4 h-4" />
