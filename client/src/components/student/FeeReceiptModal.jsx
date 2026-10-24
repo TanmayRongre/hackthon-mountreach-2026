@@ -12,25 +12,25 @@ export default function FeeReceiptModal({ isOpen, onClose, fee, student, user })
   const amountPaid = fee.amount || 39000;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-2xl bg-[#0b1322] border border-slate-700 rounded-3xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-sans">
+      <div className="relative w-full max-w-2xl bg-[#0e1219] border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
         {/* Modal Controls Bar */}
-        <div className="px-6 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between no-print">
+        <div className="px-6 py-4 bg-[#121620] border-b border-white/[0.08] flex items-center justify-between no-print">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-emerald-400" />
-            <span className="text-sm font-bold text-white">Official Verified Fee Receipt</span>
+            <span className="text-sm font-bold font-serif text-white tracking-tight">Official Verified Fee Receipt</span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+              className="btn-arch-primary px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>Print / Save PDF</span>
             </button>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+              className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.08] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>

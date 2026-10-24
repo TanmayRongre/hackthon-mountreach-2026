@@ -248,14 +248,14 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
       label: 'Leave Application',
       icon: <Key className="w-4 h-4" />,
       badge: activeLeaves.length > 0 ? `${activeLeaves.length}` : null,
-      badgeColor: 'bg-sky-500/20 text-sky-300',
+      badgeColor: 'bg-[#c5a059]/20 text-[#dfba73]',
     },
     {
       id: 'visitors',
       label: 'Visitor Request',
       icon: <Users className="w-4 h-4" />,
       badge: visitors.length > 0 ? `${visitors.length}` : null,
-      badgeColor: 'bg-purple-500/20 text-purple-300',
+      badgeColor: 'bg-white/10 text-slate-300',
     },
     {
       id: 'fees',
@@ -273,7 +273,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
       {/* Toast Feedback */}
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-medium border animate-slide-up ${
+          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 text-sm font-medium border animate-slide-up backdrop-blur-md ${
             toast.type === 'error'
               ? 'bg-rose-950/95 text-rose-200 border-rose-700/60'
               : 'bg-emerald-950/95 text-emerald-200 border-emerald-700/60'
@@ -285,16 +285,16 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
       )}
 
       {/* ── Mobile Sidebar Toggle Bar ── */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-slate-900/90 border border-slate-800 rounded-2xl">
+      <div className="lg:hidden flex items-center justify-between p-4 bg-[#0e1219] border border-white/[0.08] rounded-xl shadow-lg">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white"
+            className="p-2 rounded-lg bg-[#121620] border border-white/10 text-slate-300 hover:text-white"
           >
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           <div>
-            <div className="text-xs font-bold text-white uppercase tracking-wider">
+            <div className="text-xs font-semibold text-white uppercase tracking-wider">
               {navItems.find((n) => n.id === activeTab)?.label}
             </div>
             <div className="text-[10px] text-slate-400">Roll: {student?.enrollmentNumber}</div>
@@ -302,7 +302,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
         </div>
         <button
           onClick={() => setScanAttendanceModal(true)}
-          className="px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-bold flex items-center gap-1.5 shadow-md"
+          className="btn-arch-primary text-xs !py-1.5 !px-3"
         >
           <QrCode className="w-3.5 h-3.5" />
           <span>Scan QR</span>
@@ -315,31 +315,31 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
       <aside
         className={`${
           sidebarOpen ? 'flex' : 'hidden'
-        } lg:flex flex-col w-full lg:w-72 shrink-0 bg-[#0f1b2d]/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-5 shadow-2xl space-y-5 self-start`}
+        } lg:flex flex-col w-full lg:w-72 shrink-0 bg-[#0e1219] border border-white/[0.08] rounded-xl p-5 shadow-2xl space-y-5 self-start`}
       >
         {/* Student Resident Profile Mini-Card */}
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-950/60 via-slate-900 to-indigo-950/60 border border-indigo-500/25 space-y-3">
+        <div className="p-4 rounded-lg bg-[#121620] border border-white/[0.08] space-y-3 shadow-inner">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-sky-500 text-white font-black text-lg flex items-center justify-center shadow-md">
+              <div className="w-11 h-11 rounded-lg bg-[#181d28] border border-[#c5a059]/35 text-[#dfba73] font-serif font-bold text-lg flex items-center justify-center shadow-md">
                 {user?.name?.charAt(0) || 'S'}
               </div>
-              <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#0f1b2d]" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#121620]" />
             </div>
             <div className="overflow-hidden">
               <div className="text-sm font-bold text-white truncate">{user?.name}</div>
-              <div className="text-[11px] font-mono text-indigo-300 uppercase">{student?.enrollmentNumber || 'CS2026-088'}</div>
+              <div className="text-[11px] font-mono text-[#dfba73]/85 uppercase tracking-wide">{student?.enrollmentNumber || 'CS2026-088'}</div>
             </div>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 text-[11px] space-y-1">
+          <div className="p-2.5 rounded-md bg-[#090b10]/80 border border-white/[0.06] text-[11px] space-y-1.5">
             <div className="flex items-center justify-between text-slate-400">
               <span>Allotment:</span>
               <strong className="text-white">Room #{student?.room?.roomNumber || '101'}</strong>
             </div>
             <div className="flex items-center justify-between text-slate-400">
               <span>Bed:</span>
-              <strong className="text-indigo-300">Bed {student?.bed?.bedNumber || 'B-1'} ({student?.room?.type || 'AC'})</strong>
+              <strong className="text-[#dfba73]">Bed {student?.bed?.bedNumber || 'B-1'} ({student?.room?.type || 'AC'})</strong>
             </div>
             <div className="flex items-center justify-between text-slate-400">
               <span>Complex:</span>
@@ -363,14 +363,14 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   setActiveTab(item.id);
                   setSidebarOpen(false);
                 }}
-                className={`w-full px-3.5 py-3 rounded-2xl text-xs font-semibold flex items-center justify-between transition-all cursor-pointer group ${
+                className={`w-full px-3.5 py-2.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-all cursor-pointer group ${
                   active
-                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/30'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    ? 'bg-[#c5a059] text-[#090b10] font-bold shadow-md shadow-[#c5a059]/20'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <span className={`${active ? 'text-white' : 'text-indigo-400 group-hover:scale-110'} transition-transform`}>
+                  <span className={`${active ? 'text-[#090b10]' : 'text-slate-400 group-hover:text-[#dfba73] group-hover:scale-105'} transition-all`}>
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
@@ -378,8 +378,8 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
                 {item.badge && (
                   <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      active ? 'bg-white/20 text-white' : item.badgeColor || 'bg-slate-800 text-slate-300'
+                    className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
+                      active ? 'bg-[#090b10]/20 text-[#090b10]' : item.badgeColor || 'bg-white/5 text-slate-300'
                     }`}
                   >
                     {item.badge}
@@ -391,10 +391,10 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
         </div>
 
         {/* Quick Launch Buttons in Sidebar Footer */}
-        <div className="pt-3 border-t border-slate-800 space-y-2">
+        <div className="pt-3 border-t border-white/[0.08] space-y-2">
           <button
             onClick={() => setScanAttendanceModal(true)}
-            className="w-full py-2.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 text-indigo-300 text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer"
+            className="w-full py-2.5 rounded-lg bg-[#c5a059]/10 hover:bg-[#c5a059]/20 border border-[#c5a059]/30 text-[#dfba73] text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
           >
             <Camera className="w-3.5 h-3.5" />
             <span>Scan Attendance</span>
@@ -402,9 +402,9 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
           <button
             onClick={() => setComplaintModal(true)}
-            className="w-full py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer"
+            className="w-full py-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-slate-300 hover:text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5 text-amber-400" />
+            <Plus className="w-3.5 h-3.5 text-[#dfba73]" />
             <span>Raise Complaint</span>
           </button>
         </div>
@@ -415,18 +415,18 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
           ════════════════════════════════════════════════ */}
       <main className="flex-1 space-y-6 min-w-0">
         {/* Top Header Card within Content */}
-        <div className="p-5 rounded-3xl bg-gradient-to-r from-[#121f36] via-[#0f1b2d] to-[#15233c] border border-indigo-500/20 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#dfba73]">
                 {navItems.find((n) => n.id === activeTab)?.label}
               </span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+              <span className="px-2.5 py-0.5 rounded text-[10px] font-semibold bg-[#c5a059]/10 text-[#dfba73] border border-[#c5a059]/25">
                 Active Resident
               </span>
             </div>
-            <h1 className="text-xl font-black text-white tracking-tight">
-              Welcome back, {user?.name}!
+            <h1 className="font-serif text-2xl font-bold text-white tracking-tight">
+              Welcome back, {user?.name}
             </h1>
           </div>
 
@@ -444,26 +444,26 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
               {/* Attendance Tile */}
               <div
                 onClick={() => setActiveTab('attendance')}
-                className="p-5 rounded-2xl bg-slate-900/60 hover:bg-slate-900/90 border border-slate-800 hover:border-indigo-500/40 transition-all cursor-pointer flex flex-col justify-between"
+                className="p-5 rounded-xl bg-[#0e1219] hover:bg-[#131722] border border-white/[0.08] hover:border-[#c5a059]/40 transition-all cursor-pointer flex flex-col justify-between shadow-lg group"
               >
                 <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Today's Attendance</span>
-                  <QrCode className="w-4 h-4 text-indigo-400" />
+                  <span className="font-medium">Today's Attendance</span>
+                  <QrCode className="w-4 h-4 text-[#dfba73] group-hover:scale-110 transition-transform" />
                 </div>
                 <div className="text-xl font-bold text-white mt-2">
                   {isPresentToday ? 'Marked Present' : 'Pending Scan'}
                 </div>
-                <div className={`text-[11px] font-semibold mt-1 flex items-center gap-1 ${isPresentToday ? 'text-emerald-400' : 'text-amber-400'}`}>
-                  {isPresentToday ? '✓ Verified via QR' : '📸 Click to Scan QR →'}
+                <div className={`text-[11px] font-medium mt-1 flex items-center gap-1 ${isPresentToday ? 'text-emerald-400' : 'text-[#dfba73]'}`}>
+                  {isPresentToday ? '✓ Verified via QR Code' : 'Click to Scan QR →'}
                 </div>
               </div>
 
               {/* Room Allotment */}
-              <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-col justify-between">
+              <div className="p-5 rounded-xl bg-[#0e1219] border border-white/[0.08] flex flex-col justify-between shadow-lg">
                 <div className="text-xs text-slate-400 font-medium">Allotment Unit</div>
                 <div className="text-xl font-bold text-white mt-2">
                   Room #{student?.room?.roomNumber || '101'}
-                  <span className="text-xs text-indigo-400 font-normal ml-1.5">Bed {student?.bed?.bedNumber || 'B-1'}</span>
+                  <span className="text-xs text-[#dfba73] font-normal ml-1.5">Bed {student?.bed?.bedNumber || 'B-1'}</span>
                 </div>
                 <div className="text-[11px] text-slate-400 mt-1">{student?.hostel?.name || 'Block A Complex'}</div>
               </div>
@@ -471,31 +471,31 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
               {/* Fee Dues */}
               <div
                 onClick={() => setActiveTab('fees')}
-                className="p-5 rounded-2xl bg-slate-900/60 hover:bg-slate-900/90 border border-slate-800 hover:border-indigo-500/40 transition-all cursor-pointer flex flex-col justify-between"
+                className="p-5 rounded-xl bg-[#0e1219] hover:bg-[#131722] border border-white/[0.08] hover:border-[#c5a059]/40 transition-all cursor-pointer flex flex-col justify-between shadow-lg group"
               >
                 <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Semester Dues</span>
-                  <CreditCard className="w-4 h-4 text-emerald-400" />
+                  <span className="font-medium">Semester Dues</span>
+                  <CreditCard className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
                 </div>
                 <div className="text-xl font-bold text-white mt-2">
                   ₹{totalDues.toLocaleString('en-IN')}
                 </div>
-                <div className="text-[11px] text-indigo-400 font-medium mt-1">View & Pay Invoices →</div>
+                <div className="text-[11px] text-[#dfba73] font-medium mt-1">View & Pay Invoices →</div>
               </div>
 
               {/* Leave Applications */}
               <div
                 onClick={() => setActiveTab('leaves')}
-                className="p-5 rounded-2xl bg-slate-900/60 hover:bg-slate-900/90 border border-slate-800 hover:border-indigo-500/40 transition-all cursor-pointer flex flex-col justify-between"
+                className="p-5 rounded-xl bg-[#0e1219] hover:bg-[#131722] border border-white/[0.08] hover:border-[#c5a059]/40 transition-all cursor-pointer flex flex-col justify-between shadow-lg group"
               >
                 <div className="flex items-center justify-between text-xs text-slate-400">
-                  <span>Active Leaves</span>
-                  <Key className="w-4 h-4 text-sky-400" />
+                  <span className="font-medium">Active Leaves</span>
+                  <Key className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
                 </div>
                 <div className="text-xl font-bold text-white mt-2">
                   {activeLeaves.length} Active
                 </div>
-                <div className="text-[11px] text-sky-400 font-medium mt-1">Leave Applications →</div>
+                <div className="text-[11px] text-slate-400 group-hover:text-[#dfba73] font-medium mt-1">Leave Applications →</div>
               </div>
             </div>
 
@@ -503,56 +503,56 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
               <button
                 onClick={() => setScanAttendanceModal(true)}
-                className="p-4 rounded-2xl bg-slate-900/60 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-500/40 text-left transition-all cursor-pointer group"
+                className="p-4 rounded-xl bg-[#0e1219] hover:bg-[#131722] border border-white/[0.08] hover:border-[#c5a059]/40 text-left transition-all cursor-pointer group shadow-md"
               >
-                <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 w-fit mb-3 group-hover:scale-110 transition-transform">
-                  <QrCode className="w-5 h-5" />
+                <div className="p-2.5 rounded-lg bg-[#c5a059]/10 border border-[#c5a059]/20 text-[#dfba73] w-fit mb-3 group-hover:scale-110 transition-transform">
+                  <QrCode className="w-4 h-4" />
                 </div>
-                <h4 className="text-xs font-bold text-white">Scan Attendance</h4>
+                <h4 className="text-xs font-semibold text-white">Scan Attendance</h4>
                 <p className="text-[11px] text-slate-400 mt-1">Mark daily floor presence</p>
               </button>
 
               <button
                 onClick={() => setComplaintModal(true)}
-                className="p-4 rounded-2xl bg-slate-900/60 hover:bg-amber-950/40 border border-slate-800 hover:border-amber-500/40 text-left transition-all cursor-pointer group"
+                className="p-4 rounded-xl bg-[#0e1219] hover:bg-[#131722] border border-white/[0.08] hover:border-[#c5a059]/40 text-left transition-all cursor-pointer group shadow-md"
               >
-                <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 w-fit mb-3 group-hover:scale-110 transition-transform">
-                  <FileText className="w-5 h-5" />
+                <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 w-fit mb-3 group-hover:scale-110 transition-transform">
+                  <FileText className="w-4 h-4" />
                 </div>
-                <h4 className="text-xs font-bold text-white">Raise Complaint</h4>
-                <p className="text-[11px] text-slate-400 mt-1">Report room & maintenance issues</p>
+                <h4 className="text-xs font-semibold text-white">Raise Complaint</h4>
+                <p className="text-[11px] text-slate-400 mt-1">Report room & facility issues</p>
               </button>
 
               <button
                 onClick={() => setLeaveModal(true)}
-                className="p-4 rounded-2xl bg-slate-900/60 hover:bg-sky-950/40 border border-slate-800 hover:border-sky-500/40 text-left transition-all cursor-pointer group"
+                className="p-4 rounded-xl bg-[#0e1219] hover:bg-[#131722] border border-white/[0.08] hover:border-[#c5a059]/40 text-left transition-all cursor-pointer group shadow-md"
               >
-                <div className="p-2.5 rounded-xl bg-sky-500/10 text-sky-400 w-fit mb-3 group-hover:scale-110 transition-transform">
-                  <Key className="w-5 h-5" />
+                <div className="p-2.5 rounded-lg bg-slate-800 border border-white/10 text-slate-300 w-fit mb-3 group-hover:scale-110 transition-transform">
+                  <Key className="w-4 h-4 text-[#dfba73]" />
                 </div>
-                <h4 className="text-xs font-bold text-white">Leave Application</h4>
+                <h4 className="text-xs font-semibold text-white">Leave Application</h4>
                 <p className="text-[11px] text-slate-400 mt-1">Apply for leave permission</p>
               </button>
 
               <button
                 onClick={() => setVisitorModal(true)}
-                className="p-4 rounded-2xl bg-slate-900/60 hover:bg-purple-950/40 border border-slate-800 hover:border-purple-500/40 text-left transition-all cursor-pointer group"
+                className="p-4 rounded-xl bg-[#0e1219] hover:bg-[#131722] border border-white/[0.08] hover:border-[#c5a059]/40 text-left transition-all cursor-pointer group shadow-md"
               >
-                <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-400 w-fit mb-3 group-hover:scale-110 transition-transform">
-                  <Users className="w-5 h-5" />
+                <div className="p-2.5 rounded-lg bg-slate-800 border border-white/10 text-slate-300 w-fit mb-3 group-hover:scale-110 transition-transform">
+                  <Users className="w-4 h-4 text-[#dfba73]" />
                 </div>
-                <h4 className="text-xs font-bold text-white">Visitor Request</h4>
+                <h4 className="text-xs font-semibold text-white">Visitor Request</h4>
                 <p className="text-[11px] text-slate-400 mt-1">Entry pass for guests & parents</p>
               </button>
 
               <button
                 onClick={() => setActiveTab('fees')}
-                className="p-4 rounded-2xl bg-slate-900/60 hover:bg-emerald-950/40 border border-slate-800 hover:border-emerald-500/40 text-left transition-all cursor-pointer group"
+                className="p-4 rounded-xl bg-[#0e1219] hover:bg-[#131722] border border-white/[0.08] hover:border-[#c5a059]/40 text-left transition-all cursor-pointer group shadow-md"
               >
-                <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 w-fit mb-3 group-hover:scale-110 transition-transform">
-                  <CreditCard className="w-5 h-5" />
+                <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 w-fit mb-3 group-hover:scale-110 transition-transform">
+                  <CreditCard className="w-4 h-4" />
                 </div>
-                <h4 className="text-xs font-bold text-white">Hostel Fees</h4>
+                <h4 className="text-xs font-semibold text-white">Hostel Fees</h4>
                 <p className="text-[11px] text-slate-400 mt-1">View dues & payment receipts</p>
               </button>
             </div>
@@ -562,17 +562,17 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
         {/* ── TAB 2: SCAN ATTENDANCE ── */}
         {activeTab === 'attendance' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900/60 border border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] shadow-xl">
               <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <QrCode className="w-5 h-5 text-indigo-400" />
+                <h2 className="font-serif text-xl font-bold text-white flex items-center gap-2">
+                  <QrCode className="w-5 h-5 text-[#dfba73]" />
                   Smart Hostel Attendance System
                 </h2>
-                <p className="text-xs text-slate-400">Mark your daily resident presence using the smart QR scanner.</p>
+                <p className="text-xs text-slate-400 mt-0.5">Mark your daily resident presence using the smart QR scanner terminal.</p>
               </div>
               <button
                 onClick={() => setScanAttendanceModal(true)}
-                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 hover:from-indigo-500 hover:to-sky-400 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 flex items-center gap-2 cursor-pointer transition-all"
+                className="btn-arch-primary text-xs !py-2.5 !px-5"
               >
                 <Camera className="w-4 h-4" />
                 <span>Launch QR Scanner Terminal</span>
@@ -580,22 +580,22 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
             </div>
 
             {/* Attendance History Log */}
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-4">
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Recent Attendance Verification Log</h3>
+            <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4 shadow-xl">
+              <h3 className="text-xs font-semibold text-[#dfba73] uppercase tracking-wider">Recent Attendance Verification Log</h3>
               <div className="space-y-2.5">
                 {attendanceRecords.length > 0 ? (
                   attendanceRecords.map((att) => (
-                    <div key={att._id} className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 flex items-center justify-between text-xs">
+                    <div key={att._id} className="p-4 rounded-lg bg-[#121620] border border-white/[0.06] flex items-center justify-between text-xs">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-400">
+                        <div className="p-2 rounded-md bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
                           <CheckCircle2 className="w-4 h-4" />
                         </div>
                         <div>
-                          <div className="font-bold text-white">{new Date(att.date).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}</div>
+                          <div className="font-semibold text-white">{new Date(att.date).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}</div>
                           <div className="text-[11px] text-slate-400">Time: {new Date(att.date).toLocaleTimeString()} · {att.remarks || 'QR Verified'}</div>
                         </div>
                       </div>
-                      <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 font-bold uppercase text-[10px]">
+                      <span className="px-2.5 py-1 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-semibold uppercase text-[10px]">
                         {att.status}
                       </span>
                     </div>
@@ -613,34 +613,34 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
         {/* ── TAB 3: COMPLAINTS & TRACKING ── */}
         {activeTab === 'complaints' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] shadow-xl">
               <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-amber-400" />
+                <h2 className="font-serif text-xl font-bold text-white flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-[#dfba73]" />
                   Grievance & Maintenance Tracker
                 </h2>
-                <p className="text-xs text-slate-400">Lodge complaints and follow live resolution progress step-by-step.</p>
+                <p className="text-xs text-slate-400 mt-0.5">Lodge complaints and follow live resolution progress step-by-step.</p>
               </div>
               <button
                 onClick={() => setComplaintModal(true)}
-                className="px-5 py-2.5 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-amber-600/30 cursor-pointer"
+                className="btn-arch-primary text-xs !py-2.5 !px-5"
               >
                 <Plus className="w-4 h-4" />
-                <span>Send New Complain</span>
+                <span>Lodge New Grievance</span>
               </button>
             </div>
 
             {/* Filter Bar */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400 flex items-center gap-1"><Filter className="w-3 h-3" /> Filter:</span>
+              <span className="text-xs text-slate-400 flex items-center gap-1"><Filter className="w-3 h-3 text-[#dfba73]" /> Filter:</span>
               {['all', 'pending', 'in_progress', 'resolved'].map((st) => (
                 <button
                   key={st}
                   onClick={() => setComplaintFilter(st)}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold capitalize cursor-pointer transition-all ${
+                  className={`px-3 py-1 rounded-md text-xs font-semibold capitalize cursor-pointer transition-all ${
                     complaintFilter === st
-                      ? 'bg-slate-700 text-white border border-slate-600'
-                      : 'text-slate-400 hover:text-white bg-slate-900 border border-slate-800'
+                      ? 'bg-[#c5a059] text-[#090b10] font-bold shadow-sm'
+                      : 'text-slate-400 hover:text-white bg-[#0e1219] border border-white/[0.08]'
                   }`}
                 >
                   {st.replace('_', ' ')}
@@ -657,48 +657,48 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   if (c.status === 'resolved') stage = 4;
 
                   return (
-                    <div key={c._id} className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-5">
+                    <div key={c._id} className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-5 shadow-xl">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2.5">
-                            <span className="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300">
+                            <span className="px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30">
                               {c.category}
                             </span>
-                            <h3 className="text-base font-bold text-white">{c.title}</h3>
+                            <h3 className="text-base font-semibold text-white">{c.title}</h3>
                           </div>
-                          <p className="text-xs text-slate-300/90 leading-relaxed">{c.description}</p>
+                          <p className="text-xs text-slate-300 leading-relaxed">{c.description}</p>
                         </div>
 
-                        <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase ${
+                        <span className={`text-xs px-3 py-1 rounded font-semibold uppercase ${
                           c.status === 'resolved' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' :
-                          c.status === 'in_progress' ? 'bg-sky-500/15 text-sky-400 border border-sky-500/30' :
-                          'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                          c.status === 'in_progress' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' :
+                          'bg-rose-500/15 text-rose-300 border border-rose-500/30'
                         }`}>
                           Status: {c.status.replace('_', ' ')}
                         </span>
                       </div>
 
                       {/* Visual 4-Step Resolution Tracker */}
-                      <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800/80 space-y-2">
-                        <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Live Resolution Progress</div>
+                      <div className="p-4 rounded-lg bg-[#090b10] border border-white/[0.06] space-y-2">
+                        <div className="text-[11px] font-semibold text-[#dfba73] uppercase tracking-wider">Live Resolution Progress</div>
                         <div className="grid grid-cols-4 gap-2 text-center text-xs">
-                          <div className={`p-2.5 rounded-xl border ${stage >= 1 ? 'bg-indigo-950/40 border-indigo-500/40 text-indigo-300' : 'bg-slate-900 border-slate-800 text-slate-500'}`}>
-                            <div className="font-bold text-[11px]">1. Submitted</div>
+                          <div className={`p-2.5 rounded-md border ${stage >= 1 ? 'bg-[#c5a059]/15 border-[#c5a059]/35 text-[#dfba73]' : 'bg-[#121620] border-white/5 text-slate-500'}`}>
+                            <div className="font-semibold text-[11px]">1. Submitted</div>
                             <div className="text-[10px] text-slate-400 mt-0.5">{new Date(c.createdAt).toLocaleDateString()}</div>
                           </div>
 
-                          <div className={`p-2.5 rounded-xl border ${stage >= 2 ? 'bg-indigo-950/40 border-indigo-500/40 text-indigo-300' : 'bg-slate-900 border-slate-800 text-slate-500'}`}>
-                            <div className="font-bold text-[11px]">2. Assigned</div>
+                          <div className={`p-2.5 rounded-md border ${stage >= 2 ? 'bg-[#c5a059]/15 border-[#c5a059]/35 text-[#dfba73]' : 'bg-[#121620] border-white/5 text-slate-500'}`}>
+                            <div className="font-semibold text-[11px]">2. Assigned</div>
                             <div className="text-[10px] text-slate-400 mt-0.5">Warden Office</div>
                           </div>
 
-                          <div className={`p-2.5 rounded-xl border ${stage >= 3 ? 'bg-sky-950/40 border-sky-500/40 text-sky-300' : 'bg-slate-900 border-slate-800 text-slate-500'}`}>
-                            <div className="font-bold text-[11px]">3. In Progress</div>
+                          <div className={`p-2.5 rounded-md border ${stage >= 3 ? 'bg-amber-500/15 border-amber-500/35 text-amber-300' : 'bg-[#121620] border-white/5 text-slate-500'}`}>
+                            <div className="font-semibold text-[11px]">3. In Progress</div>
                             <div className="text-[10px] text-slate-400 mt-0.5">Technician Onsite</div>
                           </div>
 
-                          <div className={`p-2.5 rounded-xl border ${stage >= 4 ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300' : 'bg-slate-900 border-slate-800 text-slate-500'}`}>
-                            <div className="font-bold text-[11px]">4. Resolved</div>
+                          <div className={`p-2.5 rounded-md border ${stage >= 4 ? 'bg-emerald-500/15 border-emerald-500/35 text-emerald-300' : 'bg-[#121620] border-white/5 text-slate-500'}`}>
+                            <div className="font-semibold text-[11px]">4. Resolved</div>
                             <div className="text-[10px] text-slate-400 mt-0.5">Verified Done</div>
                           </div>
                         </div>
@@ -707,8 +707,8 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   );
                 })
               ) : (
-                <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-slate-800 text-slate-400 text-xs">
-                  No complaints matching "{complaintFilter}". Click "Send New Complain" to lodge an issue.
+                <div className="p-12 text-center rounded-xl bg-[#0e1219] border border-white/[0.08] text-slate-400 text-xs">
+                  No complaints matching "{complaintFilter}". Click "Lodge New Grievance" to register an issue.
                 </div>
               )}
             </div>
@@ -718,17 +718,17 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
         {/* ── TAB 4: LEAVE APPLICATIONS ── */}
         {activeTab === 'leaves' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] shadow-xl">
               <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Key className="w-5 h-5 text-sky-400" />
+                <h2 className="font-serif text-xl font-bold text-white flex items-center gap-2">
+                  <Key className="w-5 h-5 text-[#dfba73]" />
                   Submit & Track Leave Applications
                 </h2>
-                <p className="text-xs text-slate-400">Request permissions for weekend visits, emergencies, or vacations.</p>
+                <p className="text-xs text-slate-400 mt-0.5">Request permissions for weekend visits, emergencies, or vacations.</p>
               </div>
               <button
                 onClick={() => setLeaveModal(true)}
-                className="px-5 py-2.5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-sky-600/30 cursor-pointer"
+                className="btn-arch-primary text-xs !py-2.5 !px-5"
               >
                 <Plus className="w-4 h-4" />
                 <span>Submit Leave Application</span>
@@ -738,15 +738,15 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
             <div className="space-y-4">
               {leaves.length > 0 ? (
                 leaves.map((l) => (
-                  <div key={l._id} className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-4">
+                  <div key={l._id} className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4 shadow-xl">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5">
-                        <span className="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-sky-500/20 text-sky-300">
+                        <span className="px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30">
                           {l.leaveType}
                         </span>
-                        <h4 className="text-sm font-bold text-white">{l.destination}</h4>
+                        <h4 className="text-sm font-semibold text-white">{l.destination}</h4>
                       </div>
-                      <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase ${
+                      <span className={`text-xs px-3 py-1 rounded font-semibold uppercase ${
                         l.status === 'approved' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' :
                         l.status === 'rejected' ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30' :
                         'bg-amber-500/15 text-amber-400 border border-amber-500/30'
@@ -757,7 +757,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
                     <p className="text-xs text-slate-300 leading-relaxed">Purpose: {l.reason}</p>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-lg bg-[#090b10] border border-white/[0.06] text-xs">
                       <div>
                         <span className="text-slate-500 block text-[11px]">Departure:</span>
                         <strong className="text-white">{new Date(l.fromDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</strong>
@@ -774,7 +774,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   </div>
                 ))
               ) : (
-                <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-slate-800 text-slate-400 text-xs">
+                <div className="p-12 text-center rounded-xl bg-[#0e1219] border border-white/[0.08] text-slate-400 text-xs">
                   No leave records. Click "Submit Leave Application" to apply for leave.
                 </div>
               )}
@@ -785,58 +785,58 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
         {/* ── TAB 5: VISITOR PASSES ── */}
         {activeTab === 'visitors' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] shadow-xl">
               <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Users className="w-5 h-5 text-purple-400" />
+                <h2 className="font-serif text-xl font-bold text-white flex items-center gap-2">
+                  <Users className="w-5 h-5 text-[#dfba73]" />
                   Guest & Visitor Gatepasses
                 </h2>
-                <p className="text-xs text-slate-400">Request permission for parents and visitors to enter the hostel campus.</p>
+                <p className="text-xs text-slate-400 mt-0.5">Request permission for parents and visitors to enter the hostel campus.</p>
               </div>
               <button
                 onClick={() => setVisitorModal(true)}
-                className="px-5 py-2.5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-purple-600/30 cursor-pointer"
+                className="btn-arch-primary text-xs !py-2.5 !px-5"
               >
                 <Plus className="w-4 h-4" />
-                <span>Request Visitor</span>
+                <span>Request Visitor Pass</span>
               </button>
             </div>
 
             <div className="space-y-4">
               {visitors.length > 0 ? (
                 visitors.map((v) => (
-                  <div key={v._id} className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-3">
+                  <div key={v._id} className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-3 shadow-xl">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5">
-                        <div className="p-2 rounded-xl bg-purple-500/20 text-purple-300 font-mono text-xs font-bold">
+                        <div className="p-2 rounded-md bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30 font-mono text-xs font-semibold">
                           {v.passNumber}
                         </div>
                         <div>
-                          <h4 className="text-sm font-bold text-white">{v.visitorName} ({v.relationship})</h4>
+                          <h4 className="text-sm font-semibold text-white">{v.visitorName} ({v.relationship})</h4>
                           <div className="text-[11px] text-slate-400">Phone: {v.phone}</div>
                         </div>
                       </div>
-                      <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase border ${
+                      <span className={`text-xs px-3 py-1 rounded font-semibold uppercase border ${
                         v.status === 'approved'
                           ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
                           : v.status === 'rejected'
                           ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
                           : 'bg-amber-500/15 text-amber-400 border-amber-500/30'
                       }`}>
-                        {v.status === 'approved' ? '✓ Pass Approved' : v.status === 'rejected' ? '✕ Request Rejected' : '⏳ Pending Warden Approval'}
+                        {v.status === 'approved' ? 'Pass Approved' : v.status === 'rejected' ? 'Request Rejected' : 'Pending Warden Approval'}
                       </span>
                     </div>
 
                     <p className="text-xs text-slate-300">Purpose: {v.purpose}</p>
 
-                    <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 pt-1 border-t border-slate-800">
+                    <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 pt-2 border-t border-white/[0.06]">
                       <span>Visit Date: <strong className="text-white">{new Date(v.visitDate).toLocaleDateString()}</strong></span>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-slate-800 text-slate-400 text-xs">
-                  No visitor passes requested. Click "Request Visitor" to invite parents or guests.
+                <div className="p-12 text-center rounded-xl bg-[#0e1219] border border-white/[0.08] text-slate-400 text-xs">
+                  No visitor passes requested. Click "Request Visitor Pass" to invite parents or guests.
                 </div>
               )}
             </div>
@@ -846,25 +846,25 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
         {/* ── TAB 6: FEES & VIEW RECEIPTS ── */}
         {activeTab === 'fees' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] shadow-xl">
               <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-emerald-400" />
+                <h2 className="font-serif text-xl font-bold text-white flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-[#dfba73]" />
                   Fee Dues & Official Receipts
                 </h2>
-                <p className="text-xs text-slate-400">View detailed invoices, pay online, and open verified fee receipts.</p>
+                <p className="text-xs text-slate-400 mt-0.5">View detailed invoices, pay online, and open verified fee receipts.</p>
               </div>
             </div>
 
             <div className="space-y-4">
               {fees.length > 0 ? (
                 fees.map((f) => (
-                  <div key={f._id} className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div key={f._id} className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2.5">
-                        <h4 className="text-base font-bold text-white">{f.title}</h4>
-                        <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase ${
-                          f.status === 'paid' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        <h4 className="text-base font-semibold text-white">{f.title}</h4>
+                        <span className={`text-[10px] px-2.5 py-0.5 rounded font-semibold uppercase ${
+                          f.status === 'paid' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
                         }`}>
                           {f.status}
                         </span>
@@ -876,22 +876,22 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <div className="text-xl font-black text-white font-mono">₹{f.amount?.toLocaleString('en-IN')}</div>
+                        <div className="text-xl font-bold text-white font-mono">₹{f.amount?.toLocaleString('en-IN')}</div>
                         <div className="text-[10px] text-slate-400">{f.feeType}</div>
                       </div>
 
                       {f.status === 'paid' ? (
                         <button
                           onClick={() => setViewingReceipt(f)}
-                          className="px-4 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
+                          className="btn-arch-secondary text-xs !py-2 !px-4"
                         >
-                          <Eye className="w-4 h-4" />
+                          <Eye className="w-4 h-4 text-[#dfba73]" />
                           <span>View Receipt</span>
                         </button>
                       ) : (
                         <button
                           onClick={() => setPayModal(f)}
-                          className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 transition-all cursor-pointer"
+                          className="btn-arch-primary text-xs !py-2 !px-5"
                         >
                           Pay Online →
                         </button>
@@ -900,7 +900,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   </div>
                 ))
               ) : (
-                <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-slate-800 text-slate-400 text-xs">
+                <div className="p-12 text-center rounded-xl bg-[#0e1219] border border-white/[0.08] text-slate-400 text-xs">
                   No fee records found.
                 </div>
               )}
@@ -955,30 +955,30 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
               case 'Breakfast':
                 return {
                   icon: <Sun className="w-5 h-5 text-amber-400" />,
-                  bg: 'from-amber-950/40 via-slate-900 to-slate-950',
+                  bg: 'from-amber-950/20 via-[#0e1219] to-[#090b10]',
                   badge: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
                   tag: 'Morning Nutrition',
                 };
               case 'Lunch':
                 return {
                   icon: <Flame className="w-5 h-5 text-orange-400" />,
-                  bg: 'from-orange-950/40 via-slate-900 to-slate-950',
+                  bg: 'from-orange-950/20 via-[#0e1219] to-[#090b10]',
                   badge: 'bg-orange-500/15 text-orange-300 border-orange-500/30',
                   tag: 'Hearty Full Meal',
                 };
               case 'Snacks':
                 return {
                   icon: <Coffee className="w-5 h-5 text-emerald-400" />,
-                  bg: 'from-emerald-950/40 via-slate-900 to-slate-950',
+                  bg: 'from-emerald-950/20 via-[#0e1219] to-[#090b10]',
                   badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
                   tag: 'Evening Refreshment',
                 };
               case 'Dinner':
               default:
                 return {
-                  icon: <Moon className="w-5 h-5 text-indigo-400" />,
-                  bg: 'from-indigo-950/40 via-slate-900 to-slate-950',
-                  badge: 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30',
+                  icon: <Moon className="w-5 h-5 text-[#dfba73]" />,
+                  bg: 'from-[#141824] via-[#0e1219] to-[#090b10]',
+                  badge: 'bg-[#c5a059]/15 text-[#dfba73] border-[#c5a059]/30',
                   tag: 'Night Dining',
                 };
             }
@@ -987,22 +987,22 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
           return (
             <div className="space-y-6 animate-fade-in">
               {/* Header with View Toggle */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.08] pb-4">
                 <div>
-                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                    <UtensilsCrossed className="w-5 h-5 text-amber-400" />
+                  <h2 className="font-serif text-xl font-bold text-white flex items-center gap-2">
+                    <UtensilsCrossed className="w-5 h-5 text-[#dfba73]" />
                     Central Mess Weekly Dining Schedule
                   </h2>
-                  <p className="text-xs text-slate-400">Nutritious meal schedule prepared daily in certified clean kitchens.</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Nutritious meal schedule prepared daily in certified clean kitchens.</p>
                 </div>
 
-                <div className="flex items-center gap-1.5 p-1 bg-slate-900 border border-slate-800 rounded-2xl self-start sm:self-auto">
+                <div className="flex items-center gap-1.5 p-1 bg-[#0e1219] border border-white/[0.08] rounded-lg self-start sm:self-auto">
                   <button
                     type="button"
                     onClick={() => setMessViewMode('daily')}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                       messViewMode === 'daily'
-                        ? 'bg-indigo-600 text-white shadow-md'
+                        ? 'bg-[#c5a059] text-[#090b10] font-bold shadow-sm'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
@@ -1012,9 +1012,9 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   <button
                     type="button"
                     onClick={() => setMessViewMode('table')}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                       messViewMode === 'table'
-                        ? 'bg-indigo-600 text-white shadow-md'
+                        ? 'bg-[#c5a059] text-[#090b10] font-bold shadow-sm'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
@@ -1037,16 +1037,16 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                         setSelectedMessDay(day);
                         if (messViewMode === 'table') setMessViewMode('daily');
                       }}
-                      className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer border ${
+                      className={`px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer border ${
                         isSelected
-                          ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-indigo-400/50 shadow-lg shadow-indigo-600/30'
-                          : 'bg-slate-900/80 text-slate-400 hover:text-white hover:bg-slate-800 border-slate-800'
+                          ? 'bg-[#c5a059] text-[#090b10] font-bold border-[#dfba73] shadow-md shadow-[#c5a059]/20'
+                          : 'bg-[#0e1219] text-slate-400 hover:text-white hover:bg-white/[0.04] border-white/[0.08]'
                       }`}
                     >
                       <span>{day}</span>
                       {isToday && (
-                        <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                          isSelected ? 'bg-amber-400 text-slate-950' : 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                        <span className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ${
+                          isSelected ? 'bg-[#090b10] text-[#dfba73]' : 'bg-[#c5a059]/20 text-[#dfba73] border border-[#c5a059]/30'
                         }`}>
                           Today
                         </span>
@@ -1061,7 +1061,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                 <div className="space-y-4">
                   <div className="flex items-center justify-between text-xs text-slate-400 px-1">
                     <span className="font-semibold text-slate-300">
-                      Showing Menu for: <strong className="text-indigo-400">{selectedMessDay}</strong>
+                      Showing Menu for: <strong className="text-[#dfba73]">{selectedMessDay}</strong>
                       {selectedMessDay === todayDayName && ' (Today\'s Active Menu)'}
                     </span>
                     <span>4 Fresh Meal Services</span>
@@ -1080,7 +1080,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                       return (
                         <div
                           key={type}
-                          className={`p-5 rounded-3xl bg-gradient-to-br ${meta.bg} border border-slate-800 shadow-xl space-y-4 flex flex-col justify-between hover:border-indigo-500/40 transition-all`}
+                          className={`p-5 rounded-xl bg-gradient-to-br ${meta.bg} border border-white/[0.08] shadow-xl space-y-4 flex flex-col justify-between hover:border-[#c5a059]/40 transition-all`}
                         >
                           <div className="space-y-3">
                             <div className="flex items-center justify-between">
@@ -1141,18 +1141,18 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
               {/* ── VIEW 2: COMPLETE 7-DAY WEEKLY TABLE MATRIX ── */}
               {messViewMode === 'table' && (
-                <div className="overflow-x-auto rounded-3xl border border-slate-800 bg-[#0f1b2d]/80 shadow-2xl">
+                <div className="overflow-x-auto rounded-xl border border-white/[0.08] bg-[#0e1219] shadow-2xl">
                   <table className="w-full text-left text-xs border-collapse min-w-[760px]">
                     <thead>
-                      <tr className="bg-slate-900 border-b border-slate-800 text-slate-300 font-bold uppercase text-[11px] tracking-wider">
+                      <tr className="bg-[#121620] border-b border-white/[0.08] text-slate-300 font-semibold uppercase text-[11px] tracking-wider">
                         <th className="py-4 px-4">Day</th>
-                        <th className="py-4 px-4">🌅 Breakfast (7:30-9:30 AM)</th>
-                        <th className="py-4 px-4">☀️ Lunch (12:30-2:30 PM)</th>
-                        <th className="py-4 px-4">☕ Evening Snacks (5-6 PM)</th>
-                        <th className="py-4 px-4">🌙 Dinner (7:30-9:30 PM)</th>
+                        <th className="py-4 px-4">Breakfast (7:30 - 9:30 AM)</th>
+                        <th className="py-4 px-4">Lunch (12:30 - 2:30 PM)</th>
+                        <th className="py-4 px-4">Evening Snacks (5:00 - 6:00 PM)</th>
+                        <th className="py-4 px-4">Dinner (7:30 - 9:30 PM)</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/70">
+                    <tbody className="divide-y divide-white/[0.06]">
                       {daysOfWeek.map((day) => {
                         const dayMeals = allWeeklyData.filter((m) => m.dayOfWeek === day);
                         const isToday = day === todayDayName;
@@ -1166,14 +1166,14 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                           <tr
                             key={day}
                             className={`transition-colors ${
-                              isToday ? 'bg-indigo-950/20' : 'hover:bg-slate-900/40'
+                              isToday ? 'bg-[#c5a059]/10' : 'hover:bg-white/[0.02]'
                             }`}
                           >
-                            <td className="py-3.5 px-4 font-bold text-white whitespace-nowrap">
+                            <td className="py-3.5 px-4 font-semibold text-white whitespace-nowrap">
                               <div className="flex items-center gap-2">
                                 <span>{day}</span>
                                 {isToday && (
-                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-400 text-slate-950 uppercase">
+                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-[#c5a059] text-[#090b10] uppercase">
                                     Today
                                   </span>
                                 )}
@@ -1201,9 +1201,9 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
               {/* Mess Rules & Meal Timing Guidance */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-1.5 text-xs">
-                  <div className="font-bold text-white flex items-center gap-1.5">
-                    <Clock className="w-4 h-4 text-amber-400" />
+                <div className="p-4 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-1.5 text-xs shadow-md">
+                  <div className="font-semibold text-white flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-[#dfba73]" />
                     Meal Timing Discipline
                   </div>
                   <p className="text-slate-400 text-[11px] leading-relaxed">
@@ -1211,9 +1211,9 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-1.5 text-xs">
-                  <div className="font-bold text-white flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                <div className="p-4 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-1.5 text-xs shadow-md">
+                  <div className="font-semibold text-white flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-[#dfba73]" />
                     Special Diets & Medical Needs
                   </div>
                   <p className="text-slate-400 text-[11px] leading-relaxed">
@@ -1221,9 +1221,9 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-1.5 text-xs">
-                  <div className="font-bold text-white flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-sky-400" />
+                <div className="p-4 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-1.5 text-xs shadow-md">
+                  <div className="font-semibold text-white flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
                     FSSAI Certified Kitchen
                   </div>
                   <p className="text-slate-400 text-[11px] leading-relaxed">
@@ -1238,18 +1238,18 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
         {/* ── TAB 8: NOTICES ── */}
         {activeTab === 'notices' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="border-b border-slate-800 pb-4">
-              <h2 className="text-lg font-bold text-white">Campus Circulars & Hostel Notices</h2>
-              <p className="text-xs text-slate-400">Official circulars from Hostel Wardens and Campus Administration.</p>
+            <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] shadow-xl">
+              <h2 className="font-serif text-xl font-bold text-white">Campus Circulars & Hostel Notices</h2>
+              <p className="text-xs text-slate-400 mt-0.5">Official circulars from Hostel Wardens and Campus Administration.</p>
             </div>
 
             <div className="space-y-4">
               {notices.map((n) => (
-                <div key={n._id} className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
+                <div key={n._id} className="p-5 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-2 shadow-md">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-white">{n.title}</span>
-                    <span className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase ${
-                      n.priority === 'urgent' ? 'bg-rose-500/20 text-rose-400' : 'bg-indigo-500/20 text-indigo-300'
+                    <span className="text-sm font-semibold text-white">{n.title}</span>
+                    <span className={`text-[10px] px-2.5 py-0.5 rounded font-semibold uppercase ${
+                      n.priority === 'urgent' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/25'
                     }`}>
                       {n.category || 'General'}
                     </span>
@@ -1267,35 +1267,37 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
       {/* ── MODAL: FILE COMPLAINT ── */}
       {complaintModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-lg bg-[#0f1b2d] border border-slate-700 rounded-3xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <FileText className="w-4 h-4 text-amber-400" />
-                Send Grievance / Maintenance Complain
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="w-full max-w-lg bg-[#0e1219] border border-white/10 rounded-xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
+                <FileText className="w-4 h-4 text-[#dfba73]" />
+                Lodge Grievance / Maintenance Complain
               </h3>
-              <button onClick={() => setComplaintModal(false)} className="text-slate-400 hover:text-white cursor-pointer">✕</button>
+              <button onClick={() => setComplaintModal(false)} className="text-slate-400 hover:text-white cursor-pointer">
+                <X className="w-4 h-4" />
+              </button>
             </div>
             <form onSubmit={handleComplaintSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Issue Title *</label>
+                <label className="block font-medium text-slate-300 mb-1">Issue Title *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Bathroom tap leakage in Room 101"
                   value={complaintForm.title}
                   onChange={(e) => setComplaintForm({ ...complaintForm, title: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 bg-[#121620] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Category</label>
+                  <label className="block font-medium text-slate-300 mb-1">Category</label>
                   <select
                     value={complaintForm.category}
                     onChange={(e) => setComplaintForm({ ...complaintForm, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-[#121620] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   >
                     <option value="Electrical">Electrical</option>
                     <option value="Plumbing">Plumbing</option>
@@ -1308,11 +1310,11 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Priority</label>
+                  <label className="block font-medium text-slate-300 mb-1">Priority</label>
                   <select
                     value={complaintForm.priority}
                     onChange={(e) => setComplaintForm({ ...complaintForm, priority: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-[#121620] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -1323,28 +1325,28 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Detailed Description *</label>
+                <label className="block font-medium text-slate-300 mb-1">Detailed Description *</label>
                 <textarea
                   rows={3}
                   required
                   placeholder="State the exact issue details..."
                   value={complaintForm.description}
                   onChange={(e) => setComplaintForm({ ...complaintForm, description: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-500 resize-none"
+                  className="w-full px-3.5 py-2 bg-[#121620] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#dfba73] resize-none"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+              <div className="flex justify-end gap-2 pt-2 border-t border-white/[0.08]">
                 <button
                   type="button"
                   onClick={() => setComplaintModal(false)}
-                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium cursor-pointer"
+                  className="px-4 py-2 rounded-lg text-slate-400 hover:text-white font-medium cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold shadow-lg shadow-amber-600/30 cursor-pointer"
+                  className="btn-arch-primary text-xs !py-2 !px-5"
                 >
                   Submit Complain
                 </button>
@@ -1356,23 +1358,25 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
       {/* ── MODAL: APPLY LEAVE ── */}
       {leaveModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-lg bg-[#0f1b2d] border border-slate-700 rounded-3xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Key className="w-4 h-4 text-sky-400" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="w-full max-w-lg bg-[#0e1219] border border-white/10 rounded-xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
+                <Key className="w-4 h-4 text-[#dfba73]" />
                 Submit Leave Application
               </h3>
-              <button onClick={() => setLeaveModal(false)} className="text-slate-400 hover:text-white cursor-pointer">✕</button>
+              <button onClick={() => setLeaveModal(false)} className="text-slate-400 hover:text-white cursor-pointer">
+                <X className="w-4 h-4" />
+              </button>
             </div>
             <form onSubmit={handleLeaveSubmit} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Leave Type</label>
+                  <label className="block font-medium text-slate-300 mb-1">Leave Type</label>
                   <select
                     value={leaveForm.leaveType}
                     onChange={(e) => setLeaveForm({ ...leaveForm, leaveType: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full px-3 py-2 bg-[#121620] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   >
                     <option value="outpass">Day Leave</option>
                     <option value="weekend">Weekend Home Stay</option>
@@ -1381,64 +1385,64 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Destination Address *</label>
+                  <label className="block font-medium text-slate-300 mb-1">Destination Address *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Home (Mumbai)"
                     value={leaveForm.destination}
                     onChange={(e) => setLeaveForm({ ...leaveForm, destination: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full px-3 py-2 bg-[#121620] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Departure Date *</label>
+                  <label className="block font-medium text-slate-300 mb-1">Departure Date *</label>
                   <input
                     type="date"
                     required
                     value={leaveForm.fromDate}
                     onChange={(e) => setLeaveForm({ ...leaveForm, fromDate: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full px-3 py-2 bg-[#121620] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Expected Return Date *</label>
+                  <label className="block font-medium text-slate-300 mb-1">Expected Return Date *</label>
                   <input
                     type="date"
                     required
                     value={leaveForm.toDate}
                     onChange={(e) => setLeaveForm({ ...leaveForm, toDate: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full px-3 py-2 bg-[#121620] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Reason for Leave *</label>
+                <label className="block font-medium text-slate-300 mb-1">Reason for Leave *</label>
                 <textarea
                   rows={2}
                   required
                   placeholder="State purpose of departure..."
                   value={leaveForm.reason}
                   onChange={(e) => setLeaveForm({ ...leaveForm, reason: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500 resize-none"
+                  className="w-full px-3.5 py-2 bg-[#121620] border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#dfba73] resize-none"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+              <div className="flex justify-end gap-2 pt-2 border-t border-white/[0.08]">
                 <button
                   type="button"
                   onClick={() => setLeaveModal(false)}
-                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium cursor-pointer"
+                  className="px-4 py-2 rounded-lg text-slate-400 hover:text-white font-medium cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold shadow-lg shadow-sky-600/30 cursor-pointer"
+                  className="btn-arch-primary text-xs !py-2 !px-5"
                 >
                   Submit Application
                 </button>
@@ -1450,38 +1454,40 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
 
       {/* ── MODAL: PAY ONLINE SIMULATOR ── */}
       {payModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md bg-[#0f1b2d] border border-emerald-500/30 rounded-3xl p-6 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-emerald-400" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="w-full max-w-md bg-[#0e1219] border border-[#c5a059]/30 rounded-xl p-6 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
+                <CreditCard className="w-4 h-4 text-[#dfba73]" />
                 Pay Hostel Fee Online
               </h3>
-              <button onClick={() => setPayModal(null)} className="text-slate-400 hover:text-white cursor-pointer">✕</button>
+              <button onClick={() => setPayModal(null)} className="text-slate-400 hover:text-white cursor-pointer">
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
-            <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 space-y-1">
+            <div className="p-4 rounded-lg bg-[#c5a059]/10 border border-[#c5a059]/25 space-y-1">
               <div className="text-xs text-slate-400">{payModal.title}</div>
-              <div className="text-2xl font-black text-white font-mono">₹{payModal.amount?.toLocaleString('en-IN')}</div>
-              <div className="text-[11px] text-emerald-400 font-medium">Verified Payment Gateway Simulator</div>
+              <div className="text-2xl font-bold text-white font-mono">₹{payModal.amount?.toLocaleString('en-IN')}</div>
+              <div className="text-[11px] text-[#dfba73] font-medium">Verified Payment Gateway Simulator</div>
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-between text-slate-200">
+              <div className="p-3 rounded-lg bg-[#121620] border border-white/[0.08] flex items-center justify-between text-slate-200">
                 <span>Payment Mode</span>
-                <strong className="text-emerald-400">Instant UPI / NetBanking</strong>
+                <strong className="text-[#dfba73]">Instant UPI / NetBanking</strong>
               </div>
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-between text-slate-200">
+              <div className="p-3 rounded-lg bg-[#121620] border border-white/[0.08] flex items-center justify-between text-slate-200">
                 <span>Student</span>
                 <span>{user?.name}</span>
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+            <div className="flex justify-end gap-2 pt-2 border-t border-white/[0.08]">
               <button
                 type="button"
                 onClick={() => setPayModal(null)}
-                className="px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs font-medium cursor-pointer"
+                className="px-4 py-2 rounded-lg text-slate-400 hover:text-white text-xs font-medium cursor-pointer"
               >
                 Cancel
               </button>
@@ -1489,7 +1495,7 @@ export default function StudentDashboardView({ student, user, onRefresh, refresh
                 type="button"
                 disabled={paying}
                 onClick={() => handleProcessPayment(payModal._id)}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 cursor-pointer disabled:opacity-50"
+                className="btn-arch-primary text-xs !py-2 !px-5 disabled:opacity-50"
               >
                 {paying ? 'Processing...' : `Confirm & Pay ₹${payModal.amount?.toLocaleString('en-IN')}`}
               </button>

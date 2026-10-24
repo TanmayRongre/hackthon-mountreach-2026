@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, UserPlus, Users, Phone, Calendar, Clock, AlertCircle, CheckCircle2, ShieldCheck, FileCheck } from 'lucide-react';
+import { X, UserPlus, Users, Phone, Calendar, Clock, AlertCircle, CheckCircle2, ShieldCheck, FileCheck, Sparkles } from 'lucide-react';
 import api from '../../services/api';
 
 export default function RequestVisitorModal({ isOpen, onClose, student, user, onVisitorCreated }) {
@@ -55,29 +55,30 @@ export default function RequestVisitorModal({ isOpen, onClose, student, user, on
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-sans">
-      <div className="relative w-full max-w-lg bg-[#0f1b2d] border border-slate-700 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="relative w-full max-w-lg bg-[#0e1219] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+        <div className="px-6 py-4 bg-[#121620] border-b border-white/[0.08] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-purple-500/20 text-purple-400">
+            <div className="p-2.5 rounded-lg bg-[#c5a059]/10 border border-[#c5a059]/30 text-[#dfba73]">
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Request Visitor Gatepass</h3>
-              <p className="text-[11px] text-slate-400">Guest & parent campus entry permission</p>
+              <h3 className="text-sm font-bold font-serif text-white tracking-tight">Request Visitor Gatepass</h3>
+              <p className="text-[11px] text-slate-400">Guest & parent campus entry clearance</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={handleDemoFill}
-              className="px-2.5 py-1 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[11px] font-bold hover:bg-purple-500/30 transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-md bg-[#c5a059]/10 text-[#dfba73] border border-[#c5a059]/30 text-[11px] font-semibold hover:bg-[#c5a059]/20 transition-colors cursor-pointer flex items-center gap-1.5"
             >
-              ✨ Demo Fill
+              <Sparkles className="w-3 h-3 text-[#dfba73]" />
+              <span>Autofill Sample</span>
             </button>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+              className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.08] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -87,31 +88,31 @@ export default function RequestVisitorModal({ isOpen, onClose, student, user, on
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
           {error && (
-            <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 flex items-center gap-2">
+            <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg text-rose-300 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{error}</span>
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Visitor Full Name *</label>
+              <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Visitor Full Name *</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. Rajesh Sharma"
                 value={formData.visitorName}
                 onChange={(e) => setFormData({ ...formData, visitorName: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Relationship *</label>
+              <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Relationship *</label>
               <select
                 value={formData.relationship}
                 onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
               >
                 <option value="Parent">Parent (Father/Mother)</option>
                 <option value="Guardian">Guardian</option>
@@ -123,62 +124,62 @@ export default function RequestVisitorModal({ isOpen, onClose, student, user, on
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Visitor Contact Phone *</label>
+              <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Visitor Contact Phone *</label>
               <input
                 type="tel"
                 required
                 placeholder="+91 98765 43210"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Date of Visit *</label>
+              <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Date of Visit *</label>
               <input
                 type="date"
                 required
                 value={formData.visitDate}
                 onChange={(e) => setFormData({ ...formData, visitDate: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block font-semibold text-slate-300 mb-1">Purpose of Visit *</label>
+            <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Purpose of Visit *</label>
             <textarea
               rows={2}
               required
               placeholder="e.g. Meeting student, delivering semester study supplies..."
               value={formData.purpose}
               onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
-              className="w-full px-3.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-purple-500 resize-none"
+              className="w-full px-3.5 py-2 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73] resize-none"
             />
           </div>
 
-          <div className="p-3 rounded-xl bg-purple-950/20 border border-purple-500/20 text-[11px] text-purple-300 flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-purple-400 shrink-0" />
-            <span>Visitor request will be routed directly to your Hostel Warden for review & gate clearance.</span>
+          <div className="p-3 rounded-lg bg-[#121620] border border-white/[0.08] text-[11px] text-slate-300 flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-[#dfba73] shrink-0" />
+            <span>Visitor gatepass will be submitted directly to Warden verification desk.</span>
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-white/[0.08]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium cursor-pointer"
+              className="px-4 py-2 rounded-lg border border-white/[0.1] text-slate-300 hover:bg-white/[0.05] text-xs font-semibold cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-lg shadow-purple-600/30 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              className="btn-arch-primary px-5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
-              {submitting ? 'Submitting Request...' : 'Send to Warden for Approval →'}
+              {submitting ? 'Submitting Request...' : 'Send for Warden Approval →'}
             </button>
           </div>
         </form>

@@ -1,8 +1,20 @@
 import React, { useState } from 'react';
 import api from '../services/api';
-import '../styles/Home.css';
 import useInView from '../hooks/useInView';
-
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Clock,
+  Sparkles,
+  CheckCircle2,
+  Copy,
+  Send,
+  RefreshCw,
+  AlertCircle,
+  Ticket
+} from 'lucide-react';
+import '../styles/Home.css';
 
 const demoValues = {
   firstName: 'Tanmay',
@@ -10,7 +22,7 @@ const demoValues = {
   email: 'tanmay@mountreach.edu',
   phone: '+91 98765 43210',
   inquiry: 'booking',
-  message: 'Hello, I would like to inquire about the room allotment process for the upcoming semester and facility details for Block A.',
+  message: 'Hello, I would like to inquire about the room allotment process for the upcoming academic semester and facility specifications for Block A accommodations.',
 };
 
 export default function Contact() {
@@ -71,49 +83,56 @@ export default function Contact() {
       <div className="contact-container">
         {/* Header */}
         <div ref={headerRef} className={`contact-header reveal ${headerIn ? 'in-view' : ''}`}>
-          <h1>Get In Touch</h1>
+          <h1>Institutional Inquiries</h1>
           <p>
-            Have questions about our hostel facilities, room allotment, or admissions?
-            Submit an official support ticket and our team will get back within 24 hours.
+            Have inquiries regarding room allotments, campus residential policies, or fees?
+            Submit an official administrative dossier ticket and our team will respond promptly.
           </p>
         </div>
 
         <div className="contact-grid">
           {/* Info Card */}
           <div ref={infoRef} className={`contact-info-card reveal-left ${infoIn ? 'in-view' : ''}`}>
-
-            <h2>Contact Information</h2>
-            <p>Reach out directly to the hostel administrative office or connect with us on our official profiles.</p>
+            <h2>Residence Directorate</h2>
+            <p>Direct communication channels for residential operations, wardens, and campus logistics.</p>
 
             <a href="https://maps.google.com/?q=Shivaji+Nagar+Pune" target="_blank" rel="noopener noreferrer" className="contact-info-item" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div className="contact-info-icon">📍</div>
+              <div className="contact-info-icon">
+                <MapPin className="w-4 h-4 text-[#dfba73]" />
+              </div>
               <div className="contact-info-text">
-                <strong>Campus Address</strong>
-                <span>Hostel Office, Gate No. 2, Shivaji Nagar, Pune 411005</span>
+                <strong>Campus Directorate</strong>
+                <span>Hostel Office, Gate No. 2, North Quad, Pune 411005</span>
               </div>
             </a>
 
             <a href="tel:+919876543210" className="contact-info-item" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div className="contact-info-icon">📞</div>
+              <div className="contact-info-icon">
+                <Phone className="w-4 h-4 text-[#dfba73]" />
+              </div>
               <div className="contact-info-text">
-                <strong>Official Helpline</strong>
+                <strong>Administrative Helpline</strong>
                 <span>+91 98765 43210</span>
               </div>
             </a>
 
             <a href="mailto:info@hostelmanage.in" className="contact-info-item" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div className="contact-info-icon">✉️</div>
+              <div className="contact-info-icon">
+                <Mail className="w-4 h-4 text-[#dfba73]" />
+              </div>
               <div className="contact-info-text">
-                <strong>Helpdesk Email</strong>
-                <span>info@hostelmanage.in</span>
+                <strong>Official Correspondence</strong>
+                <span>residence@institution.edu</span>
               </div>
             </a>
 
             <div className="contact-info-item">
-              <div className="contact-info-icon">🕐</div>
+              <div className="contact-info-icon">
+                <Clock className="w-4 h-4 text-[#dfba73]" />
+              </div>
               <div className="contact-info-text">
-                <strong>Office Timings</strong>
-                <span>Mon – Sat: 9:00 AM – 6:00 PM IST</span>
+                <strong>Office Hours</strong>
+                <span>Monday – Saturday: 09:00 – 18:00 IST</span>
               </div>
             </div>
 
@@ -137,51 +156,55 @@ export default function Contact() {
           <div ref={formRef} className={`contact-form-card reveal-right ${formIn ? 'in-view' : ''}`}>
 
             {submittedTicket ? (
-              <div style={{ textAlign: 'center', padding: '30px 16px' }} className="animate-fade-in">
-                <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>
-                <h2 style={{ color: '#fff', margin: '0 0 8px', fontSize: 22 }}>Inquiry Ticket Created!</h2>
-                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, lineHeight: 1.6, maxWidth: 420, margin: '0 auto 16px' }}>
-                  Thank you, <strong>{submittedTicket.firstName}</strong>. Your ticket has been logged into the hostel administrative database.
+              <div style={{ textAlign: 'center', padding: '24px 16px' }} className="animate-fade-in">
+                <div style={{ width: 48, height: 48, borderRadius: 8, background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', color: '#34d399', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <h2 style={{ color: '#fff', margin: '0 0 8px', fontSize: 22, fontFamily: 'Playfair Display, serif' }}>
+                  Inquiry Ticket Registered
+                </h2>
+                <p style={{ color: '#94a3b8', fontSize: 13, lineHeight: 1.6, maxWidth: 440, margin: '0 auto 20px' }}>
+                  Thank you, <strong>{submittedTicket.firstName}</strong>. Your ticket has been logged in the residential registry.
                 </p>
 
                 {/* Ticket Badge */}
                 <div
                   style={{
-                    background: 'rgba(99,102,241,0.12)',
-                    border: '1px solid rgba(99,102,241,0.35)',
-                    borderRadius: 16,
-                    padding: '16px 20px',
-                    maxWidth: 360,
+                    background: 'rgba(18, 22, 32, 0.9)',
+                    border: '1px solid rgba(197, 160, 89, 0.3)',
+                    borderRadius: 8,
+                    padding: '18px 20px',
+                    maxWidth: 380,
                     margin: '0 auto 20px',
                     textAlign: 'left',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                    <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#818cf8', fontWeight: 'bold' }}>
-                      Reference Ticket No
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                    <span style={{ fontSize: 10.5, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#dfba73', fontWeight: 600 }}>
+                      Administrative Reference
                     </span>
-                    <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 20, background: 'rgba(16,185,129,0.2)', color: '#34d399', fontWeight: 'bold' }}>
-                      Status: Open
+                    <span style={{ fontSize: 10.5, padding: '2px 8px', borderRadius: 4, background: 'rgba(16,185,129,0.15)', color: '#34d399', fontWeight: 600, border: '1px solid rgba(16,185,129,0.25)' }}>
+                      Status: Logged
                     </span>
                   </div>
-                  <div style={{ fontSize: 18, fontWeight: 'bold', color: '#fff', letterSpacing: '0.04em', fontFamily: 'monospace' }}>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', letterSpacing: '0.04em', fontFamily: 'monospace' }}>
                     {submittedTicket.ticketNumber}
                   </div>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 6 }}>
-                    Category: {submittedTicket.inquiry?.toUpperCase()} • Email: {submittedTicket.email}
+                  <div style={{ fontSize: 11, color: '#71717a', marginTop: 6 }}>
+                    Category: {submittedTicket.inquiry?.toUpperCase()} • Account: {submittedTicket.email}
                   </div>
 
                   <button
                     type="button"
                     onClick={handleCopyTicket}
                     style={{
-                      marginTop: 12,
+                      marginTop: 14,
                       width: '100%',
-                      padding: '8px',
-                      borderRadius: 10,
-                      background: copied ? '#059669' : '#1e1b4b',
-                      border: '1px solid rgba(99,102,241,0.4)',
-                      color: '#fff',
+                      padding: '9px',
+                      borderRadius: 6,
+                      background: copied ? '#059669' : '#1a202e',
+                      border: '1px solid rgba(197, 160, 89, 0.35)',
+                      color: copied ? '#fff' : '#dfba73',
                       fontSize: 12,
                       fontWeight: 600,
                       cursor: 'pointer',
@@ -189,55 +212,49 @@ export default function Contact() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: 6,
+                      transition: 'all 0.2s',
                     }}
                   >
-                    <i className={`bx ${copied ? 'bx-check' : 'bx-copy'}`}></i>
-                    {copied ? 'Copied to Clipboard!' : 'Copy Ticket ID'}
+                    {copied ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copied ? 'Copied to Clipboard' : 'Copy Reference Ticket'}</span>
                   </button>
                 </div>
 
                 <button
                   type="button"
                   onClick={handleReset}
-                  style={{
-                    padding: '10px 24px',
-                    background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
-                    border: 'none',
-                    borderRadius: 12,
-                    color: '#fff',
-                    fontFamily: 'inherit',
-                    fontWeight: 600,
-                    fontSize: 13,
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 15px rgba(99,102,241,0.3)',
-                  }}
+                  className="btn-arch-primary"
+                  style={{ fontSize: 12.5, padding: '10px 20px' }}
                 >
-                  Submit Another Inquiry
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Submit Another Inquiry</span>
                 </button>
               </div>
             ) : (
               <>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                  <h2 style={{ margin: 0 }}>Send an Official Inquiry</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
+                  <h2 style={{ margin: 0 }}>Submit Official Ticket</h2>
                   <button
                     type="button"
                     onClick={autofillDemo}
                     style={{
-                      padding: '4px 10px',
-                      borderRadius: 20,
-                      background: 'rgba(99,102,241,0.15)',
-                      border: '1px solid rgba(99,102,241,0.3)',
-                      color: '#818cf8',
+                      padding: '5px 10px',
+                      borderRadius: 6,
+                      background: 'rgba(197, 160, 89, 0.10)',
+                      border: '1px solid rgba(197, 160, 89, 0.30)',
+                      color: '#dfba73',
                       fontSize: 11,
-                      fontWeight: 'bold',
+                      fontWeight: 600,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 4,
+                      gap: 6,
+                      transition: 'all 0.2s',
                     }}
-                    title="Fill realistic demonstration details"
+                    title="Fill demonstration details"
                   >
-                    ✨ Demo Autofill
+                    <Sparkles className="w-3 h-3 text-[#dfba73]" />
+                    <span>Autofill Sample</span>
                   </button>
                 </div>
 
@@ -245,10 +262,10 @@ export default function Contact() {
                   <div
                     style={{
                       padding: '10px 14px',
-                      borderRadius: 12,
-                      background: 'rgba(239,68,68,0.15)',
-                      border: '1px solid rgba(239,68,68,0.35)',
-                      color: '#fca5a5',
+                      borderRadius: 6,
+                      background: 'rgba(225, 29, 72, 0.12)',
+                      border: '1px solid rgba(225, 29, 72, 0.3)',
+                      color: '#fda4af',
                       fontSize: 12,
                       marginBottom: 16,
                       display: 'flex',
@@ -256,7 +273,7 @@ export default function Contact() {
                       gap: 8,
                     }}
                   >
-                    <i className="bx bx-error-circle" style={{ fontSize: 16 }}></i>
+                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
                     <span>{errorMsg}</span>
                   </div>
                 )}
@@ -288,7 +305,7 @@ export default function Contact() {
 
                   <div className="contact-form-row">
                     <div className="contact-form-group">
-                      <label>Email Address *</label>
+                      <label>Official Email *</label>
                       <input
                         type="email"
                         name="email"
@@ -311,27 +328,27 @@ export default function Contact() {
                   </div>
 
                   <div className="contact-form-group">
-                    <label>Inquiry Category</label>
+                    <label>Inquiry Classification</label>
                     <select
                       name="inquiry"
                       value={formData.inquiry}
                       onChange={handleChange}
                     >
-                      <option value="general">General Campus Inquiry</option>
-                      <option value="booking">Hostel Admission & Bed Allotment</option>
-                      <option value="fees">Fee Dues & Payment Inquiries</option>
-                      <option value="facilities">Mess & Room Facilities</option>
-                      <option value="complaint">Complaint & Grievance</option>
-                      <option value="other">Other Official Query</option>
+                      <option value="general">General Campus Living Inquiry</option>
+                      <option value="booking">Hostel Admission & Bed Allocation</option>
+                      <option value="fees">Semester Fee Clearance & Invoicing</option>
+                      <option value="facilities">Mess Menu & Facility Standards</option>
+                      <option value="complaint">Maintenance Grievance & SLA Escalation</option>
+                      <option value="other">Institutional Query</option>
                     </select>
                   </div>
 
                   <div className="contact-form-group">
-                    <label>Your Message *</label>
+                    <label>Dossier Message *</label>
                     <textarea
                       name="message"
                       rows={4}
-                      placeholder="Please specify your query in detail..."
+                      placeholder="Specify your inquiry in detail..."
                       value={formData.message}
                       onChange={handleChange}
                       required
@@ -341,13 +358,13 @@ export default function Contact() {
                   <button type="submit" className="contact-submit-btn" disabled={loading}>
                     {loading ? (
                       <>
-                        <span style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} />
-                        Logging Ticket...
+                        <span style={{ width: 14, height: 14, border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#090b10', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} />
+                        <span>Logging Ticket...</span>
                       </>
                     ) : (
                       <>
-                        <i className="bx bx-send" style={{ fontSize: 18 }}></i>
-                        Submit Ticket
+                        <Send className="w-4 h-4" />
+                        <span>Submit Official Inquiry</span>
                       </>
                     )}
                   </button>

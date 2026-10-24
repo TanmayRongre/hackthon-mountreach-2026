@@ -128,19 +128,19 @@ export default function AdminHostelManagement({ onHostelsUpdated }) {
       )}
 
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900/70 border border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-xl bg-[#0e1219] border border-white/[0.08]">
         <div>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-sky-400" />
+          <h2 className="text-lg font-bold font-serif text-white tracking-tight flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-[#dfba73]" />
             Hostel, Block & Room Infrastructure
           </h2>
           <p className="text-xs text-slate-400">Configure residential blocks, assign wardens, manage capacity, and track room statuses.</p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={() => setHostelModalOpen(true)}
-            className="px-4 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-indigo-600/30"
+            className="btn-arch-primary px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Create Hostel</span>
@@ -150,9 +150,9 @@ export default function AdminHostelManagement({ onHostelsUpdated }) {
               setRoomForm((prev) => ({ ...prev, hostel: selectedHostel }));
               setRoomModalOpen(true);
             }}
-            className="px-4 py-2.5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-sky-600/30"
+            className="btn-arch-secondary px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer"
           >
-            <DoorOpen className="w-4 h-4" />
+            <DoorOpen className="w-4 h-4 text-[#dfba73]" />
             <span>Add Room</span>
           </button>
         </div>
@@ -164,14 +164,14 @@ export default function AdminHostelManagement({ onHostelsUpdated }) {
           <button
             key={h._id}
             onClick={() => setSelectedHostel(h._id)}
-            className={`p-4 rounded-2xl border text-left min-w-[220px] transition-all cursor-pointer ${
+            className={`p-4 rounded-xl border text-left min-w-[220px] transition-all cursor-pointer ${
               selectedHostel === h._id
-                ? 'bg-indigo-950/60 border-indigo-500 shadow-xl shadow-indigo-950/50'
-                : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 text-slate-400'
+                ? 'bg-[#c5a059]/15 border-[#c5a059] shadow-md shadow-[#c5a059]/10 text-white'
+                : 'bg-[#0e1219] border-white/[0.08] hover:border-white/20 text-slate-400'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 font-mono">{h.code}</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#dfba73] font-mono">{h.code}</span>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold uppercase">{h.status || 'Active'}</span>
             </div>
             <div className="text-sm font-bold text-white mt-1">{h.name}</div>
@@ -181,11 +181,11 @@ export default function AdminHostelManagement({ onHostelsUpdated }) {
       </div>
 
       {/* Visual Room Grid for Selected Hostel */}
-      <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className="p-6 rounded-xl bg-[#0e1219] border border-white/[0.08] space-y-4">
+        <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <BedDouble className="w-4 h-4 text-purple-400" />
+            <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+              <BedDouble className="w-4 h-4 text-[#dfba73]" />
               Room Grid & Bed Allocations ({filteredRooms.length} Rooms)
             </h3>
             <p className="text-xs text-slate-400">Live residential units for currently selected hostel complex.</p>
@@ -202,12 +202,12 @@ export default function AdminHostelManagement({ onHostelsUpdated }) {
             filteredRooms.map((r) => (
               <div
                 key={r._id}
-                className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-indigo-500/40 transition-all space-y-2 flex flex-col justify-between"
+                className="p-3.5 rounded-lg bg-[#121620] border border-white/[0.08] hover:border-[#c5a059]/40 transition-all space-y-2 flex flex-col justify-between"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-white">#{r.roomNumber}</span>
+                  <span className="text-xs font-mono font-bold text-white">#{r.roomNumber}</span>
                   <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${
-                    r.type === 'AC' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-slate-800 text-slate-400'
+                    r.type === 'AC' ? 'bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30' : 'bg-white/[0.06] text-slate-400'
                   }`}>
                     {r.type}
                   </span>
@@ -217,7 +217,7 @@ export default function AdminHostelManagement({ onHostelsUpdated }) {
                   Floor {r.floor} · {r.capacity} Beds
                 </div>
 
-                <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px]">
+                <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px]">
                   <span className="font-mono text-emerald-400 font-bold">₹{r.rentPerMonth?.toLocaleString('en-IN')}/mo</span>
                   <span className="text-slate-400 font-medium">✓ Provisioned</span>
                 </div>
@@ -233,49 +233,49 @@ export default function AdminHostelManagement({ onHostelsUpdated }) {
 
       {/* ── MODAL: CREATE HOSTEL ── */}
       {hostelModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md bg-[#0f1b2d] border border-indigo-500/30 rounded-3xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-indigo-400" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-sans">
+          <div className="w-full max-w-md bg-[#0e1219] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-[#dfba73]" />
                 Create Hostel Complex
               </h3>
-              <button onClick={() => setHostelModalOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+              <button onClick={() => setHostelModalOpen(false)} className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.08] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer text-xs">✕</button>
             </div>
 
             <form onSubmit={handleCreateHostel} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Hostel Name *</label>
+                  <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Hostel Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Sahyadri Boys Hostel"
                     value={hostelForm.name}
                     onChange={(e) => setHostelForm({ ...hostelForm, name: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Block Code *</label>
+                  <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Block Code *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. SAY-A"
                     value={hostelForm.code}
                     onChange={(e) => setHostelForm({ ...hostelForm, code: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-indigo-500 uppercase"
+                    className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73] uppercase"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Gender *</label>
+                  <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Gender *</label>
                   <select
                     value={hostelForm.gender}
                     onChange={(e) => setHostelForm({ ...hostelForm, gender: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   >
                     <option value="boys">Boys Hostel</option>
                     <option value="girls">Girls Hostel</option>
@@ -283,28 +283,28 @@ export default function AdminHostelManagement({ onHostelsUpdated }) {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Total Capacity (Beds) *</label>
+                  <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Total Capacity (Beds) *</label>
                   <input
                     type="number"
                     required
                     value={hostelForm.capacity}
                     onChange={(e) => setHostelForm({ ...hostelForm, capacity: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+              <div className="flex justify-end gap-2.5 pt-2 border-t border-white/[0.08]">
                 <button
                   type="button"
                   onClick={() => setHostelModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium"
+                  className="px-4 py-2 rounded-lg border border-white/[0.1] text-slate-400 hover:text-white font-medium cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-600/30"
+                  className="btn-arch-primary px-5 py-2.5 rounded-lg text-xs font-bold cursor-pointer"
                 >
                   Create Complex
                 </button>
@@ -316,48 +316,48 @@ export default function AdminHostelManagement({ onHostelsUpdated }) {
 
       {/* ── MODAL: CREATE ROOM ── */}
       {roomModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md bg-[#0f1b2d] border border-sky-500/30 rounded-3xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <DoorOpen className="w-5 h-5 text-sky-400" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-sans">
+          <div className="w-full max-w-md bg-[#0e1219] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <h3 className="text-base font-bold font-serif text-white tracking-tight flex items-center gap-2">
+                <DoorOpen className="w-5 h-5 text-[#dfba73]" />
                 Add Residential Room
               </h3>
-              <button onClick={() => setRoomModalOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+              <button onClick={() => setRoomModalOpen(false)} className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.08] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer text-xs">✕</button>
             </div>
 
             <form onSubmit={handleCreateRoom} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Room Number *</label>
+                  <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Room Number *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. 201"
                     value={roomForm.roomNumber}
                     onChange={(e) => setRoomForm({ ...roomForm, roomNumber: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Floor *</label>
+                  <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Floor *</label>
                   <input
                     type="number"
                     required
                     value={roomForm.floor}
                     onChange={(e) => setRoomForm({ ...roomForm, floor: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Room Type</label>
+                  <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Room Type</label>
                   <select
                     value={roomForm.type}
                     onChange={(e) => setRoomForm({ ...roomForm, type: e.target.value })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   >
                     <option value="AC">AC Room</option>
                     <option value="Non-AC">Non-AC Standard</option>
@@ -365,27 +365,27 @@ export default function AdminHostelManagement({ onHostelsUpdated }) {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Monthly Rent (₹)</label>
+                  <label className="block font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[11px]">Monthly Rent (₹)</label>
                   <input
                     type="number"
                     value={roomForm.rentPerMonth}
                     onChange={(e) => setRoomForm({ ...roomForm, rentPerMonth: Number(e.target.value) })}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-sky-500"
+                    className="w-full p-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#dfba73]"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+              <div className="flex justify-end gap-2.5 pt-2 border-t border-white/[0.08]">
                 <button
                   type="button"
                   onClick={() => setRoomModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium"
+                  className="px-4 py-2 rounded-lg border border-white/[0.1] text-slate-400 hover:text-white font-medium cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold shadow-lg shadow-sky-600/30"
+                  className="btn-arch-primary px-5 py-2.5 rounded-lg text-xs font-bold cursor-pointer"
                 >
                   Provision Room
                 </button>

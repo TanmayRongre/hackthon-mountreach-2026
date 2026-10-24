@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Building2,
+  ChevronRight,
+  Check,
+  Phone,
+  Mail,
+  MapPin,
+  FileText,
+  X
+} from 'lucide-react';
 
 const POLICY_CONTENT = {
   'Hostel Rules & Regulations': [
@@ -24,9 +34,9 @@ export default function Footer() {
   const [activeModal, setActiveModal] = useState(null);
 
   const portalLinks = [
-    { label: 'Student Portal', to: '/dashboard' },
-    { label: 'Warden Portal', to: '/warden' },
-    { label: 'Admin Portal', to: '/admin' },
+    { label: 'Student Resident Portal', to: '/dashboard' },
+    { label: 'Warden Administrative Desk', to: '/warden' },
+    { label: 'Institutional Admin Command', to: '/admin' },
   ];
 
   return (
@@ -35,18 +45,20 @@ export default function Footer() {
         <div className="footer-grid">
           {/* Brand & Socials */}
           <div>
-            <Link to="/" className="footer-brand-logo" style={{ textDecoration: 'none' }}>
+            <Link to="/" className="footer-brand-logo">
               <div className="footer-logo-icon">
-                <i className="bx bx-building-house"></i>
+                <Building2 className="w-4 h-4 text-[#dfba73]" />
               </div>
               <div>
-                <div className="footer-brand-name">HostelHub</div>
-                <span className="footer-brand-tag">College Hostel Management</span>
+                <div className="footer-brand-name">
+                  Hostel<span className="text-[#dfba73]">Hub</span>
+                </div>
+                <span className="footer-brand-tag">Institutional Residence System</span>
               </div>
             </Link>
             <p className="footer-tagline">
-              A modern, role-based hostel management platform for colleges.
-              Empowering students, wardens, and administrators with seamless digital tools.
+              A high-assurance campus residential operating system.
+              Empowering students, resident wardens, and campus leadership with automated digital precision.
             </p>
             <div className="footer-social-row">
               <a
@@ -94,45 +106,45 @@ export default function Footer() {
 
           {/* Portals */}
           <div>
-            <div className="footer-col-title">Portals</div>
+            <div className="footer-col-title">Role Gateways</div>
             <ul className="footer-links">
               {portalLinks.map((l) => (
                 <li key={l.label}>
-                  <Link to={l.to} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <i className="bx bx-chevron-right" style={{ color: '#6366f1', fontSize: 16 }}></i>
-                    {l.label}
+                  <Link to={l.to}>
+                    <ChevronRight className="w-3.5 h-3.5 text-[#dfba73]" />
+                    <span>{l.label}</span>
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* HMS Available Features */}
+          {/* Enterprise Capabilities */}
           <div>
-            <div className="footer-col-title">HMS Available Features</div>
-            <ul className="footer-features-list" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div className="footer-col-title">Core Systems</div>
+            <ul className="footer-links">
               {[
-                'Smart Room & Bed Allotment',
-                'Online Leave Applications',
-                '24/7 Grievance & Complaints',
+                'Smart Room & Bed Allocation',
+                'Digital Gate-Pass Authorizations',
+                'Priority Grievance Ticketing',
+                'Night QR Attendance Verification',
+                'Institutional Fee Reconciliation',
               ].map((feat) => (
-                <li key={feat} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-                  <span style={{
-                    width: 18,
-                    height: 18,
-                    borderRadius: '50%',
-                    background: 'rgba(99,102,241,0.15)',
-                    border: '1px solid rgba(99,102,241,0.3)',
-                    color: '#818cf8',
+                <li key={feat} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '12.5px', color: '#94a3b8' }}>
+                  <div style={{
+                    width: 14,
+                    height: 14,
+                    borderRadius: 3,
+                    background: 'rgba(197, 160, 89, 0.15)',
+                    border: '1px solid rgba(197, 160, 89, 0.3)',
+                    color: '#dfba73',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: 10,
-                    fontWeight: 'bold',
-                    flexShrink: 0,
+                    flexShrink: 0
                   }}>
-                    ✓
-                  </span>
+                    <Check className="w-2.5 h-2.5 stroke-[3]" />
+                  </div>
                   <span>{feat}</span>
                 </li>
               ))}
@@ -141,26 +153,26 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <div className="footer-col-title">Contact & Support</div>
+            <div className="footer-col-title">Campus Residence Office</div>
             <a href="tel:+919876543210" className="footer-contact-item" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <i className="bx bx-phone footer-contact-icon"></i>
+              <Phone className="w-3.5 h-3.5 footer-contact-icon" />
               <div className="footer-contact-text">
-                <strong>Hostel Office</strong>
+                <strong>Administrative Helpdesk</strong>
                 +91 98765 43210
               </div>
             </a>
             <a href="mailto:info@hostelmanage.in" className="footer-contact-item" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <i className="bx bx-envelope footer-contact-icon"></i>
+              <Mail className="w-3.5 h-3.5 footer-contact-icon" />
               <div className="footer-contact-text">
-                <strong>Support Email</strong>
-                info@hostelmanage.in
+                <strong>Official Email</strong>
+                residence@institution.edu
               </div>
             </a>
             <Link to="/contact" className="footer-contact-item" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <i className="bx bx-map-pin footer-contact-icon"></i>
+              <MapPin className="w-3.5 h-3.5 footer-contact-icon" />
               <div className="footer-contact-text">
-                <strong>Campus Address</strong>
-                Hostel Office, Gate No. 2,<br />College Campus, Pune 411005
+                <strong>Physical Office</strong>
+                Residence Directorate, North Quad, Campus Grounds
               </div>
             </Link>
           </div>
@@ -168,29 +180,26 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <span className="footer-copyright">
-            © 2026 HostelHub — College Hostel Management System. All rights reserved.
+            © 2026 HostelHub Enterprise Residence OS. All institutional rights reserved.
           </span>
           <div className="footer-bottom-links">
             <button
               onClick={() => setActiveModal('Hostel Rules & Regulations')}
-              className="text-slate-400 hover:text-white transition-colors bg-transparent border-0 cursor-pointer text-xs"
             >
               Hostel Rules
             </button>
             <button
               onClick={() => setActiveModal('Privacy Policy')}
-              className="text-slate-400 hover:text-white transition-colors bg-transparent border-0 cursor-pointer text-xs"
             >
               Privacy Policy
             </button>
             <button
               onClick={() => setActiveModal('Terms of Service')}
-              className="text-slate-400 hover:text-white transition-colors bg-transparent border-0 cursor-pointer text-xs"
             >
               Terms of Service
             </button>
-            <Link to="/contact" className="text-slate-400 hover:text-white transition-colors text-xs" style={{ textDecoration: 'none' }}>
-              Help Desk
+            <Link to="/contact" style={{ textDecoration: 'none' }}>
+              Campus Inquiries
             </Link>
           </div>
         </div>
@@ -199,26 +208,26 @@ export default function Footer() {
       {/* ── INTERACTIVE POLICY & RULES MODAL ── */}
       {activeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-sans">
-          <div className="w-full max-w-lg p-6 rounded-3xl bg-[#0f1b2d] border border-slate-800 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-sm font-bold">
-                  📜
+          <div className="w-full max-w-lg p-6 rounded-xl bg-[#0e1219] border border-white/[0.1] shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-md bg-[#c5a059]/15 text-[#dfba73] flex items-center justify-center">
+                  <FileText className="w-4 h-4" />
                 </div>
-                <h3 className="text-base font-bold text-white">{activeModal}</h3>
+                <h3 className="font-serif text-base font-bold text-white">{activeModal}</h3>
               </div>
               <button
                 onClick={() => setActiveModal(null)}
-                className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm cursor-pointer"
+                className="w-7 h-7 rounded-md bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="space-y-3 py-2">
+            <div className="space-y-2.5 py-2">
               {POLICY_CONTENT[activeModal]?.map((rule, idx) => (
-                <div key={idx} className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-start gap-2.5 text-xs text-slate-300">
-                  <span className="text-indigo-400 font-bold">•</span>
+                <div key={idx} className="p-3 rounded-lg bg-[#141824] border border-white/[0.06] flex items-start gap-3 text-xs text-slate-300 leading-relaxed">
+                  <span className="text-[#dfba73] font-bold mt-0.5">•</span>
                   <span>{rule}</span>
                 </div>
               ))}
@@ -227,9 +236,9 @@ export default function Footer() {
             <div className="pt-2">
               <button
                 onClick={() => setActiveModal(null)}
-                className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
+                className="w-full py-2.5 rounded-lg bg-[#c5a059] hover:bg-[#dfba73] text-[#090b10] text-xs font-semibold shadow-sm transition-all cursor-pointer"
               >
-                Understood &amp; Close
+                Acknowledge &amp; Dismiss
               </button>
             </div>
           </div>

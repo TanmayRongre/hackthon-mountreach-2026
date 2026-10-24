@@ -1,21 +1,22 @@
 import React from 'react';
 import useInView from '../../hooks/useInView';
+import { ListOrdered, ArrowRight } from 'lucide-react';
 
 const STEPS = [
   {
     n: '01',
-    title: 'Register & Get Onboarded',
-    desc: 'Students register with their enrollment ID. Admin verifies and assigns them to a hostel block with a room allotment letter.',
+    title: 'Institutional Enrollment & Verification',
+    desc: 'Students register with their university enrollment ID. System auto-verifies academic credentials and generates an official admission dossier.',
   },
   {
     n: '02',
-    title: 'Access Your Role Dashboard',
-    desc: 'Login with your credentials. Students, Wardens, and Admins each see a personalized dashboard with role-specific tools and data.',
+    title: 'Role-Scoped Dashboard Provisioning',
+    desc: 'Instant role-based authorization. Students, Resident Wardens, and Campus Administrators each access tailored workflows and live datasets.',
   },
   {
     n: '03',
-    title: 'Manage Everything Digitally',
-    desc: 'No paper. Raise complaints, approve leave applications, view mess menu, pay fees, and download reports — all from one platform.',
+    title: 'Audited Paperless Campus Living',
+    desc: 'Zero manual paperwork. Submit gate passes, record QR attendance, dispute meal dues, and inspect infrastructure status in real time.',
   },
 ];
 
@@ -28,13 +29,14 @@ export default function HowItWorksSection() {
       <div className="lp-inner">
         <div ref={headRef} className={`lp-header-center reveal ${headIn ? 'in-view' : ''}`}>
           <div className="lp-tag">
-            <i className="bx bx-list-check" style={{ fontSize: 12 }}></i>Getting Started
+            <ListOrdered className="w-3.5 h-3.5 text-[#dfba73]" />
+            <span>Workflow Protocol</span>
           </div>
           <h2 className="lp-heading">
-            Up & Running in <span>3 Simple Steps</span>
+            Seamless Onboarding in <span>3 Structured Steps</span>
           </h2>
           <p className="lp-sub">
-            From registration to full digital hostel management — onboarding is fast and straightforward.
+            Designed for high-throughput academic institutions with frictionless digital verification.
           </p>
         </div>
         <div ref={stepsRef} className="hiw-steps">

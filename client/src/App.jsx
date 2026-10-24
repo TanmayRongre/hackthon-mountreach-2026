@@ -15,7 +15,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#07101f', color: '#fff' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#090b10', color: '#f1f3f7' }}>
           <Navbar />
           <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <Routes>

@@ -120,18 +120,18 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-3xl bg-[#0f1b2d] border border-indigo-500/30 rounded-3xl shadow-2xl shadow-indigo-950/60 overflow-hidden max-h-[94vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-sans">
+      <div className="relative w-full max-w-3xl bg-[#0e1219] border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-[94vh] flex flex-col">
         {/* Modal Header */}
-        <div className="relative px-6 py-5 bg-gradient-to-r from-indigo-950 via-[#0f1b2d] to-indigo-950 border-b border-slate-800 flex items-center justify-between">
+        <div className="relative px-6 py-5 bg-[#121620] border-b border-white/[0.08] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-600/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
+            <div className="w-10 h-10 rounded-xl bg-[#c5a059]/10 border border-[#c5a059]/30 flex items-center justify-center text-[#dfba73]">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <h3 className="text-lg font-bold font-serif text-white tracking-tight flex items-center gap-2">
                 Hostel Admission & Allotment
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-semibold uppercase">
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#c5a059]/15 text-[#dfba73] border border-[#c5a059]/30 font-sans font-semibold uppercase tracking-wider">
                   Session 2026
                 </span>
               </h3>
@@ -142,7 +142,7 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-lg bg-white/[0.05] border border-white/[0.08] text-slate-400 hover:text-white hover:bg-white/[0.1] flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -158,9 +158,9 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
           )}
 
           {/* Student Account Summary */}
-          <div className="p-3.5 bg-indigo-950/30 border border-indigo-500/20 rounded-2xl flex items-center justify-between">
+          <div className="p-3.5 bg-[#121620] border border-white/[0.08] rounded-xl flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-sky-500 text-white font-bold text-base flex items-center justify-center shadow-md">
+              <div className="w-10 h-10 rounded-lg bg-[#c5a059] text-[#090b10] font-serif font-bold text-base flex items-center justify-center shadow-md shadow-[#c5a059]/20">
                 {initialUser?.name?.charAt(0) || 'S'}
               </div>
               <div>
@@ -176,8 +176,8 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
 
           {/* Section 1: Academic & Hostel Preferences */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-1.5">
-              <BookOpen className="w-3.5 h-3.5" />
+            <h4 className="text-xs font-bold text-[#dfba73] uppercase tracking-wider flex items-center gap-1.5 font-sans">
+              <BookOpen className="w-3.5 h-3.5 text-[#dfba73]" />
               1. Student & Hostel Allotment Details
             </h4>
 
@@ -193,7 +193,7 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
                   placeholder="e.g. CS2026-084"
                   value={formData.enrollmentNumber}
                   onChange={(e) => setFormData({ ...formData, enrollmentNumber: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-white text-xs focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 uppercase"
+                  className="w-full px-3.5 py-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white text-xs focus:outline-none focus:border-[#dfba73] focus:ring-1 focus:ring-[#dfba73]/20 uppercase"
                 />
               </div>
 
@@ -205,7 +205,7 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
                 <select
                   value={formData.department}
                   onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-white text-xs focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white text-xs focus:outline-none focus:border-[#dfba73]"
                 >
                   <option value="Computer Science & Engineering">Computer Science & Engineering</option>
                   <option value="Information Technology">Information Technology</option>
@@ -224,7 +224,7 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
                 <select
                   value={formData.year}
                   onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-white text-xs focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white text-xs focus:outline-none focus:border-[#dfba73]"
                 >
                   <option value="1st Year">1st Year (Freshman)</option>
                   <option value="2nd Year">2nd Year (Sophomore)</option>
@@ -241,7 +241,7 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
                 <select
                   value={formData.hostelId}
                   onChange={(e) => setFormData({ ...formData, hostelId: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-white text-xs focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white text-xs focus:outline-none focus:border-[#dfba73]"
                 >
                   {hostels.length > 0 ? (
                     hostels.map((h) => (
@@ -263,7 +263,7 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
                 <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
                   Room Accommodation Type (Affects Fees)
                 </label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
                     { id: 'AC', label: 'AC Double Sharing', price: '₹6,500/mo', desc: 'Air Conditioning, 2 Study Tables, Attached Bath' },
                     { id: 'Non-AC', label: 'Non-AC Standard', price: '₹4,500/mo', desc: 'Ceiling Fan, Attached Balcony, 3 Sharing' },
@@ -274,13 +274,13 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
                       onClick={() => setFormData({ ...formData, roomType: rt.id })}
                       className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                         formData.roomType === rt.id
-                          ? 'bg-indigo-600/20 border-indigo-500 shadow-md shadow-indigo-600/20'
-                          : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
+                          ? 'bg-[#c5a059]/10 border-[#c5a059] shadow-md shadow-[#c5a059]/10 text-white'
+                          : 'bg-[#121620] border-white/[0.08] hover:border-white/20'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-white">{rt.label}</span>
-                        <span className="text-[11px] font-extrabold text-indigo-400">{rt.price}</span>
+                        <span className="text-[11px] font-extrabold text-[#dfba73] font-mono">{rt.price}</span>
                       </div>
                       <p className="text-[10px] text-slate-400 mt-1">{rt.desc}</p>
                     </div>
@@ -292,8 +292,8 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
 
           {/* Section 2: Contact & Guardian Details */}
           <div className="space-y-3 pt-2">
-            <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Phone className="w-3.5 h-3.5" />
+            <h4 className="text-xs font-bold text-[#dfba73] uppercase tracking-wider flex items-center gap-1.5">
+              <Phone className="w-3.5 h-3.5 text-[#dfba73]" />
               2. Contact & Emergency Guardian Information
             </h4>
 
@@ -308,7 +308,7 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
                   placeholder="+91 98765 43210"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-white text-xs focus:outline-none focus:border-sky-500"
+                  className="w-full px-3.5 py-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white text-xs focus:outline-none focus:border-[#dfba73]"
                 />
               </div>
 
@@ -321,7 +321,7 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
                   placeholder="e.g. Ramesh Kulkarni"
                   value={formData.parentName}
                   onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-white text-xs focus:outline-none focus:border-sky-500"
+                  className="w-full px-3.5 py-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white text-xs focus:outline-none focus:border-[#dfba73]"
                 />
               </div>
 
@@ -334,7 +334,7 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
                   placeholder="+91 91234 56789"
                   value={formData.parentPhone}
                   onChange={(e) => setFormData({ ...formData, parentPhone: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-white text-xs focus:outline-none focus:border-sky-500"
+                  className="w-full px-3.5 py-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white text-xs focus:outline-none focus:border-[#dfba73]"
                 />
               </div>
 
@@ -347,17 +347,17 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
                   placeholder="e.g. Pune, Maharashtra"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-white text-xs focus:outline-none focus:border-sky-500"
+                  className="w-full px-3.5 py-2.5 bg-[#121620] border border-white/[0.08] rounded-lg text-white text-xs focus:outline-none focus:border-[#dfba73]"
                 />
               </div>
             </div>
           </div>
 
           {/* Section 3: COMPLETE TRANSPARENT FEE BREAKDOWN */}
-          <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-950/40 via-slate-900 to-indigo-950/40 border border-indigo-500/30 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="p-5 rounded-xl bg-[#121620] border border-white/[0.08] space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
               <div className="flex items-center gap-2">
-                <Receipt className="w-4 h-4 text-emerald-400" />
+                <Receipt className="w-4 h-4 text-[#dfba73]" />
                 <h4 className="text-xs font-bold text-white uppercase tracking-wider">
                   Itemized Hostel Fee Structure (Semester 1)
                 </h4>
@@ -368,30 +368,34 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
             </div>
 
             <div className="space-y-2.5 text-xs">
-              <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-                <span className="text-slate-300">
-                  🏠 Room Accommodation ({formData.roomType} Type · ₹{feeCalc.roomRentMonthly.toLocaleString('en-IN')}/mo × 6 mos)
+              <div className="flex items-center justify-between py-1 border-b border-white/[0.08]">
+                <span className="text-slate-300 flex items-center gap-2">
+                  <Home className="w-3.5 h-3.5 text-[#dfba73]" />
+                  <span>Room Accommodation ({formData.roomType} · ₹{feeCalc.roomRentMonthly.toLocaleString('en-IN')}/mo × 6 mos)</span>
                 </span>
                 <span className="font-mono font-bold text-white">₹{feeCalc.roomRentSem.toLocaleString('en-IN')}</span>
               </div>
 
-              <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-                <span className="text-slate-300">
-                  🍱 Central Mess & Meal Plan (4 Meals Daily · ₹4,000/mo × 6 mos)
+              <div className="flex items-center justify-between py-1 border-b border-white/[0.08]">
+                <span className="text-slate-300 flex items-center gap-2">
+                  <CreditCard className="w-3.5 h-3.5 text-[#dfba73]" />
+                  <span>Central Mess & Meal Plan (4 Meals Daily · ₹4,000/mo × 6 mos)</span>
                 </span>
                 <span className="font-mono font-bold text-white">₹{feeCalc.messFeeSem.toLocaleString('en-IN')}</span>
               </div>
 
-              <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-                <span className="text-slate-300">
-                  🛡️ Refundable Caution Security Deposit (Returned on Graduation)
+              <div className="flex items-center justify-between py-1 border-b border-white/[0.08]">
+                <span className="text-slate-300 flex items-center gap-2">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Refundable Caution Security Deposit (Returned on Graduation)</span>
                 </span>
                 <span className="font-mono font-bold text-emerald-400">₹{feeCalc.cautionDeposit.toLocaleString('en-IN')}</span>
               </div>
 
-              <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-                <span className="text-slate-300">
-                  ⚡ High-Speed Wi-Fi, Gym & Maintenance Utilities
+              <div className="flex items-center justify-between py-1 border-b border-white/[0.08]">
+                <span className="text-slate-300 flex items-center gap-2">
+                  <Building className="w-3.5 h-3.5 text-[#dfba73]" />
+                  <span>High-Speed Wi-Fi, Gym & Maintenance Utilities</span>
                 </span>
                 <span className="font-mono font-bold text-white">₹{feeCalc.utilityFee.toLocaleString('en-IN')}</span>
               </div>
@@ -399,7 +403,7 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
               {/* Total Calculation Row */}
               <div className="flex items-center justify-between pt-2 text-sm">
                 <span className="font-bold text-white flex items-center gap-1.5">
-                  <CreditCard className="w-4 h-4 text-indigo-400" />
+                  <CreditCard className="w-4 h-4 text-[#dfba73]" />
                   Total Admission Payable Dues:
                 </span>
                 <span className="text-lg font-black text-emerald-400 font-mono">
@@ -408,9 +412,9 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+            <div className="p-3 rounded-lg bg-[#0e1219] border border-white/[0.08] flex items-center justify-between text-[11px] text-slate-400">
               <span className="flex items-center gap-1.5">
-                <Info className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <Info className="w-3.5 h-3.5 text-[#dfba73] shrink-0" />
                 Fee invoice will be automatically generated in your Student Portal upon admission.
               </span>
               <span className="text-emerald-400 font-medium">Digital Receipt Available</span>
@@ -418,22 +422,22 @@ export default function AdmissionModal({ isOpen, onClose, onSuccess, initialUser
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-800">
+          <div className="pt-3 flex items-center justify-end gap-3 border-t border-white/[0.08]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-xs font-semibold transition-all cursor-pointer"
+              className="px-4 py-2.5 rounded-lg border border-white/[0.1] text-slate-300 hover:bg-white/[0.05] text-xs font-semibold transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-7 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 hover:from-indigo-500 hover:to-sky-400 text-white text-xs font-bold shadow-xl shadow-indigo-600/30 flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+              className="btn-arch-primary px-7 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
             >
               {submitting ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                   <span>Processing Admission & Allotting Room...</span>
                 </>
               ) : (
